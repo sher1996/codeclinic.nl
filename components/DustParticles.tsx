@@ -1,0 +1,52 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+
+interface DustParticle {
+  id: number;
+  size: number;
+  left: number;
+  top: number;
+  delay: number;
+  duration: number;
+}
+
+export default function DustParticles() {
+  const [particles, setParticles] = useState<DustParticle[]>([]);
+
+  useEffect(() => {
+    // Create 30 dust particles with random properties for better coverage
+    const newParticles = Array.from({ length: 30 }, (_, i) => ({
+      id: i,
+      size: Math.random() * 3 + 1, // 1-4px
+      // Exclude bottom-left corner (0-20% from left and 80-100% from top)
+      left: Math.random() * 80 + 20, // 20-100%
+      top: Math.random() * 80, // 0-80%
+      delay: Math.random() * 5, // 0-5s
+      duration: Math.random() * 4 + 6, // 6-10s
+    }));
+    setParticles(newParticles);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 w-full h-full overflow-hidden pointer-events-none">
+      {particles.map((particle) => (
+        <div
+          key={particle.id}
+          className="dust-particle"
+          style={{
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+            left: `${particle.left}%`,
+            top: `${particle.top}%`,
+            animationDelay: `${particle.delay}s`,
+            animationDuration: `${particle.duration}s`,
+            opacity: 0.3, // Reduced opacity
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// Note: The dust particles are intentional for visual effect and are not a ghost artefact. 
