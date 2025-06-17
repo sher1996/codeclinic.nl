@@ -119,12 +119,32 @@ export default function Hero() {
     <section
       ref={heroRef}
       id="hero"
-      className="relative isolate overflow-hidden bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20 backdrop-blur-sm min-h-screen flex items-center"
+      className={`relative isolate overflow-hidden ${isLowEnd ? 'bg-[#1F2C90]/10' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20 backdrop-blur-sm'} min-h-screen flex items-center`}
       aria-label="Hero section"
       onMouseMove={handleMouseMove}
       style={{ willChange: 'transform', transform: 'translateZ(0)' }}
     >
-      <div className="absolute inset-0 bg-black/30 mix-blend-overlay pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }}></div>
+      {!isLowEnd && (
+        <>
+          <div className="absolute inset-0 bg-black/30 mix-blend-overlay pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }}></div>
+
+          {/* Noise overlay */}
+          <div 
+            className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none z-[1]"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+              backgroundRepeat: 'repeat',
+              backgroundSize: '200px 200px',
+              willChange: 'transform',
+              transform: 'translateZ(0)'
+            }}
+            aria-hidden="true"
+          />
+
+          {/* Radial spotlight effect */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/40 via-transparent to-transparent opacity-60 mix-blend-soft-light pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }} />
+        </>
+      )}
 
       {/* Binary Morph Particles with lazy loading */}
       <div ref={particlesContainerRef} className={`absolute inset-0 z-10 transition-opacity duration-500 ${showParticles ? 'opacity-100' : 'opacity-0'}`} style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
@@ -136,19 +156,6 @@ export default function Hero() {
           )}
         </div>
       </div>
-
-      {/* Noise overlay */}
-      <div 
-        className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none z-[1]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: 'repeat',
-          backgroundSize: '200px 200px',
-          willChange: 'transform',
-          transform: 'translateZ(0)'
-        }}
-        aria-hidden="true"
-      />
 
       {/* Optimize particle layer for low-end devices */}
       <div className="absolute inset-0 overflow-hidden z-0" aria-hidden="true" style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
@@ -179,9 +186,6 @@ export default function Hero() {
           );
         })}
       </div>
-
-      {/* Radial spotlight effect */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/40 via-transparent to-transparent opacity-60 mix-blend-soft-light pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }} />
 
       {/* Logo */}
       <div 
