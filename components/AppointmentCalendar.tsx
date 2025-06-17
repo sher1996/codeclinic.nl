@@ -195,9 +195,9 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
           </p>
         </div>
 
-        <div className="mx-auto mt-16 max-w-2xl rounded-2xl ring-1 ring-white/10 sm:mt-20 lg:mx-0 lg:flex lg:max-w-none">
+        <div className={`mx-auto mt-16 max-w-2xl rounded-2xl ${isLowEnd ? 'bg-white/5' : 'ring-1 ring-white/10'} sm:mt-20 lg:mx-0 lg:flex lg:max-w-none`}>
           <div className="p-8 sm:p-10 lg:flex-auto">
-            <div className="w-full max-w-4xl mx-auto bg-white/5 backdrop-blur-sm rounded-xl p-6 shadow-xl min-h-[600px]">
+            <div className={`w-full max-w-4xl mx-auto ${isLowEnd ? 'bg-white/5' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-6 shadow-xl min-h-[600px]`}>
               <AnimatePresence>
                 {!selectedDate ? (
                   <motion.div
@@ -279,7 +279,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                       </h2>
                     </div>
 
-                    <div className="bg-white/5 rounded-xl p-6 backdrop-blur-sm border border-white/10">
+                    <div className={`${isLowEnd ? 'bg-transparent' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-6 border border-white/10`}>
                       <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
                         <span className="text-[#00d4ff]">Dagplanning</span>
                         <span className="text-white/60">voor {formatDate(selectedDate)}</span>
@@ -373,7 +373,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                           transition={{ duration: 0.3 }}
                           className="mt-6"
                         >
-                          <div className="bg-white/5 rounded-lg p-4 mb-6 border border-white/10">
+                          <div className={`${isLowEnd ? 'bg-transparent' : 'bg-white/5'} rounded-lg p-4 mb-6 border border-white/10`}>
                             <div className="flex items-center justify-between">
                               <div>
                                 <p className="text-sm text-white/60">Geselecteerde tijd</p>
@@ -401,7 +401,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                                 name="name"
                                 value={formData.name}
                                 onChange={handleInputChange}
-                                className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                                className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
                                 required
                               />
                             </div>
@@ -412,7 +412,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                                 name="email"
                                 value={formData.email}
                                 onChange={handleInputChange}
-                                className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                                className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
                                 required
                               />
                             </div>
@@ -423,7 +423,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                                 name="phone"
                                 value={formData.phone}
                                 onChange={handleInputChange}
-                                className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                                className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
                                 required
                               />
                             </div>
@@ -435,7 +435,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                                   name="street"
                                   value={formData.street}
                                   onChange={handleInputChange}
-                                  className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                                  className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
                                   required
                                 />
                               </div>
@@ -446,7 +446,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                                   name="houseNumber"
                                   value={formData.houseNumber}
                                   onChange={handleInputChange}
-                                  className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                                  className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
                                   required
                                 />
                               </div>
@@ -460,7 +460,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                                   value={formData.postalCode}
                                   onChange={handleInputChange}
                                   placeholder="1234 AB"
-                                  className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                                  className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
                                   required
                                 />
                               </div>
@@ -471,7 +471,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                                   name="city"
                                   value={formData.city}
                                   onChange={handleInputChange}
-                                  className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                                  className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
                                   required
                                 />
                               </div>
@@ -482,7 +482,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                                 name="notes"
                                 value={formData.notes}
                                 onChange={handleInputChange}
-                                className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                                className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
                                 rows={3}
                               />
                             </div>
@@ -506,7 +506,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="absolute inset-0 flex items-center justify-center bg-green-500/20 backdrop-blur-sm rounded-lg"
+                                    className={`absolute inset-0 flex items-center justify-center ${isLowEnd ? 'bg-green-500/10' : 'bg-green-500/20 backdrop-blur-sm'} rounded-lg`}
                                   >
                                     <div className="text-center">
                                       <p className="text-green-400 font-medium">{submitStatus.message}</p>
@@ -519,7 +519,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="absolute inset-0 flex items-center justify-center bg-red-500/20 backdrop-blur-sm rounded-lg"
+                                    className={`absolute inset-0 flex items-center justify-center ${isLowEnd ? 'bg-red-500/10' : 'bg-red-500/20 backdrop-blur-sm'} rounded-lg`}
                                   >
                                     <div className="text-center">
                                       <p className="text-red-400 font-medium">{submitStatus.message}</p>
