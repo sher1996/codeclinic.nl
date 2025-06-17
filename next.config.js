@@ -1,17 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   images: {
-    domains: ['localhost'],
-    unoptimized: process.env.NODE_ENV === 'development',
+    domains: ['images.unsplash.com'],
+    formats: ['image/avif', 'image/webp'],
   },
   experimental: {
     optimizeCss: true,
-    optimizePackageImports: ['lucide-react', '@heroicons/react'],
   },
   webpack: (config, { dev, isServer }) => {
     // Optimize bundle size
@@ -22,7 +20,6 @@ const nextConfig = {
           test: /[\\/]node_modules[\\/]/,
           name: 'vendors',
           chunks: 'all',
-          priority: 1,
         },
       };
     }
@@ -54,4 +51,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig; 
+module.exports = nextConfig; 
