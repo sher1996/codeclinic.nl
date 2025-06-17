@@ -72,9 +72,9 @@ function BinaryMorphParticlesBase({ startAnimation = false }: { startAnimation?:
       const isEdgeInit = new Array(count);
       const delays = new Array(count);
 
-      const lineWidth = 0.8;
+      const lineWidth = 1.4;
       const lineHeight = 0.02;
-      const xOffset = -0.25;
+      const xOffset = -0.45;
 
       const leftMostX = -lineWidth / 2 + xOffset;
       const rightMostX = lineWidth / 2 + xOffset;
