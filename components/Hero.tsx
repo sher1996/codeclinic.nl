@@ -119,7 +119,7 @@ export default function Hero() {
     <section
       ref={heroRef}
       id="hero"
-      className={`relative isolate overflow-hidden ${isLowEnd ? 'bg-[#1F2C90]/10' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20 backdrop-blur-sm'} min-h-screen flex items-center`}
+      className={`relative isolate overflow-hidden ${isLowEnd ? 'bg-transparent' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20 backdrop-blur-sm'} min-h-screen flex items-center`}
       aria-label="Hero section"
       onMouseMove={handleMouseMove}
       style={{ willChange: 'transform', transform: 'translateZ(0)' }}
@@ -158,34 +158,36 @@ export default function Hero() {
       </div>
 
       {/* Optimize particle layer for low-end devices */}
-      <div className="absolute inset-0 overflow-hidden z-0" aria-hidden="true" style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
-        {!isLowEnd && particles.map((_, i) => {
-          const size = 2 + (i % 2);
-          const top = (i * 25) % 100;
-          const left = (i * 20) % 100;
-          const hue = (i * 90) % 360;
-          const delay = i * 0.8;
-          const duration = 10 + (i % 3);
-          
-          return (
-            <div
-              key={i}
-              className="absolute rounded-full animate-float"
-              style={{
-                width: `${size}px`,
-                height: `${size}px`,
-                top: `${top}%`,
-                left: `${left}%`,
-                backgroundColor: `hsla(${hue}, 70%, 50%, 0.03)`,
-                ['--duration' as string]: `${duration}s`,
-                ['--delay' as string]: `${delay}s`,
-                willChange: 'transform',
-                transform: 'translateZ(0)'
-              }}
-            />
-          );
-        })}
-      </div>
+      {!isLowEnd && (
+        <div className="absolute inset-0 overflow-hidden z-0" aria-hidden="true" style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
+          {particles.map((_, i) => {
+            const size = 2 + (i % 2);
+            const top = (i * 25) % 100;
+            const left = (i * 20) % 100;
+            const hue = (i * 90) % 360;
+            const delay = i * 0.8;
+            const duration = 10 + (i % 3);
+            
+            return (
+              <div
+                key={i}
+                className="absolute rounded-full animate-float"
+                style={{
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  top: `${top}%`,
+                  left: `${left}%`,
+                  backgroundColor: `hsla(${hue}, 70%, 50%, 0.03)`,
+                  ['--duration' as string]: `${duration}s`,
+                  ['--delay' as string]: `${delay}s`,
+                  willChange: 'transform',
+                  transform: 'translateZ(0)'
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
 
       {/* Logo */}
       <div 
