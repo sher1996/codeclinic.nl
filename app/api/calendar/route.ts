@@ -29,7 +29,10 @@ async function isTimeSlotAvailable(date: string, time: string): Promise<boolean>
   bookingDate.setHours(hours, minutes, 0, 0);
 
   const existing = await prisma.booking.findFirst({
-    where: { startTime: bookingDate }
+    where: { 
+      date: bookingDate,
+      time: time
+    }
   });
   return !existing;
 }
@@ -49,14 +52,14 @@ export async function GET(request: Request) {
   }
 
   const bookings = await prisma.booking.findMany({
-    orderBy: { startTime: 'asc' },
+    orderBy: { date: 'asc' },
     select: {
       id: true,
       name: true,
       email: true,
       phone: true,
-      startTime: true,
-      endTime: true,
+      date: true,
+      time: true,
       notes: true,
       createdAt: true,
       updatedAt: true,
@@ -71,8 +74,8 @@ export async function GET(request: Request) {
       name: b.name,
       email: b.email,
       phone: b.phone,
-      date: b.startTime.toISOString().split('T')[0],
-      time: b.startTime.toTimeString().slice(0, 5),
+      date: b.date.toISOString().split('T')[0],
+      time: b.time,
       notes: b.notes,
       createdAt: b.createdAt,
       updatedAt: b.updatedAt,
@@ -108,8 +111,8 @@ export async function POST(request: Request) {
       name: validated.name,
       email: validated.email,
       phone: validated.phone,
-      startTime,
-      endTime,
+      date: startTime,
+      time: validated.time,
       notes: validated.notes,
     }});
 
@@ -120,8 +123,8 @@ export async function POST(request: Request) {
         name: booking.name,
         email: booking.email,
         phone: booking.phone,
-        date: booking.startTime.toISOString().split('T')[0],
-        time: booking.startTime.toTimeString().slice(0, 5),
+        date: booking.date.toISOString().split('T')[0],
+        time: booking.time,
         notes: booking.notes,
         createdAt: booking.createdAt,
         updatedAt: booking.updatedAt,
