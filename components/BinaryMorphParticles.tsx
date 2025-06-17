@@ -129,7 +129,7 @@ function BinaryMorphParticlesBase({ startAnimation = false }: { startAnimation?:
     );
     geo.setAttribute(
       'aSize',
-      new THREE.InstancedBufferAttribute(Float32Array.from({ length: N }, () => 0.7 + Math.random() * 0.9), 1)
+      new THREE.InstancedBufferAttribute(Float32Array.from({ length: N }, () => 1.2 + Math.random() * 1.5), 1)
     );
     geo.setAttribute(
       'aDelay',
