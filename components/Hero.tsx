@@ -19,15 +19,21 @@ export default function Hero() {
   const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
   const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
   const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 || window.devicePixelRatio > 2 : false;
+  const isLowMemory = typeof window !== 'undefined' ? 
+    (window.navigator.hardwareConcurrency <= 2 || window.devicePixelRatio > 2) : false;
 
-  const PARTICLE_COUNT = prefersReducedMotion ? 0 : (isLowEnd ? (isMobile ? 5 : 10) : (isMobile ? 15 : 20));
-  const MAX_SIZE = isLowEnd ? 6 : 8;
+  const PARTICLE_COUNT = isLowMemory ? 50 : (isLowEnd ? 100 : (isMobile ? 150 : 200));
+  const MAX_SIZE = isLowMemory ? 2 : (isLowEnd ? 3 : (isMobile ? 4 : 5));
+
+  // Reduce animation complexity for low-end devices
+  const animationDuration = isLowMemory ? 0.2 : (isLowEnd ? 0.3 : 0.5);
+  const animationDelay = isLowMemory ? 0 : (isLowEnd ? 0.1 : 0.2);
 
   const particles = useMemo(() => Array.from({ length: PARTICLE_COUNT }), [PARTICLE_COUNT]);
 
   // Intersection Observer for fade-in effect
   useEffect(() => {
-    if (isLowEnd) {
+    if (isLowEnd || isLowMemory) {
       setIsVisible(true);
       return;
     }
@@ -47,28 +53,21 @@ export default function Hero() {
     }
 
     return () => observer.disconnect();
-  }, [isLowEnd]);
+  }, [isLowEnd, isLowMemory]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (isLowEnd) return; // Skip mouse move effects on low-end devices
+    if (isLowEnd || isLowMemory) return; // Skip mouse move effects on low-end devices
     const { clientX, clientY } = e;
     const x = (clientX / window.innerWidth - 0.5) * 20;
     const y = (clientY / window.innerHeight - 0.5) * 20;
     setMousePosition({ x, y });
-  }, [isLowEnd]);
+  }, [isLowEnd, isLowMemory]);
 
   useEffect(() => {
     setIsLoaded(true);
-    // Sequence timing:
-    // 1. Logo shows for 2 seconds
-    // 2. Logo fades out (500ms)
-    // 3. Content fades in (500ms)
-    // 4. Title appears (500ms)
-    // 5. Particles appear (500ms after title)
-    // 6. Illustration appears (1000ms after particles)
-    // 7. Metrics and CTAs appear (500ms after illustration)
-    // 8. Writing effect starts (500ms after metrics)
-    // 9. Show scroll indicator after all animations
+    // Reduce animation sequence timing for low-end devices
+    const baseDelay = isLowMemory ? 500 : (isLowEnd ? 750 : 1000);
+    
     const logoTimer = setTimeout(() => {
       setShowLogo(false);
       setTimeout(() => {
@@ -83,15 +82,15 @@ export default function Hero() {
                 setStartWriting(true);
                 setTimeout(() => {
                   setShowScrollIndicator(true);
-                }, 1000);
-              }, 500);
-            }, 500);
-          }, 1000);
-        }, 500);
-      }, 500);
-    }, 2000);
+                }, baseDelay);
+              }, baseDelay / 2);
+            }, baseDelay / 2);
+          }, baseDelay);
+        }, baseDelay / 2);
+      }, baseDelay / 2);
+    }, baseDelay);
     return () => clearTimeout(logoTimer);
-  }, []);
+  }, [isLowEnd, isLowMemory]);
 
   return (
     <section

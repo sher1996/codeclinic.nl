@@ -1,16 +1,32 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // skip ESLint errors in prod builds
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  // skip TypeScript errors in prod builds (if you ever hit TS errors)
-  typescript: {
-    ignoreBuildErrors: true,
+  reactStrictMode: true,
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
   },
   images: {
-    domains: ['localhost', 'calendly.com'],
+    domains: ['localhost'],
     unoptimized: process.env.NODE_ENV === 'development',
+  },
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ['lucide-react', '@heroicons/react'],
+  },
+  webpack: (config, { dev, isServer }) => {
+    // Optimize bundle size
+    if (!dev && !isServer) {
+      config.optimization.splitChunks.cacheGroups = {
+        ...config.optimization.splitChunks.cacheGroups,
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+          priority: 1,
+        },
+      };
+    }
+    return config;
   },
   async headers() {
     return [

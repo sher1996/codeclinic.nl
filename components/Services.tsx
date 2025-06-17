@@ -284,6 +284,11 @@ export default function Services() {
   const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
   const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
   const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 || window.devicePixelRatio > 2 : false;
+  const isLowMemory = typeof window !== 'undefined' ? 
+    (window.navigator.hardwareConcurrency <= 2 || window.devicePixelRatio > 2) : false;
+
+  // Reduce animation complexity for low-end devices
+  const animationDuration = isLowMemory ? 0.15 : (isLowEnd ? 0.2 : (isMobile ? 0.25 : 0.3));
 
   const [activeCategory, setActiveCategory] = useState('all');
   const { scrollYProgress } = useScroll();
@@ -391,16 +396,16 @@ export default function Services() {
           {/* Services Grid */}
           <div className="flex flex-wrap justify-center gap-6 relative pointer-events-none mt-8">
             <AnimatePresence mode="sync">
-              {filteredServices.map((service, index) => (
+              {filteredServices.map((service, serviceIndex) => (
                 <motion.div
                   key={service.key}
-                  layout={!isLowEnd && !prefersReducedMotion}
-                  initial={isLowEnd || prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
-                  animate={isLowEnd || prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                  exit={isLowEnd || prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -10 }}
+                  layout={!isLowEnd && !prefersReducedMotion && !isLowMemory}
+                  initial={isLowEnd || prefersReducedMotion || isLowMemory ? { opacity: 1 } : { opacity: 0, y: 10 }}
+                  animate={isLowEnd || prefersReducedMotion || isLowMemory ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                  exit={isLowEnd || prefersReducedMotion || isLowMemory ? { opacity: 0 } : { opacity: 0, y: -10 }}
                   transition={{ 
-                    duration: isLowEnd ? 0.2 : (isMobile ? 0.25 : 0.3),
-                    delay: isLowEnd ? 0 : (isMobile ? index * 0.01 : index * 0.02),
+                    duration: animationDuration,
+                    delay: isLowMemory ? 0 : (isLowEnd ? 0 : (isMobile ? serviceIndex * 0.01 : serviceIndex * 0.02)),
                     type: "tween",
                     ease: "easeOut"
                   }}
@@ -416,7 +421,7 @@ export default function Services() {
                     pointer-events-auto
                     focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-400
                     active:scale-[0.98]
-                    ${isLowEnd ? '' : 'hover:shadow-[0_0_20px_rgba(0,212,255,0.15)]'}
+                    ${isLowEnd || isLowMemory ? '' : 'hover:shadow-[0_0_20px_rgba(0,212,255,0.15)]'}
                   `}
                 >
                   <div className="flex flex-col items-center justify-between h-full w-full">

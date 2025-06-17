@@ -27,9 +27,14 @@ export default function BinaryMorphParticles({ startAnimation = false }: { start
     
     if (!canvas || !container) return;
 
-    const isLowEnd = window.navigator.hardwareConcurrency <= 4;
-    const isMobile = window.innerWidth < 768 || window.devicePixelRatio > 2;
-    const N = isMobile ? (isLowEnd ? 500 : 1000) : (isLowEnd ? 1000 : 2000);
+    const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
+    const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
+    const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 || window.devicePixelRatio > 2 : false;
+    const isLowMemory = typeof window !== 'undefined' ? 
+      (window.navigator.hardwareConcurrency <= 2 || window.devicePixelRatio > 2) : false;
+    
+    // Adjust particle count based on device capabilities
+    const N = isLowMemory ? 250 : (isLowEnd ? 500 : (isMobile ? 750 : 1000));
 
     const handlePointerMove = (e: PointerEvent) => {
       cursorRef.current.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -41,15 +46,22 @@ export default function BinaryMorphParticles({ startAnimation = false }: { start
     const renderer = new THREE.WebGLRenderer({ 
       canvas, 
       alpha: true, 
-      antialias: !isLowEnd,
-      powerPreference: 'high-performance'
+      antialias: !isLowEnd && !isLowMemory,
+      powerPreference: 'high-performance',
+      precision: isLowEnd || isLowMemory ? 'lowp' : 'highp'
     });
     rendererRef.current = renderer;
     
     const width = window.innerWidth;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, width <= 1080 ? (isLowEnd ? 1 : 1.5) : 2));
-    renderer.setSize(width, window.innerHeight, false);
-    
+    const pixelRatio = isLowMemory 
+      ? 1 
+      : Math.min(window.devicePixelRatio, width <= 1080 ? (isLowEnd ? 1 : 1.5) : 2);
+    renderer.setPixelRatio(pixelRatio);
+
+    // Reduce update frequency for low-end devices
+    const updateInterval = isLowEnd || isLowMemory ? 2 : 1;
+    let frameCount = 0;
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 10);
     camera.position.z = 4;
@@ -430,6 +442,14 @@ export default function BinaryMorphParticles({ startAnimation = false }: { start
     };
 
     const render = (t: number) => {
+      if (!isAnimatingRef.current) return;
+      
+      frameCount++;
+      if (frameCount % updateInterval !== 0) {
+        requestAnimationFrame(render);
+        return;
+      }
+
       updateQueenPosition(t);
       mat.uniforms.uTime.value = t / 1000;
       
