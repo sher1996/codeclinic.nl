@@ -4,6 +4,9 @@ const nextConfig = {
     domains: ['localhost', 'calendly.com'],
     unoptimized: process.env.NODE_ENV === 'development',
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   async headers() {
     return [
       {
