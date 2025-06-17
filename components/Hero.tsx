@@ -15,7 +15,9 @@ export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+  const [isParticlesVisible, setIsParticlesVisible] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
+  const particlesContainerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
   const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
   const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 || window.devicePixelRatio > 2 : false;
@@ -53,6 +55,19 @@ export default function Hero() {
 
     return () => observer.disconnect();
   }, [isLowEnd]);
+
+  // Intersection Observer for particles visibility
+  useEffect(() => {
+    if (!particlesContainerRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsParticlesVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(particlesContainerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (isLowEnd) return;
@@ -111,11 +126,13 @@ export default function Hero() {
       <div className="absolute inset-0 bg-black/30 mix-blend-overlay pointer-events-none"></div>
 
       {/* Binary Morph Particles with lazy loading */}
-      <div className={`absolute inset-0 z-10 transition-opacity duration-500 ${showParticles ? 'opacity-100' : 'opacity-0'}`}>
+      <div ref={particlesContainerRef} className={`absolute inset-0 z-10 transition-opacity duration-500 ${showParticles ? 'opacity-100' : 'opacity-0'}`}>
         <div className="absolute right-0 top-0 w-[40%] h-full">
-          <Suspense fallback={null}>
-            <BinaryMorphParticles startAnimation={showParticles} />
-          </Suspense>
+          {isParticlesVisible && (
+            <Suspense fallback={null}>
+              <BinaryMorphParticles startAnimation={showParticles} />
+            </Suspense>
+          )}
         </div>
       </div>
 
