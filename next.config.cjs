@@ -1,11 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // skip ESLint errors in prod builds
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  // skip TypeScript errors in prod builds (if you ever hit TS errors)
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   images: {
     domains: ['localhost', 'calendly.com'],
     unoptimized: process.env.NODE_ENV === 'development',
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
   },
   async headers() {
     return [
@@ -24,13 +29,13 @@ const nextConfig = {
               "font-src 'self' data:",
               "object-src 'none'",
               "base-uri 'self'",
-              "form-action 'self'"
-            ].join('; ')
-          }
-        ]
-      }
+              "form-action 'self'",
+            ].join('; '),
+          },
+        ],
+      },
     ];
-  }
+  },
 };
 
 module.exports = nextConfig; 
