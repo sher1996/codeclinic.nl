@@ -293,14 +293,20 @@ export default function Services() {
     : services.filter(service => service.category === activeCategory);
 
   return (
-    <div className="relative isolate overflow-hidden bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20 backdrop-blur-sm">
-      <div className="absolute inset-0 bg-black/30 mix-blend-overlay pointer-events-none"></div>
-      <div className="absolute inset-0 opacity-[0.015] mix-blend-soft-light pointer-events-none" style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        backgroundRepeat: 'repeat',
-        backgroundSize: '150px 150px'
-      }} aria-hidden="true" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/40 via-transparent to-transparent opacity-60 mix-blend-soft-light pointer-events-none" />
+    <div className={`relative isolate overflow-hidden ${isLowEnd ? 'bg-[#1F2C90]/20' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20 backdrop-blur-sm'}`}>
+      {!isLowEnd && (
+        <>
+          <div className="absolute inset-0 bg-black/30 mix-blend-overlay pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }}></div>
+          <div className="absolute inset-0 opacity-[0.015] mix-blend-soft-light pointer-events-none" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+            backgroundRepeat: 'repeat',
+            backgroundSize: '150px 150px',
+            willChange: 'transform',
+            transform: 'translateZ(0)'
+          }} aria-hidden="true" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/40 via-transparent to-transparent opacity-60 mix-blend-soft-light pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }} />
+        </>
+      )}
 
       {/* Lazy load PricingSchema */}
       <Suspense fallback={<div className="h-96 flex items-center justify-center">Loading...</div>}>
@@ -379,7 +385,7 @@ export default function Services() {
                       focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-400 pointer-events-auto
                       ${activeCategory === category.id 
                         ? 'bg-[#00b8e6] text-white shadow-lg' 
-                        : 'bg-white/10 backdrop-blur-md text-[#D8E0FF] hover:bg-white/20'}
+                        : isLowEnd ? 'bg-white/10 text-[#D8E0FF]' : 'bg-white/10 backdrop-blur-md text-[#D8E0FF] hover:bg-white/20'}
                       break-all xs:break-normal`}
                     aria-pressed={activeCategory === category.id}
                   >
@@ -410,7 +416,8 @@ export default function Services() {
                   aria-label={`${service.title} - ${service.description}`}
                   className={`
                     w-[280px]
-                    bg-white/10 backdrop-blur-sm rounded-xl p-4
+                    ${isLowEnd ? 'bg-white/10' : 'bg-white/10 backdrop-blur-sm'}
+                    rounded-xl p-4
                     flex flex-col items-center text-center
                     cursor-pointer transition-all duration-300
                     border border-white/10 shadow-lg hover:border-white/20
@@ -430,7 +437,7 @@ export default function Services() {
                         aria-hidden="true"
                         style={{ willChange: 'transform', transform: 'translateZ(0)' }}
                       >
-                        <div className="absolute inset-0 bg-[#00b8e6]/10 rounded-full blur-sm group-hover:bg-[#00b8e6]/20 transition-colors duration-300"></div>
+                        <div className={`absolute inset-0 ${isLowEnd ? 'bg-[#00b8e6]/10' : 'bg-[#00b8e6]/10 blur-sm'} rounded-full group-hover:bg-[#00b8e6]/20 transition-colors duration-300`}></div>
                         <div className="relative w-full h-full flex items-center justify-center text-[#00b8e6] transition-colors duration-300">
                           {React.cloneElement(service.icon, { 
                             className: "w-8 h-8 stroke-[1.5]",
@@ -450,7 +457,7 @@ export default function Services() {
           {/* Full-width bar */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-12">
             <div className="col-span-full lg:col-span-4">
-              <div className="relative bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-8" style={{ minHeight: '96px' }}>
+              <div className={`relative ${isLowEnd ? 'bg-white/10' : 'bg-white/10 backdrop-blur-md'} rounded-xl border border-white/20 p-6 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-8`} style={{ minHeight: '96px' }}>
                 <div className="flex items-center gap-4 sm:gap-8 w-full sm:w-auto">
                   <div className="w-12 h-12 flex items-center justify-center">
                     <Zap className="w-10 h-10 text-[#00b8e6]" />
