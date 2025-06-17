@@ -15,8 +15,12 @@ export default function DustParticles() {
   const [particles, setParticles] = useState<DustParticle[]>([]);
 
   useEffect(() => {
-    // Create 30 dust particles with random properties for better coverage
-    const newParticles = Array.from({ length: 30 }, (_, i) => ({
+    const isLowEnd = window.navigator.hardwareConcurrency <= 4;
+    const isMobile = window.innerWidth < 768 || window.devicePixelRatio > 2;
+    const particleCount = isLowEnd ? (isMobile ? 10 : 15) : (isMobile ? 20 : 30);
+    
+    // Create dust particles with random properties for better coverage
+    const newParticles = Array.from({ length: particleCount }, (_, i) => ({
       id: i,
       size: Math.random() * 3 + 1, // 1-4px
       // Exclude bottom-left corner (0-20% from left and 80-100% from top)

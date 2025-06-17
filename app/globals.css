@@ -1117,4 +1117,93 @@ header a:focus-visible {
   .error-overlay-content {
     animation: none;
   }
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimize animations for low-end devices */
+@media (max-width: 768px) {
+  .animate-float,
+  .animate-gradient-shift,
+  .animate-fadeInUp,
+  .animate-pulse,
+  .animate-shimmer,
+  .animate-scroll,
+  .animate-spin,
+  .animate-fadeIn,
+  .animate-fade-in,
+  .animate-fade-in-slow,
+  .animate-bounce {
+    animation-duration: 0.5s !important;
+  }
+}
+
+/* Optimize transitions */
+.transition-all {
+  transition-property: opacity, transform;
+  will-change: opacity, transform;
+}
+
+/* Optimize dust particles animation */
+.dust-particle {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize glass effect */
+.glass-effect {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize service cards */
+.service-card {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize hero section */
+.hero {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize scroll animations */
+.animate-scroll-chevron {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize loading states */
+.loading {
+  will-change: opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize hover effects */
+.btn-hover-effect {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize focus states */
+.focus\:ring-4:focus {
+  will-change: box-shadow;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 } 

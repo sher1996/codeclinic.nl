@@ -27,6 +27,10 @@ export default function BinaryMorphParticles({ startAnimation = false }: { start
     
     if (!canvas || !container) return;
 
+    const isLowEnd = window.navigator.hardwareConcurrency <= 4;
+    const isMobile = window.innerWidth < 768 || window.devicePixelRatio > 2;
+    const N = isMobile ? (isLowEnd ? 500 : 1000) : (isLowEnd ? 1000 : 2000);
+
     const handlePointerMove = (e: PointerEvent) => {
       cursorRef.current.x = (e.clientX / window.innerWidth) * 2 - 1;
       cursorRef.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
@@ -37,13 +41,13 @@ export default function BinaryMorphParticles({ startAnimation = false }: { start
     const renderer = new THREE.WebGLRenderer({ 
       canvas, 
       alpha: true, 
-      antialias: true,
+      antialias: !isLowEnd,
       powerPreference: 'high-performance'
     });
     rendererRef.current = renderer;
     
     const width = window.innerWidth;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, width <= 1080 ? 1.5 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, width <= 1080 ? (isLowEnd ? 1 : 1.5) : 2));
     renderer.setSize(width, window.innerHeight, false);
     
     const scene = new THREE.Scene();
@@ -53,8 +57,6 @@ export default function BinaryMorphParticles({ startAnimation = false }: { start
     camera.position.y = 1.5;
     camera.lookAt(-0.5, 0, 0);
 
-    const isMobile = window.innerWidth < 768 || window.devicePixelRatio > 2;
-    const N = isMobile ? 1000 : 2000;
     const quadGeo = new THREE.PlaneGeometry(0.002, 0.002);
     const geo = new THREE.InstancedBufferGeometry();
     geo.index = quadGeo.index;
@@ -457,7 +459,7 @@ export default function BinaryMorphParticles({ startAnimation = false }: { start
       lastH = height;
       
       renderer.setSize(width, height, false);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, width <= 1080 ? 1.5 : 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, width <= 1080 ? (isLowEnd ? 1 : 1.5) : 2));
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
     };

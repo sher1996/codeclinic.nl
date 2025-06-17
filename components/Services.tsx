@@ -281,6 +281,10 @@ function ScrollCue() {
 }
 
 export default function Services() {
+  const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
+  const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 || window.devicePixelRatio > 2 : false;
+
   const [activeCategory, setActiveCategory] = useState('all');
   const { scrollYProgress } = useScroll();
 
@@ -390,20 +394,20 @@ export default function Services() {
               {filteredServices.map((service, index) => (
                 <motion.div
                   key={service.key}
-                  layout
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
+                  layout={!isLowEnd && !prefersReducedMotion}
+                  initial={isLowEnd || prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
+                  animate={isLowEnd || prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                  exit={isLowEnd || prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -10 }}
                   transition={{ 
-                    duration: 0.3,
-                    delay: index * 0.02,
+                    duration: isLowEnd ? 0.2 : (isMobile ? 0.25 : 0.3),
+                    delay: isLowEnd ? 0 : (isMobile ? index * 0.01 : index * 0.02),
                     type: "tween",
                     ease: "easeOut"
                   }}
                   role="button"
                   tabIndex={0}
                   aria-label={`${service.title} - ${service.description}`}
-                  className="
+                  className={`
                     w-[280px]
                     bg-white/10 backdrop-blur-sm rounded-xl p-4
                     flex flex-col items-center text-center
@@ -412,8 +416,8 @@ export default function Services() {
                     pointer-events-auto
                     focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-400
                     active:scale-[0.98]
-                    hover:shadow-[0_0_20px_rgba(0,212,255,0.15)]
-                  "
+                    ${isLowEnd ? '' : 'hover:shadow-[0_0_20px_rgba(0,212,255,0.15)]'}
+                  `}
                 >
                   <div className="flex flex-col items-center justify-between h-full w-full">
                     <div className="flex flex-col items-center">

@@ -17,14 +17,21 @@ export default function Hero() {
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
+  const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 || window.devicePixelRatio > 2 : false;
 
-  const PARTICLE_COUNT = prefersReducedMotion ? 0 : 20;
-  const MAX_SIZE = 8;
+  const PARTICLE_COUNT = prefersReducedMotion ? 0 : (isLowEnd ? (isMobile ? 5 : 10) : (isMobile ? 15 : 20));
+  const MAX_SIZE = isLowEnd ? 6 : 8;
 
   const particles = useMemo(() => Array.from({ length: PARTICLE_COUNT }), [PARTICLE_COUNT]);
 
   // Intersection Observer for fade-in effect
   useEffect(() => {
+    if (isLowEnd) {
+      setIsVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -40,14 +47,15 @@ export default function Hero() {
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [isLowEnd]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (isLowEnd) return; // Skip mouse move effects on low-end devices
     const { clientX, clientY } = e;
     const x = (clientX / window.innerWidth - 0.5) * 20;
     const y = (clientY / window.innerHeight - 0.5) * 20;
     setMousePosition({ x, y });
-  }, []);
+  }, [isLowEnd]);
 
   useEffect(() => {
     setIsLoaded(true);
