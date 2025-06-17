@@ -32,7 +32,8 @@ export default function DustParticles() {
     if (!isVisible) return;
     const isLowEnd = window.navigator.hardwareConcurrency <= 4;
     const isMobile = window.innerWidth < 768 || window.devicePixelRatio > 2;
-    const particleCount = isLowEnd ? (isMobile ? 10 : 15) : (isMobile ? 20 : 30);
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const particleCount = (isLowEnd || prefersReducedMotion) ? 0 : (isMobile ? 20 : 30);
     
     // Create dust particles with random properties for better coverage
     const newParticles = Array.from({ length: particleCount }, (_, i) => ({

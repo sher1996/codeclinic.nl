@@ -24,7 +24,7 @@ export default function Hero() {
 
   const PARTICLE_COUNT = useMemo(() => {
     if (prefersReducedMotion) return 0;
-    if (isLowEnd) return isMobile ? 3 : 5;
+    if (isLowEnd) return 0;
     return isMobile ? 10 : 15;
   }, [prefersReducedMotion, isLowEnd, isMobile]);
 
@@ -128,7 +128,7 @@ export default function Hero() {
       {/* Binary Morph Particles with lazy loading */}
       <div ref={particlesContainerRef} className={`absolute inset-0 z-10 transition-opacity duration-500 ${showParticles ? 'opacity-100' : 'opacity-0'}`}>
         <div className="absolute right-0 top-0 w-[40%] h-full">
-          {isParticlesVisible && (
+          {isParticlesVisible && !isLowEnd && !prefersReducedMotion && (
             <Suspense fallback={null}>
               <BinaryMorphParticles startAnimation={showParticles} />
             </Suspense>
