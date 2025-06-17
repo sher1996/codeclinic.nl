@@ -4,10 +4,8 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import gsap from 'gsap';
-import dynamic from 'next/dynamic'
 
-// Create the base component
-function BinaryMorphParticlesBase({ startAnimation = false }: { startAnimation?: boolean }) {
+export default function BinaryMorphParticles({ startAnimation = false }: { startAnimation?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const queenPositionRef = useRef({ x: -1.2, y: 0.375 });
@@ -57,7 +55,7 @@ function BinaryMorphParticlesBase({ startAnimation = false }: { startAnimation?:
 
     const isMobile = window.innerWidth < 768 || window.devicePixelRatio > 2;
     const N = isMobile ? 1000 : 2000;
-    const quadGeo = new THREE.PlaneGeometry(0.001, 0.001);
+    const quadGeo = new THREE.PlaneGeometry(0.002, 0.002);
     const geo = new THREE.InstancedBufferGeometry();
     geo.index = quadGeo.index;
     geo.attributes.position = quadGeo.attributes.position;
@@ -72,9 +70,9 @@ function BinaryMorphParticlesBase({ startAnimation = false }: { startAnimation?:
       const isEdgeInit = new Array(count);
       const delays = new Array(count);
 
-      const lineWidth = 2.0;
-      const lineHeight = 0.03;
-      const xOffset = -0.6;
+      const lineWidth = 0.8;
+      const lineHeight = 0.02;
+      const xOffset = -0.25;
 
       const leftMostX = -lineWidth / 2 + xOffset;
       const rightMostX = lineWidth / 2 + xOffset;
@@ -129,7 +127,7 @@ function BinaryMorphParticlesBase({ startAnimation = false }: { startAnimation?:
     );
     geo.setAttribute(
       'aSize',
-      new THREE.InstancedBufferAttribute(Float32Array.from({ length: N }, () => 1.2 + Math.random() * 1.5), 1)
+      new THREE.InstancedBufferAttribute(Float32Array.from({ length: N }, () => 1.2 + Math.random() * 1.2), 1)
     );
     geo.setAttribute(
       'aDelay',
@@ -352,13 +350,13 @@ function BinaryMorphParticlesBase({ startAnimation = false }: { startAnimation?:
 
       void main() {
         float dist = length(vUv - vec2(0.5));
-        float glow = pow(smoothstep(0.35, 0.0, dist), 1.5);
-        float core = smoothstep(0.12, 0.0, dist);
-        float twinkle = 0.7 + 0.3 * sin(vAlpha * 12.0 + vUv.x * 20.0 + vUv.y * 20.0 + vAlpha * 100.0);
+        float glow = pow(smoothstep(0.4, 0.0, dist), 1.0);
+        float core = smoothstep(0.2, 0.0, dist);
+        float twinkle = 0.9 + 0.1 * sin(vAlpha * 12.0 + vUv.x * 20.0 + vUv.y * 20.0 + vAlpha * 100.0);
         
         float hue = 0.55 + 0.1 * sin(vAlpha * 20.0 + vUv.x * 10.0);
-        float sat = 0.7 + 0.2 * cos(vAlpha * 15.0 + vUv.y * 10.0);
-        float val = 1.0;
+        float sat = 0.9 + 0.1 * cos(vAlpha * 15.0 + vUv.y * 10.0);
+        float val = 1.2;
         
         float c = val * sat;
         float x = c * (1.0 - abs(mod(hue * 6.0, 2.0) - 1.0));
@@ -378,11 +376,11 @@ function BinaryMorphParticlesBase({ startAnimation = false }: { startAnimation?:
           color = vec3(1.0, 0.0, 1.0);
           alpha = 0.0;
         } else if (vIsEdge > 0.5) {
-          color = mix(vec3(0.0, 0.8, 1.0), rgb, 0.3) * (core + 0.7 * glow);
-          alpha = vAlpha * 0.95 * (glow + 0.5 * core) * twinkle;
+          color = mix(vec3(0.0, 0.9, 1.0), rgb, 0.5) * (core + 0.9 * glow);
+          alpha = vAlpha * 1.0 * (glow + 0.7 * core) * twinkle;
         } else {
-          color = mix(vec3(1.0, 1.0, 1.0), rgb, 0.5) * (core + 0.7 * glow);
-          alpha = vAlpha * 0.85 * (glow + 0.7 * core) * twinkle;
+          color = mix(vec3(1.0, 1.0, 1.0), rgb, 0.7) * (core + 0.9 * glow);
+          alpha = vAlpha * 1.0 * (glow + 0.9 * core) * twinkle;
         }
         outColor = vec4(color, alpha);
       }
@@ -498,16 +496,4 @@ function BinaryMorphParticlesBase({ startAnimation = false }: { startAnimation?:
       </button>
     </div>
   );
-}
-
-// Create the dynamic component
-const BinaryMorphParticles = dynamic(() => Promise.resolve(BinaryMorphParticlesBase), {
-  loading: () => (
-    <div className="w-full h-[400px] flex items-center justify-center">
-      <div className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg w-full h-full"></div>
-    </div>
-  ),
-  ssr: false // Disable server-side rendering for this component
-})
-
-export default BinaryMorphParticles 
+} 
