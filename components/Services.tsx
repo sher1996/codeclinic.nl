@@ -5,6 +5,7 @@ import React from 'react';
 import { Disclosure } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import PricingSchema from './PricingSchema';
+import dynamic from 'next/dynamic'
 
 // Service card styles
 const serviceCardStyles = `
@@ -280,7 +281,8 @@ function ScrollCue() {
   );
 }
 
-export default function Services() {
+// Create the base component
+function ServicesBase() {
   const [activeCategory, setActiveCategory] = useState('all');
   const { scrollYProgress } = useScroll();
 
@@ -654,4 +656,16 @@ export default function Services() {
       <AccessibilityMenu />
     </div>
   );
-} 
+}
+
+// Create the dynamic component
+const Services = dynamic(() => Promise.resolve(ServicesBase), {
+  loading: () => (
+    <div className="w-full min-h-[400px] flex items-center justify-center">
+      <div className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg w-full h-full"></div>
+    </div>
+  ),
+  ssr: true // Enable SSR for this component since it's likely important for SEO
+})
+
+export default Services 

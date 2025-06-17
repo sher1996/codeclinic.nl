@@ -4,8 +4,10 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import gsap from 'gsap';
+import dynamic from 'next/dynamic'
 
-export default function BinaryMorphParticles({ startAnimation = false }: { startAnimation?: boolean }) {
+// Create the base component
+function BinaryMorphParticlesBase({ startAnimation = false }: { startAnimation?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const queenPositionRef = useRef({ x: -1.2, y: 0.375 });
@@ -496,4 +498,16 @@ export default function BinaryMorphParticles({ startAnimation = false }: { start
       </button>
     </div>
   );
-} 
+}
+
+// Create the dynamic component
+const BinaryMorphParticles = dynamic(() => Promise.resolve(BinaryMorphParticlesBase), {
+  loading: () => (
+    <div className="w-full h-[400px] flex items-center justify-center">
+      <div className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg w-full h-full"></div>
+    </div>
+  ),
+  ssr: false // Disable server-side rendering for this component
+})
+
+export default BinaryMorphParticles 

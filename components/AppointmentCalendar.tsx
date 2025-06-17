@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import dynamic from 'next/dynamic'
 
 type SubmitStatus = {
   ok: boolean;
@@ -538,4 +539,13 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({ onDateSelect 
   );
 };
 
-export default AppointmentCalendar; 
+const AppointmentCalendarDynamic = dynamic(() => Promise.resolve(AppointmentCalendar), {
+  loading: () => (
+    <div className="w-full h-[600px] flex items-center justify-center">
+      <div className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg w-full h-full"></div>
+    </div>
+  ),
+  ssr: false // Disable server-side rendering for this component
+})
+
+export default AppointmentCalendarDynamic 
