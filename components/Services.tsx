@@ -397,15 +397,13 @@ export default function Services() {
               {filteredServices.map((service, index) => (
                 <motion.div
                   key={service.key}
-                  layout={!isLowEnd && !prefersReducedMotion}
-                  initial={isLowEnd || prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
-                  animate={isLowEnd || prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                  exit={isLowEnd || prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -10 }}
+                  layout={false}
+                  initial={isLowEnd || prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   transition={{ 
-                    duration: isLowEnd ? 0.2 : (isMobile ? 0.25 : 0.3),
-                    delay: isLowEnd ? 0 : (isMobile ? index * 0.01 : index * 0.02),
-                    type: "tween",
-                    ease: "easeOut"
+                    duration: 0.2,
+                    type: "tween"
                   }}
                   role="button"
                   tabIndex={0}
@@ -421,14 +419,16 @@ export default function Services() {
                     active:scale-[0.98]
                     ${isLowEnd ? '' : 'hover:shadow-[0_0_20px_rgba(0,212,255,0.15)]'}
                   `}
+                  style={{ willChange: 'transform, opacity', transform: 'translateZ(0)' }}
                 >
                   <div className="flex flex-col items-center justify-between h-full w-full">
                     <div className="flex flex-col items-center">
                       <motion.div 
                         className="relative w-12 h-12 mb-3"
-                        whileHover={{ scale: 1.1 }}
+                        whileHover={isLowEnd ? {} : { scale: 1.1 }}
                         transition={{ type: "spring", stiffness: 400, damping: 10 }}
                         aria-hidden="true"
+                        style={{ willChange: 'transform', transform: 'translateZ(0)' }}
                       >
                         <div className="absolute inset-0 bg-[#00b8e6]/10 rounded-full blur-sm group-hover:bg-[#00b8e6]/20 transition-colors duration-300"></div>
                         <div className="relative w-full h-full flex items-center justify-center text-[#00b8e6] transition-colors duration-300">
