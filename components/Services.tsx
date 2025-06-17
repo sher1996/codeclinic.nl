@@ -1,8 +1,17 @@
-import { Computer, Home, Zap, Shield, Wifi, Mail, Smartphone, Database, Lock, Video, CreditCard, Play, Image, Printer, RefreshCw, Accessibility, ChevronRight, ChevronDown } from 'lucide-react';
-import { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Computer, Home, Zap, Download, X, Shield, Wifi, Mail, Smartphone, Database, Lock, Video, CreditCard, Play, Image, Printer, RefreshCw, Accessibility, Plus, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState, useRef, useEffect, useLayoutEffect, lazy, Suspense, useMemo, useCallback } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import React from 'react';
-import PricingSchema from './PricingSchema';
+import { Disclosure } from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+const PricingSchema = lazy(() => import('./PricingSchema'));
+
+// Service card styles
+const serviceCardStyles = `
+  .service-card {
+    @apply w-full max-w-[280px];
+  }
+`;
 
 const categories = [
   { id: 'all', label: 'Alle diensten', shortLabel: 'Alle' },
@@ -127,20 +136,41 @@ const services = [
   }
 ];
 
+function useKeepCentered(targetRef: React.RefObject<HTMLElement | null>, active: boolean) {
+  const observerRef = useRef<ResizeObserver | null>(null);
+
+  useLayoutEffect(() => {
+    if (!active || !targetRef.current) return;
+
+    const el = targetRef.current;
+    const centre = () => {
+      el.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center',
+        inline: 'center'
+      });
+    };
+    centre();
+    observerRef.current = new ResizeObserver(() => centre());
+    observerRef.current.observe(el);
+    return () => observerRef.current?.disconnect();
+  }, [active, targetRef]);
+}
+
 function ServiceCard() {
   const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({
     'remote': false,
     'aan-huis': false
   });
 
-  const toggleCard = (key: string) => {
+  const toggleCard = useCallback((key: string) => {
     setExpandedCards(prev => ({
       ...prev,
       [key]: !prev[key]
     }));
-  };
+  }, []);
 
-  const serviceCards = [
+  const serviceCards = useMemo(() => [
     {
       key: 'remote',
       title: 'Remote Hulp',
@@ -167,7 +197,7 @@ function ServiceCard() {
       ],
       fallback: 'Kosten: vanaf €49 plus eventuele hardware-onderdelen'
     }
-  ];
+  ], []);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -220,7 +250,7 @@ function ServiceCard() {
                   </li>
                 ))}
               </ol>
-              <div className="mt-6 text-sm text-white/60" dangerouslySetInnerHTML={{ __html: card.fallback }} />
+              <p className="mt-6 text-white/60 text-sm" dangerouslySetInnerHTML={{ __html: card.fallback }} />
             </div>
           </div>
         </div>
@@ -251,25 +281,19 @@ function ScrollCue() {
 }
 
 export default function Services() {
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({});
-  const containerRef = useRef<HTMLDivElement>(null);
-
   const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
   const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
   const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 || window.devicePixelRatio > 2 : false;
-  const isLowMemory = typeof window !== 'undefined' ? 
-    (window.navigator.hardwareConcurrency <= 2 || window.devicePixelRatio > 2) : false;
 
-  // Reduce animation complexity for low-end devices
-  const animationDuration = isLowMemory ? 0.15 : (isLowEnd ? 0.2 : (isMobile ? 0.25 : 0.3));
+  const [activeCategory, setActiveCategory] = useState('all');
+  const { scrollYProgress } = useScroll();
 
-  const filteredServices = services.filter(service => 
-    activeCategory === 'all' || service.category === activeCategory
-  );
+  const filteredServices = activeCategory === 'all' 
+    ? services 
+    : services.filter(service => service.category === activeCategory);
 
   return (
-    <div ref={containerRef} className="relative py-24 sm:py-32">
+    <div className="relative isolate overflow-hidden bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20 backdrop-blur-sm">
       <div className="absolute inset-0 bg-black/30 mix-blend-overlay pointer-events-none"></div>
       <div className="absolute inset-0 opacity-[0.015] mix-blend-soft-light pointer-events-none" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
@@ -278,7 +302,10 @@ export default function Services() {
       }} aria-hidden="true" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/40 via-transparent to-transparent opacity-60 mix-blend-soft-light pointer-events-none" />
 
-      <PricingSchema />
+      {/* Lazy load PricingSchema */}
+      <Suspense fallback={<div className="h-96 flex items-center justify-center">Loading...</div>}>
+        <PricingSchema />
+      </Suspense>
 
       {/* Main Services Section */}
       <motion.section
@@ -367,16 +394,16 @@ export default function Services() {
           {/* Services Grid */}
           <div className="flex flex-wrap justify-center gap-6 relative pointer-events-none mt-8">
             <AnimatePresence mode="sync">
-              {filteredServices.map((service, serviceIndex) => (
+              {filteredServices.map((service, index) => (
                 <motion.div
                   key={service.key}
-                  layout={!isLowEnd && !prefersReducedMotion && !isLowMemory}
-                  initial={isLowEnd || prefersReducedMotion || isLowMemory ? { opacity: 1 } : { opacity: 0, y: 10 }}
-                  animate={isLowEnd || prefersReducedMotion || isLowMemory ? { opacity: 1 } : { opacity: 1, y: 0 }}
-                  exit={isLowEnd || prefersReducedMotion || isLowMemory ? { opacity: 0 } : { opacity: 0, y: -10 }}
+                  layout={!isLowEnd && !prefersReducedMotion}
+                  initial={isLowEnd || prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
+                  animate={isLowEnd || prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                  exit={isLowEnd || prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -10 }}
                   transition={{ 
-                    duration: animationDuration,
-                    delay: isLowMemory ? 0 : (isLowEnd ? 0 : (isMobile ? serviceIndex * 0.01 : serviceIndex * 0.02)),
+                    duration: isLowEnd ? 0.2 : (isMobile ? 0.25 : 0.3),
+                    delay: isLowEnd ? 0 : (isMobile ? index * 0.01 : index * 0.02),
                     type: "tween",
                     ease: "easeOut"
                   }}
@@ -392,7 +419,7 @@ export default function Services() {
                     pointer-events-auto
                     focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-400
                     active:scale-[0.98]
-                    ${isLowEnd || isLowMemory ? '' : 'hover:shadow-[0_0_20px_rgba(0,212,255,0.15)]'}
+                    ${isLowEnd ? '' : 'hover:shadow-[0_0_20px_rgba(0,212,255,0.15)]'}
                   `}
                 >
                   <div className="flex flex-col items-center justify-between h-full w-full">
