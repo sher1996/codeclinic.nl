@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import AppointmentCalendar from './AppointmentCalendar';
+import { DynamicAppointmentCalendar } from './dynamic-imports';
 
 export default function Contact() {
   return (
@@ -37,7 +37,7 @@ export default function Contact() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="max-w-4xl mx-auto"
           >
-            <AppointmentCalendar />
+            <DynamicAppointmentCalendar />
           </motion.div>
         </div>
       </div>
