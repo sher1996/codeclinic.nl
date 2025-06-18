@@ -8,6 +8,7 @@ interface Particle {
   size: number;
   speedX: number;
   speedY: number;
+  opacity: number;
 }
 
 export default function ParticlesBackground() {
@@ -33,15 +34,16 @@ export default function ParticlesBackground() {
     // Create particles
     const createParticles = () => {
       const particles: Particle[] = [];
-      const particleCount = Math.min(30, Math.floor(window.innerWidth * window.innerHeight / 20000)); // Adaptive particle count
+      const particleCount = Math.min(50, Math.floor(window.innerWidth * window.innerHeight / 15000)); // More particles
 
       for (let i = 0; i < particleCount; i++) {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          size: Math.random() * 2 + 1, // Smaller particles
-          speedX: (Math.random() - 0.5) * 0.5, // Slower movement
-          speedY: (Math.random() - 0.5) * 0.5
+          size: Math.random() * 3 + 1, // Slightly larger particles
+          speedX: (Math.random() - 0.5) * 0.8, // Faster movement
+          speedY: (Math.random() - 0.5) * 0.8,
+          opacity: Math.random() * 0.3 + 0.1 // Varied opacity
         });
       }
       return particles;
@@ -67,10 +69,19 @@ export default function ParticlesBackground() {
         if (particle.y < 0) particle.y = canvas.height;
         if (particle.y > canvas.height) particle.y = 0;
 
-        // Draw particle
+        // Draw particle with glow effect
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        
+        // Create gradient for glow effect
+        const gradient = ctx.createRadialGradient(
+          particle.x, particle.y, 0,
+          particle.x, particle.y, particle.size * 2
+        );
+        gradient.addColorStop(0, `rgba(255, 255, 255, ${particle.opacity})`);
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        
+        ctx.fillStyle = gradient;
         ctx.fill();
       });
 
