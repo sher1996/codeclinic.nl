@@ -1,19 +1,6 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 
-// BinaryMorphParticles with loading fallback
-export const DynamicBinaryMorphParticles = dynamic(
-  () => import('./BinaryMorphParticles'),
-  {
-    loading: () => (
-      <div className="w-full h-full min-h-[400px] flex items-center justify-center">
-        <div className="animate-pulse bg-gray-200/10 rounded-lg w-full h-full" />
-      </div>
-    ),
-    ssr: false // Disable server-side rendering for Three.js component
-  }
-);
-
 // AppointmentCalendar with loading fallback
 export const DynamicAppointmentCalendar = dynamic(
   () => import('./AppointmentCalendar'),

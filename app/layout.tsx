@@ -4,8 +4,6 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
 import ContrastTest from '@/components/ContrastTest';
-import ParticlesBackground from '@/components/ParticlesBackground';
-import KetchScript from '@/components/KetchScript';
 import ErrorOverlay from '@/components/ErrorOverlay';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -52,13 +50,6 @@ export default function RootLayout({
           }}
           aria-hidden="true"
         />
-        
-        {/* Particles */}
-        {typeof window !== 'undefined' && window.navigator.hardwareConcurrency > 4 && (
-          <div className="fixed inset-0 z-0">
-            <ParticlesBackground />
-          </div>
-        )}
 
         {/* Global scrim layer for consistent contrast */}
         <div 

@@ -6,13 +6,6 @@ import { Disclosure } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 const PricingSchema = lazy(() => import('./PricingSchema'));
 
-// Service card styles
-const serviceCardStyles = `
-  .service-card {
-    @apply w-full max-w-[280px];
-  }
-`;
-
 const categories = [
   { id: 'all', label: 'Alle diensten', shortLabel: 'Alle' },
   { id: 'security', label: 'Beveiliging', shortLabel: 'Beveiliging' },
@@ -313,21 +306,74 @@ export default function Services() {
         <PricingSchema />
       </Suspense>
 
-      {/* Main Services Section */}
-      <div className="relative py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-base font-semibold leading-7 text-[#00b8e6]">Onze Diensten</h2>
-            <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Professionele Computerhulp
-            </p>
-            <p className="mt-6 text-lg leading-8 text-gray-300">
-              Wij bieden een breed scala aan diensten om uw computerproblemen op te lossen.
-            </p>
+      {/* Hulp Die Bij U Past Section */}
+      <motion.section
+        id="services"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="relative py-36 sm:py-40"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
+            <div className="col-span-1 md:col-span-12 mb-12">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6 }}
+                className="text-center"
+              >
+                <h3 className="text-[3.5rem] font-black tracking-tight leading-[1.1] text-[#FFFFFF] mb-6">
+                  Hulp Die Bij U Past
+                </h3>
+                <p className="text-xl text-[#D8E0FF] max-w-2xl mx-auto">
+                  Kies de manier van hulp die het beste bij u past
+                </p>
+              </motion.div>
+            </div>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <ServiceCard />
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Onze Diensten Section */}
+      <motion.section
+        id="diensten"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="relative py-36 sm:py-40"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
+            <div className="col-span-1 md:col-span-12 mb-12">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6 }}
+                className="text-center"
+              >
+                <h3 className="text-[3.5rem] font-black tracking-tight leading-[1.1] text-[#FFFFFF] mb-6">
+                  Onze Diensten
+                </h3>
+                <p className="text-xl text-[#D8E0FF] max-w-2xl mx-auto">
+                  Wij bieden een breed scala aan diensten om uw computerproblemen op te lossen.
+                </p>
+              </motion.div>
+            </div>
           </div>
 
           {/* Filter Bar */}
-          <div id="filter-bar" className="sticky top-0 z-50 py-4 -mx-4 px-4 sm:mx-0 sm:px-0 pointer-events-none">
+          <div id="filter-bar" className="sticky top-0 z-50 py-4 -mx-4 px-4 sm:mx-0 sm:px-0 pointer-events-none mb-16">
             <div className="max-w-7xl mx-auto">
               <div className="flex flex-wrap gap-2 sm:gap-3 pb-2 sm:pb-0 sm:justify-center">
                 {categories.map((category) => (
@@ -353,7 +399,7 @@ export default function Services() {
           </div>
 
           {/* Services Grid */}
-          <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             <AnimatePresence mode="sync">
               {filteredServices.map((service, index) => (
                 <motion.div
@@ -411,59 +457,24 @@ export default function Services() {
               ))}
             </AnimatePresence>
           </div>
-        </div>
-      </div>
 
-      {/* Diensten Section */}
-      <motion.section
-        id="diensten"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8 }}
-        className="relative py-36 sm:py-40 pb-64"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
-            <div className="col-span-1 md:col-span-12 mb-12">
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6 }}
-                className="text-center"
-              >
-                <h3 className="text-[3.5rem] font-black tracking-tight leading-[1.1] text-[#FFFFFF] mb-6">
-                  Diensten
-                </h3>
-                <p className="text-xl text-[#D8E0FF] max-w-2xl mx-auto">
-                  Bekijk ons complete aanbod van digitale ondersteuning
-                </p>
-              </motion.div>
-            </div>
-          </div>
-
-          {/* Full-width bar */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-12">
-            <div className="col-span-full lg:col-span-4">
-              <div className={`relative ${isLowEnd ? 'bg-white/10' : 'bg-white/10 backdrop-blur-md'} rounded-xl border border-white/20 p-6 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-8`} style={{ minHeight: '96px' }}>
-                <div className="flex items-center gap-4 sm:gap-8 w-full sm:w-auto">
-                  <div className="w-12 h-12 flex items-center justify-center">
-                    <Zap className="w-10 h-10 text-[#00b8e6]" />
-                  </div>
-                  <div className="text-center sm:text-left">
-                    <h3 className="text-lg font-semibold text-white mb-1">En nog veel meer</h3>
-                    <p className="text-sm text-white/80">Persoonlijke digitale ondersteuning voor álles waar u hulp bij nodig hebt!</p>
-                  </div>
+          {/* Additional Info Bar */}
+          <div className="mt-16">
+            <div className={`relative ${isLowEnd ? 'bg-white/10' : 'bg-white/10 backdrop-blur-md'} rounded-xl border border-white/20 p-6 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-8`} style={{ minHeight: '96px' }}>
+              <div className="flex items-center gap-4 sm:gap-8 w-full sm:w-auto">
+                <div className="w-12 h-12 flex items-center justify-center">
+                  <Zap className="w-10 h-10 text-[#00b8e6]" />
                 </div>
-                <button className="bg-[#00b8e6] text-white font-medium px-4 py-2 rounded-full flex items-center gap-2 mt-2 sm:mt-0">
-                  Vraag maatwerk aan <ChevronRight className="w-4 h-4 inline" />
-                </button>
+                <div className="text-center sm:text-left">
+                  <h3 className="text-lg font-semibold text-white mb-1">En nog veel meer</h3>
+                  <p className="text-sm text-white/80">Persoonlijke digitale ondersteuning voor álles waar u hulp bij nodig hebt!</p>
+                </div>
               </div>
+              <button className="bg-[#00b8e6] text-white font-medium px-4 py-2 rounded-full flex items-center gap-2 mt-2 sm:mt-0">
+                Vraag maatwerk aan <ChevronRight className="w-4 h-4 inline" />
+              </button>
             </div>
           </div>
-          <ScrollCue />
         </div>
       </motion.section>
 
@@ -475,9 +486,18 @@ export default function Services() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
             <div className="col-span-1 md:col-span-12 mb-24">
-              <div className="text-center">
-                <h3 className="text-[4.5rem] font-black tracking-tight leading-[1.1] text-center text-[#FFFFFF]">Tarieven</h3>
-              </div>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6 }}
+                className="text-center"
+              >
+                <h3 className="text-[4.5rem] font-black tracking-tight leading-[1.1] text-center text-[#FFFFFF] mb-6">Tarieven</h3>
+                <p className="text-xl text-[#D8E0FF] max-w-2xl mx-auto">
+                  Transparante prijzen voor alle computerhulp diensten
+                </p>
+              </motion.div>
             </div>
             
             {/* Remote Support Pricing */}

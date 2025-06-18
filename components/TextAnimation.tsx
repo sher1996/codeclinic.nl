@@ -26,6 +26,9 @@ export default function TextAnimation({ className = '', startWriting = false }: 
   useEffect(() => {
     if (startWriting && !isTyping) {
       setIsTyping(true);
+      setDisplayText(''); // Reset text when starting
+      setCurrentIndex(0); // Reset to first text
+      setOpacity(1); // Reset opacity
     }
   }, [startWriting, isTyping]);
 
@@ -35,6 +38,8 @@ export default function TextAnimation({ className = '', startWriting = false }: 
       setDisplayText(texts[0]);
       return;
     }
+
+    if (!isTyping) return; // Don't start animation if not typing
 
     // Original smooth typing animation for high-end devices
     const animate = (timestamp: number) => {
@@ -53,7 +58,7 @@ export default function TextAnimation({ className = '', startWriting = false }: 
         }
       } else {
         // Smoother typing with consistent timing
-        const typingSpeed = 30; // Fixed speed for more consistent animation
+        const typingSpeed = 50; // Slightly slower for better readability
         if (elapsed >= typingSpeed) {
           setDisplayText((prev) => texts[currentIndex].slice(0, prev.length + 1));
           lastTimeRef.current = timestamp;
@@ -70,7 +75,7 @@ export default function TextAnimation({ className = '', startWriting = false }: 
         cancelAnimationFrame(frameRef.current);
       }
     };
-  }, [displayText, currentIndex, texts, isLowEnd, prefersReducedMotion]);
+  }, [displayText, currentIndex, texts, isLowEnd, prefersReducedMotion, isTyping]);
 
   return (
     <div className={`relative ${className}`}>
@@ -78,7 +83,7 @@ export default function TextAnimation({ className = '', startWriting = false }: 
         Expert computerhulp
       </h1>
       <p 
-        className={`text-lg leading-[1.6] text-white/90 max-w-[45ch] mb-12 min-h-[3em] transition-opacity duration-500 ease-in-out ${isLowEnd ? '' : 'animate-typing'}`}
+        className="text-lg leading-[1.6] text-white/90 max-w-[45ch] mb-12 min-h-[3em] transition-opacity duration-500 ease-in-out"
         style={{ 
           opacity,
           transition: isLowEnd ? 'none' : 'opacity 0.3s ease-in-out'
