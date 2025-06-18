@@ -167,16 +167,7 @@ export default function Hero() {
       )}
 
       {/* Logo and writing */}
-      {isLowEnd ? (
-        <div className="flex flex-col items-start justify-start z-30 mb-8">
-          <img 
-            src="/logo-cc.png" 
-            alt="CodeClinic Logo" 
-            className="w-32 h-32 object-contain mb-2"
-          />
-          <h1 className="text-2xl font-bold text-white">codeclinic.nl</h1>
-        </div>
-      ) : (
+      {!isLowEnd && (
         <div 
           className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-500 z-30
             ${showLogo ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
