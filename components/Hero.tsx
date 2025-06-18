@@ -81,16 +81,17 @@ export default function Hero() {
 
   useEffect(() => {
     setIsLoaded(true);
-    // Sequence timing:
-    // 1. Logo shows for 2 seconds
-    // 2. Logo fades out (500ms)
-    // 3. Content fades in (500ms)
-    // 4. Title appears (500ms)
-    // 5. Particles appear (500ms after title)
-    // 6. Illustration appears (1000ms after particles)
-    // 7. Metrics and CTAs appear (500ms after illustration)
-    // 8. Writing effect starts (500ms after metrics)
-    // 9. Show scroll indicator after all animations
+    
+    if (isLowEnd) {
+      // Simplified sequence for low-end devices
+      setShowLogo(false);
+      setShowContent(true);
+      setStartWriting(true);
+      setShowScrollIndicator(true);
+      return;
+    }
+
+    // Full animation sequence for high-end devices
     const logoTimer = setTimeout(() => {
       setShowLogo(false);
       setTimeout(() => {
@@ -113,7 +114,7 @@ export default function Hero() {
       }, 500);
     }, 2000);
     return () => clearTimeout(logoTimer);
-  }, []);
+  }, [isLowEnd]);
 
   return (
     <section
@@ -203,10 +204,10 @@ export default function Hero() {
           <h1 className="text-2xl font-bold text-white">
             <span style={{
               display: 'inline-block',
-              width: '0',
+              width: isLowEnd ? 'auto' : '0',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
-              animation: 'typing 0.8s ease-out forwards',
+              animation: isLowEnd ? 'none' : 'typing 0.8s ease-out forwards',
               willChange: 'width'
             }}>
               codeclinic.nl
