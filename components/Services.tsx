@@ -286,21 +286,7 @@ export default function Services() {
     : services.filter(service => service.category === activeCategory);
 
   return (
-    <div className={`relative isolate overflow-hidden ${isLowEnd ? 'bg-[#1F2C90]/20' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20 backdrop-blur-sm'}`}>
-      {!isLowEnd && (
-        <>
-          <div className="absolute inset-0 bg-black/30 mix-blend-overlay pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }}></div>
-          <div className="absolute inset-0 opacity-[0.015] mix-blend-soft-light pointer-events-none" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-            backgroundRepeat: 'repeat',
-            backgroundSize: '150px 150px',
-            willChange: 'transform',
-            transform: 'translateZ(0)'
-          }} aria-hidden="true" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/40 via-transparent to-transparent opacity-60 mix-blend-soft-light pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }} />
-        </>
-      )}
-
+    <div className={`relative isolate overflow-hidden ${isLowEnd ? 'bg-[#1F2C90]/20' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20'}`}>
       {/* Lazy load PricingSchema */}
       <Suspense fallback={<div className="h-96 flex items-center justify-center">Loading...</div>}>
         <PricingSchema />
@@ -374,27 +360,22 @@ export default function Services() {
 
           {/* Filter Bar */}
           <div id="filter-bar" className="sticky top-0 z-50 py-4 -mx-4 px-4 sm:mx-0 sm:px-0 pointer-events-none mb-16">
-            <div className="max-w-7xl mx-auto">
-              <div className="flex flex-wrap gap-2 sm:gap-3 pb-2 sm:pb-0 sm:justify-center">
-                {categories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => {
-                      setActiveCategory(category.id);
-                    }}
-                    className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-all duration-300
-                      focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-400 pointer-events-auto
-                      ${activeCategory === category.id 
-                        ? 'bg-[#00b8e6] text-white shadow-lg' 
-                        : isLowEnd ? 'bg-white/10 text-[#D8E0FF]' : 'bg-white/10 backdrop-blur-md text-[#D8E0FF] hover:bg-white/20'}
-                      break-all xs:break-normal`}
-                    aria-pressed={activeCategory === category.id}
-                  >
-                    <span className="hidden xs:inline">{category.label}</span>
-                    <span className="xs:hidden">{category.shortLabel}</span>
-                  </button>
-                ))}
-              </div>
+            <div className="flex flex-wrap gap-2 justify-center pointer-events-auto">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setActiveCategory(category.id)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border border-white/20
+                    ${activeCategory === category.id 
+                      ? 'bg-white/20 text-white border-white/40' 
+                      : isLowEnd ? 'bg-white/10 text-[#D8E0FF]' : 'bg-white/10 text-[#D8E0FF] hover:bg-white/20'}
+                    focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#0A1A4B]
+                  `}
+                  aria-label={`Filter by ${category.label}`}
+                >
+                  {category.label}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -417,7 +398,7 @@ export default function Services() {
                   aria-label={`${service.title} - ${service.description}`}
                   className={`
                     w-[280px]
-                    ${isLowEnd ? 'bg-white/10' : 'bg-white/10 backdrop-blur-sm'}
+                    ${isLowEnd ? 'bg-white/10' : 'bg-white/10'}
                     rounded-xl p-4
                     flex flex-col items-center text-center
                     cursor-pointer transition-all duration-300

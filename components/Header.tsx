@@ -26,11 +26,13 @@ export default function Header() {
   }, []);
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-20 transition-all duration-200 ${
-      hasScrolled 
-        ? 'bg-[rgba(14,23,53,0.85)] backdrop-blur-[8px]' 
-        : 'bg-black/35 backdrop-blur-[8px]'
-    }`}>
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        hasScrolled
+          ? 'bg-[rgba(14,23,53,0.85)]'
+          : 'bg-black/35'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
         {/* Logo and Brand */}
         <Link href="/" className="flex items-center gap-4 min-w-[200px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B] focus-visible:rounded-md">

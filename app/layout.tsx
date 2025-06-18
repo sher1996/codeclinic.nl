@@ -37,23 +37,17 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.className} antialiased min-h-screen`}>
-        {/* Background gradient */}
-        <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/40 via-[#2B3CA0]/20 to-[#4F4F00]/30 backdrop-blur-sm animate-slow-gradient" />
+        {/* Simplified background gradient */}
+        <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/40 via-[#2B3CA0]/20 to-[#4F4F00]/30" />
         
-        {/* Noise overlay */}
+        {/* Simplified noise overlay */}
         <div 
-          className="fixed inset-0 opacity-[0.15] mix-blend-overlay pointer-events-none z-[9997] rounded-[var(--radius-lg)]"
+          className="fixed inset-0 opacity-[0.02] mix-blend-overlay pointer-events-none z-[9997]"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
             backgroundRepeat: 'repeat',
             backgroundSize: '200px 200px'
           }}
-          aria-hidden="true"
-        />
-
-        {/* Global scrim layer for consistent contrast */}
-        <div 
-          className="fixed inset-0 bg-black/25 mix-blend-overlay pointer-events-none z-[9998]"
           aria-hidden="true"
         />
         
