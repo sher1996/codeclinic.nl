@@ -84,10 +84,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const auth = request.headers.get('authorization');
-  if (auth !== process.env.CALENDAR_API_TOKEN) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  // Allow public access for creating bookings (no auth required)
+  // GET requests still require authorization for admin access
 
   try {
     const data = await request.json();

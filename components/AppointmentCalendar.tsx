@@ -91,64 +91,83 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
-      // Prepare the data for the email endpoint
-      const appointmentData = {
+      // 1. Create / confirm booking in DB
+      const bookingData = {
         name: formData.name,
         email: formData.email,
+        phone: formData.phone,
         date: selectedDate?.toISOString().split('T')[0], // yyyy-mm-dd format
         time: selectedTime || '',
-        address: `${formData.street} ${formData.houseNumber}, ${formData.postalCode} ${formData.city}`
+        notes: formData.notes
       };
 
-      console.log('[AppointmentCalendar] Sending appointment data:', appointmentData);
+      console.log('[AppointmentCalendar] Creating booking:', bookingData);
 
-      // Call the email endpoint
-      const response = await fetch('/api/send-email', {
+      const bookingRes = await fetch('/api/calendar', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+        headers: { 
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(appointmentData),
+        body: JSON.stringify(bookingData),
       });
 
-      const result = await response.json();
-      
-      if (result.ok) {
-        setSubmitStatus({
-          ok: true,
-          message: 'Afspraak succesvol ingepland!'
-        });
-        
-        // Reset form after success
-        setTimeout(() => {
-          setFormData({
-            name: '',
-            email: '',
-            phone: '',
-            street: '',
-            houseNumber: '',
-            postalCode: '',
-            city: '',
-            notes: ''
-          });
-          setSelectedDate(null);
-          setSelectedTime(null);
-          setSubmitStatus({ ok: false, message: '' });
-        }, 2000);
-      } else {
-        setSubmitStatus({
-          ok: false,
-          message: result.error || 'Er is een fout opgetreden. Probeer het later opnieuw.'
-        });
+      if (!bookingRes.ok) {
+        const errorData = await bookingRes.json();
+        throw new Error(errorData.error || 'Booking failed');
       }
-    } catch (error) {
-      console.error('[AppointmentCalendar] Error submitting appointment:', error);
-      setSubmitStatus({
-        ok: false,
-        message: 'Er is een fout opgetreden. Probeer het later opnieuw.'
+
+      const bookingResult = await bookingRes.json();
+      console.log('[AppointmentCalendar] Booking created:', bookingResult);
+
+      // 2. Fire off e-mail
+      const emailData = {
+        name: formData.name,
+        email: formData.email,
+        date: selectedDate?.toISOString().split('T')[0],
+        time: selectedTime || '',
+        address: `${formData.street} ${formData.houseNumber}, ${formData.postalCode} ${formData.city}`,
+        bookingId: bookingResult.booking.id
+      };
+
+      console.log('[AppointmentCalendar] Sending email:', emailData);
+
+      const emailRes = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(emailData),
       });
+
+      if (!emailRes.ok) {
+        const errorData = await emailRes.json();
+        throw new Error(errorData.error || 'Mail failed');
+      }
+
+      const emailResult = await emailRes.json();
+      console.log('[AppointmentCalendar] Email sent:', emailResult);
+
+      setSubmitStatus({ ok: true, message: 'Afspraak succesvol ingepland!' });
+      
+      // Reset form after success
+      setTimeout(() => {
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          street: '',
+          houseNumber: '',
+          postalCode: '',
+          city: '',
+          notes: ''
+        });
+        setSelectedDate(null);
+        setSelectedTime(null);
+        setSubmitStatus({ ok: false, message: '' });
+      }, 2000);
+    } catch (err: any) {
+      console.error('[AppointmentCalendar] Error:', err);
+      setSubmitStatus({ ok: false, message: err.message || 'Er is een fout opgetreden.' });
     } finally {
       setIsSubmitting(false);
     }

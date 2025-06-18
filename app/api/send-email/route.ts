@@ -6,6 +6,7 @@ type Appointment = {
   date: string;   // ISO yyyy-mm-dd
   time: string;   // HH:mm
   address: string;
+  bookingId?: string; // Optional booking ID from database
 };
 
 export async function POST(req: Request) {
@@ -25,8 +26,8 @@ export async function POST(req: Request) {
   }
 
   // Basic server-side validation
-  const { name, email, date, time, address } = data;
-  if (!name || !email || !date || !time) {
+  const { name, email, date, time, address, bookingId } = data;
+  if (!name || !email || !date || !time || !address) {
     return NextResponse.json(
       { ok: false, error: "Missing required fields" },
       { status: 422 },
@@ -38,6 +39,7 @@ export async function POST(req: Request) {
     <p>Beste ${name},</p>
     <p>Bedankt voor het boeken van uw afspraak op <strong>${date}</strong> om <strong>${time}</strong>.</p>
     <p>Adres: ${address}</p>
+    ${bookingId ? `<p>Boekingsnummer: ${bookingId}</p>` : ''}
     <p>Tot ziens!</p>
   `;
 
@@ -53,7 +55,7 @@ export async function POST(req: Request) {
       to: "delivered@resend.dev",
       subject: "Bevestiging van uw afspraak",
       html,
-      text: `Beste ${name},\n\nBedankt voor het boeken van uw afspraak op ${date} om ${time}.\nAdres: ${address}\n\nTot ziens!`,
+      text: `Beste ${name},\n\nBedankt voor het boeken van uw afspraak op ${date} om ${time}.\nAdres: ${address}${bookingId ? `\nBoekingsnummer: ${bookingId}` : ''}\n\nTot ziens!`,
     }),
   });
 
