@@ -29,57 +29,49 @@ export default function TextAnimation({ className = '', startWriting = false }: 
   }, [startWriting, isTyping]);
 
   useEffect(() => {
-    if (!isTyping) return;
-
+    const isLowEnd = window.navigator.hardwareConcurrency <= 4;
+    
     if (isLowEnd) {
-      // Simple fade transition for low-end devices
-      const interval = setInterval(() => {
-        setOpacity(0);
-        setTimeout(() => {
-          setDisplayText(texts[currentIndex]);
-          setOpacity(1);
-          setCurrentIndex((prev) => (prev + 1) % texts.length);
-        }, 500);
-      }, 4000);
+      // For low-end devices, just show the text immediately
+      setDisplayText(texts[0]);
+      return;
+    }
 
-      return () => clearInterval(interval);
-    } else {
-      // Smooth typing animation for high-end devices
-      const animate = (timestamp: number) => {
-        if (!lastTimeRef.current) lastTimeRef.current = timestamp;
-        const elapsed = timestamp - lastTimeRef.current;
+    // Original smooth typing animation for high-end devices
+    const animate = (timestamp: number) => {
+      if (!lastTimeRef.current) lastTimeRef.current = timestamp;
+      const elapsed = timestamp - lastTimeRef.current;
 
-        if (displayText === texts[currentIndex]) {
-          if (elapsed >= 3000) { // Wait 3 seconds before fade out
-            setOpacity(0);
-            if (elapsed >= 3800) { // After 800ms fade out
-              setDisplayText('');
-              setCurrentIndex((prev) => (prev + 1) % texts.length);
-              setOpacity(1);
-              lastTimeRef.current = timestamp;
-            }
-          }
-        } else {
-          // Smoother typing with consistent timing
-          const typingSpeed = 30; // Fixed speed for more consistent animation
-          if (elapsed >= typingSpeed) {
-            setDisplayText((prev) => texts[currentIndex].slice(0, prev.length + 1));
+      if (displayText === texts[currentIndex]) {
+        if (elapsed >= 3000) { // Wait 3 seconds before fade out
+          setOpacity(0);
+          if (elapsed >= 3800) { // After 800ms fade out
+            setDisplayText('');
+            setCurrentIndex((prev) => (prev + 1) % texts.length);
+            setOpacity(1);
             lastTimeRef.current = timestamp;
           }
         }
-
-        frameRef.current = requestAnimationFrame(animate);
-      };
+      } else {
+        // Smoother typing with consistent timing
+        const typingSpeed = 30; // Fixed speed for more consistent animation
+        if (elapsed >= typingSpeed) {
+          setDisplayText((prev) => texts[currentIndex].slice(0, prev.length + 1));
+          lastTimeRef.current = timestamp;
+        }
+      }
 
       frameRef.current = requestAnimationFrame(animate);
+    };
 
-      return () => {
-        if (frameRef.current) {
-          cancelAnimationFrame(frameRef.current);
-        }
-      };
-    }
-  }, [displayText, isTyping, currentIndex, texts, isLowEnd]);
+    frameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+      }
+    };
+  }, [displayText, currentIndex, texts]);
 
   return (
     <div className={`relative ${className}`}>

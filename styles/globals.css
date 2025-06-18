@@ -33,17 +33,33 @@
   animation: simpleFade 0.5s ease-in-out;
 }
 
-/* Optimize animations for low-end devices */
+/* Disable complex animations for low-end devices */
 @media (max-width: 768px), (prefers-reduced-motion: reduce) {
-  .animate-typing {
-    animation: none;
-    width: auto;
-    border-right: none;
+  .animate-typing,
+  .animate-fade-in,
+  .animate-slide-in,
+  .animate-float {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
-  
-  .animate-simple-fade {
-    animation: none;
-    opacity: 1;
+}
+
+/* Simple fade transition for low-end devices */
+.animate-simple-fade {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.animate-simple-fade.visible {
+  opacity: 1;
+}
+
+/* Keep the typing animation only for high-end devices */
+@media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+  .animate-typing {
+    animation: typing 3.5s steps(40, end),
+               blink-caret 0.75s step-end infinite;
   }
 }
 
@@ -213,4 +229,28 @@
 @keyframes smooth-typing {
   from { transform: scaleX(0) }
   to { transform: scaleX(1) }
+}
+
+/* Optimize particles for low-end devices */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  #particles-js {
+    opacity: 0.3 !important;
+    transform: scale(0.8) !important;
+    will-change: auto !important;
+    transform-style: flat !important;
+    backface-visibility: hidden !important;
+    perspective: none !important;
+  }
+}
+
+/* High-end device particles */
+@media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+  #particles-js {
+    opacity: 1;
+    transform: scale(1);
+    will-change: transform;
+    transform-style: preserve-3d;
+    backface-visibility: visible;
+    perspective: 1000px;
+  }
 }
