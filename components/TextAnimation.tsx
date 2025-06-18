@@ -14,6 +14,7 @@ export default function TextAnimation({ className = '', startWriting = false }: 
   const [opacity, setOpacity] = useState(1);
   const frameRef = useRef<number | undefined>(undefined);
   const lastTimeRef = useRef<number>(0);
+  const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
 
   const texts = [
     'Direct professionele hulp bij al uw computerproblemen.',
@@ -30,40 +31,55 @@ export default function TextAnimation({ className = '', startWriting = false }: 
   useEffect(() => {
     if (!isTyping) return;
 
-    const animate = (timestamp: number) => {
-      if (!lastTimeRef.current) lastTimeRef.current = timestamp;
-      const elapsed = timestamp - lastTimeRef.current;
+    if (isLowEnd) {
+      // Simple fade transition for low-end devices
+      const interval = setInterval(() => {
+        setOpacity(0);
+        setTimeout(() => {
+          setDisplayText(texts[currentIndex]);
+          setOpacity(1);
+          setCurrentIndex((prev) => (prev + 1) % texts.length);
+        }, 500);
+      }, 4000);
 
-      if (displayText === texts[currentIndex]) {
-        if (elapsed >= 3000) { // Wait 3 seconds before fade out
-          setOpacity(0);
-          if (elapsed >= 3800) { // After 800ms fade out
-            setDisplayText('');
-            setCurrentIndex((prev) => (prev + 1) % texts.length);
-            setOpacity(1);
+      return () => clearInterval(interval);
+    } else {
+      // Smooth typing animation for high-end devices
+      const animate = (timestamp: number) => {
+        if (!lastTimeRef.current) lastTimeRef.current = timestamp;
+        const elapsed = timestamp - lastTimeRef.current;
+
+        if (displayText === texts[currentIndex]) {
+          if (elapsed >= 3000) { // Wait 3 seconds before fade out
+            setOpacity(0);
+            if (elapsed >= 3800) { // After 800ms fade out
+              setDisplayText('');
+              setCurrentIndex((prev) => (prev + 1) % texts.length);
+              setOpacity(1);
+              lastTimeRef.current = timestamp;
+            }
+          }
+        } else {
+          // Smoother typing with consistent timing
+          const typingSpeed = 30; // Fixed speed for more consistent animation
+          if (elapsed >= typingSpeed) {
+            setDisplayText((prev) => texts[currentIndex].slice(0, prev.length + 1));
             lastTimeRef.current = timestamp;
           }
         }
-      } else {
-        // Smoother typing with consistent timing
-        const typingSpeed = 30; // Fixed speed for more consistent animation
-        if (elapsed >= typingSpeed) {
-          setDisplayText((prev) => texts[currentIndex].slice(0, prev.length + 1));
-          lastTimeRef.current = timestamp;
-        }
-      }
+
+        frameRef.current = requestAnimationFrame(animate);
+      };
 
       frameRef.current = requestAnimationFrame(animate);
-    };
 
-    frameRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (frameRef.current) {
-        cancelAnimationFrame(frameRef.current);
-      }
-    };
-  }, [displayText, isTyping, currentIndex, texts]);
+      return () => {
+        if (frameRef.current) {
+          cancelAnimationFrame(frameRef.current);
+        }
+      };
+    }
+  }, [displayText, isTyping, currentIndex, texts, isLowEnd]);
 
   return (
     <div className={`relative ${className}`}>
@@ -71,7 +87,7 @@ export default function TextAnimation({ className = '', startWriting = false }: 
         Expert computerhulp
       </h1>
       <p 
-        className="text-lg leading-[1.6] text-white/90 max-w-[45ch] mb-12 min-h-[3em] transition-opacity duration-500 ease-in-out"
+        className={`text-lg leading-[1.6] text-white/90 max-w-[45ch] mb-12 min-h-[3em] transition-opacity duration-500 ease-in-out ${isLowEnd ? '' : 'animate-typing'}`}
         style={{ opacity }}
       >
         {displayText}

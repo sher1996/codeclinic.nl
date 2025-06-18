@@ -23,6 +23,30 @@
   border-right: 2px solid white;
 }
 
+/* Simple fade animation for low-end devices */
+@keyframes simpleFade {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.animate-simple-fade {
+  animation: simpleFade 0.5s ease-in-out;
+}
+
+/* Optimize animations for low-end devices */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .animate-typing {
+    animation: none;
+    width: auto;
+    border-right: none;
+  }
+  
+  .animate-simple-fade {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 /* Matrix code-rain styles */
 @keyframes codeRain {
   0%   { background-position: 0 0; }
