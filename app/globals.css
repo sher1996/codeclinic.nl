@@ -56,6 +56,17 @@
   /* Spacing tokens */
   --spacing-section: 4rem;  /* Consistent section padding */
   --spacing-grid: 1.5rem;   /* Grid gap */
+
+  /* Design System - Consistent Spacing Scale */
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-2xl: 3rem;     /* 48px */
+  --spacing-3xl: 4rem;     /* 64px */
+  --spacing-4xl: 6rem;     /* 96px */
+  --spacing-5xl: 8rem;     /* 128px */
 }
 
 @layer components {
@@ -113,6 +124,8 @@
   /* Cards */
   .card {
     @apply bg-surface-light shadow-xl;
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
   }
   .card-heading {
     @apply text-primary-700;
@@ -484,30 +497,34 @@
     @apply font-bold tracking-tight text-[#FFFFFF];
     text-shadow: 0 1px 2px rgba(0,0,0,.8);
     line-height: 1.1;
+    margin-bottom: var(--spacing-md);
   }
 
   h1 {
     @apply text-3xl md:text-4xl lg:text-5xl;
-    font-size: clamp(1.875rem, 3vw, 3rem); /* 30px - 48px */
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    margin-bottom: var(--spacing-lg);
   }
 
   h2 {
     @apply text-2xl md:text-3xl lg:text-4xl;
-    font-size: clamp(1.5rem, 2.5vw, 1.875rem); /* 24px - 30px */
-    margin-bottom: clamp(2rem, 6vh, 4rem);
+    font-size: clamp(1.75rem, 3.5vw, 3rem);
+    margin-bottom: var(--spacing-lg);
   }
 
   h3 {
     @apply text-xl md:text-2xl lg:text-3xl;
-    font-size: clamp(1.125rem, 2vw, 1.5rem); /* 18px - 24px */
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    margin-bottom: var(--spacing-md);
   }
 
   p {
     @apply text-base text-[#FFFFFF];
     text-shadow: 0 1px 2px rgba(0,0,0,.8);
     font-size: clamp(0.875rem, 1.5vw, 1rem); /* 14px - 16px */
-    line-height: 1.5;
+    line-height: 1.6;
     max-width: 45ch;
+    margin-bottom: var(--spacing-md);
   }
 
   input, textarea, select {
@@ -1411,4 +1428,111 @@ header a:focus-visible {
   will-change: box-shadow;
   transform: translateZ(0);
   backface-visibility: hidden;
+}
+
+/* Consistent spacing utilities */
+.space-section {
+  padding: var(--spacing-2xl) 0;
+}
+
+@media (min-width: 640px) {
+  .space-section {
+    padding: var(--spacing-3xl) 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .space-section {
+    padding: var(--spacing-4xl) 0;
+  }
+}
+
+.space-content {
+  padding: var(--spacing-lg) 0;
+}
+
+@media (min-width: 640px) {
+  .space-content {
+    padding: var(--spacing-xl) 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .space-content {
+    padding: var(--spacing-2xl) 0;
+  }
+}
+
+/* Improved typography spacing */
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: var(--spacing-md);
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  margin-bottom: var(--spacing-lg);
+}
+
+h2 {
+  font-size: clamp(1.75rem, 3.5vw, 3rem);
+  margin-bottom: var(--spacing-lg);
+}
+
+h3 {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  margin-bottom: var(--spacing-md);
+}
+
+p {
+  margin-bottom: var(--spacing-md);
+  line-height: 1.6;
+}
+
+/* Improved component spacing */
+.card {
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.button {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  margin: var(--spacing-sm) 0;
+}
+
+/* Grid spacing improvements */
+.grid-gap-sm {
+  gap: var(--spacing-sm);
+}
+
+.grid-gap-md {
+  gap: var(--spacing-md);
+}
+
+.grid-gap-lg {
+  gap: var(--spacing-lg);
+}
+
+.grid-gap-xl {
+  gap: var(--spacing-xl);
+}
+
+/* Container spacing */
+.container-padding {
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
+}
+
+@media (min-width: 640px) {
+  .container-padding {
+    padding-left: var(--spacing-lg);
+    padding-right: var(--spacing-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-padding {
+    padding-left: var(--spacing-xl);
+    padding-right: var(--spacing-xl);
+  }
 } 

@@ -50,6 +50,12 @@ export default function RootLayout({
           }}
           aria-hidden="true"
         />
+
+        {/* Subtle dark overlay for better readability */}
+        <div 
+          className="fixed inset-0 bg-black/15 mix-blend-overlay pointer-events-none z-[9998]"
+          aria-hidden="true"
+        />
         
         {/* Main content */}
         <div className="relative z-[9999] min-h-screen">

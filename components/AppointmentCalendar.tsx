@@ -186,16 +186,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
       )}
 
       <div className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Plan een afspraak
-          </h2>
-          <p className="mt-6 text-lg leading-8 text-gray-300">
-            Kies een datum en tijd die het beste bij u past. We helpen u graag verder.
-          </p>
-        </div>
-
-        <div className={`mx-auto mt-16 max-w-2xl rounded-2xl ${isLowEnd ? 'bg-white/5' : 'ring-1 ring-white/10'} sm:mt-20 lg:mx-0 lg:flex lg:max-w-none`}>
+        <div className={`mx-auto max-w-2xl rounded-2xl ${isLowEnd ? 'bg-white/5' : 'ring-1 ring-white/10'} lg:mx-0 lg:flex lg:max-w-none`}>
           <div className="p-8 sm:p-10 lg:flex-auto">
             <div className={`w-full max-w-4xl mx-auto ${isLowEnd ? 'bg-white/5' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-6 shadow-xl min-h-[600px]`}>
               <AnimatePresence>

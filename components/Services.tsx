@@ -287,6 +287,9 @@ export default function Services() {
 
   return (
     <div className={`relative isolate overflow-hidden ${isLowEnd ? 'bg-[#1F2C90]/20' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20'}`}>
+      {/* Subtle dark overlay for better readability - extended beyond boundaries */}
+      <div className="absolute inset-0 -bottom-16 bg-black/10 mix-blend-overlay pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }}></div>
+      
       {/* Lazy load PricingSchema */}
       <Suspense fallback={<div className="h-96 flex items-center justify-center">Loading...</div>}>
         <PricingSchema />
@@ -300,22 +303,22 @@ export default function Services() {
         exit={{ opacity: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
-        className="relative py-36 sm:py-40"
+        className="relative py-20 sm:py-24 lg:py-32"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
-            <div className="col-span-1 md:col-span-12 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
+            <div className="col-span-1 md:col-span-12 mb-16">
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.6 }}
-                className="text-center"
+                className="text-center space-y-6"
               >
-                <h3 className="text-[3.5rem] font-black tracking-tight leading-[1.1] text-[#FFFFFF] mb-6">
+                <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-[#FFFFFF]">
                   Hulp Die Bij U Past
                 </h3>
-                <p className="text-xl text-[#D8E0FF] max-w-2xl mx-auto">
+                <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto">
                   Kies de manier van hulp die het beste bij u past
                 </p>
               </motion.div>
@@ -336,22 +339,22 @@ export default function Services() {
         exit={{ opacity: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
-        className="relative py-36 sm:py-40"
+        className="relative py-20 sm:py-24 lg:py-32"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
-            <div className="col-span-1 md:col-span-12 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
+            <div className="col-span-1 md:col-span-12 mb-16">
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.6 }}
-                className="text-center"
+                className="text-center space-y-6"
               >
-                <h3 className="text-[3.5rem] font-black tracking-tight leading-[1.1] text-[#FFFFFF] mb-6">
+                <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-[#FFFFFF]">
                   Onze Diensten
                 </h3>
-                <p className="text-xl text-[#D8E0FF] max-w-2xl mx-auto">
+                <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto">
                   Wij bieden een breed scala aan diensten om uw computerproblemen op te lossen.
                 </p>
               </motion.div>
@@ -359,13 +362,13 @@ export default function Services() {
           </div>
 
           {/* Filter Bar */}
-          <div id="filter-bar" className="sticky top-0 z-50 py-4 -mx-4 px-4 sm:mx-0 sm:px-0 pointer-events-none mb-16">
-            <div className="flex flex-wrap gap-2 justify-center pointer-events-auto">
+          <div id="filter-bar" className="sticky top-0 z-50 py-6 -mx-4 px-4 sm:mx-0 sm:px-0 pointer-events-none mb-20">
+            <div className="flex flex-wrap gap-3 justify-center pointer-events-auto">
               {categories.map((category) => (
                 <button
                   key={category.id}
                   onClick={() => setActiveCategory(category.id)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border border-white/20
+                  className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 border border-white/20
                     ${activeCategory === category.id 
                       ? 'bg-white/20 text-white border-white/40' 
                       : isLowEnd ? 'bg-white/10 text-[#D8E0FF]' : 'bg-white/10 text-[#D8E0FF] hover:bg-white/20'}
@@ -380,7 +383,7 @@ export default function Services() {
           </div>
 
           {/* Services Grid */}
-          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-8 gap-y-12 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             <AnimatePresence mode="sync">
               {filteredServices.map((service, index) => (
                 <motion.div
@@ -397,9 +400,9 @@ export default function Services() {
                   tabIndex={0}
                   aria-label={`${service.title} - ${service.description}`}
                   className={`
-                    w-[280px]
+                    w-full max-w-[320px] mx-auto
                     ${isLowEnd ? 'bg-white/10' : 'bg-white/10'}
-                    rounded-xl p-4
+                    rounded-xl p-6
                     flex flex-col items-center text-center
                     cursor-pointer transition-all duration-300
                     border border-white/10 shadow-lg hover:border-white/20
@@ -413,10 +416,10 @@ export default function Services() {
                     transform: isLowEnd ? 'none' : 'translateZ(0)' 
                   }}
                 >
-                  <div className="flex flex-col items-center justify-between h-full w-full">
-                    <div className="flex flex-col items-center">
+                  <div className="flex flex-col items-center justify-between h-full w-full space-y-6">
+                    <div className="flex flex-col items-center space-y-4">
                       <motion.div 
-                        className="relative w-12 h-12 mb-3"
+                        className="relative w-16 h-16 mb-2"
                         whileHover={isLowEnd ? {} : { scale: 1.1 }}
                         transition={{ type: "spring", stiffness: 400, damping: 10 }}
                         aria-hidden="true"
@@ -425,12 +428,12 @@ export default function Services() {
                         <div className={`absolute inset-0 ${isLowEnd ? 'bg-[#00b8e6]/10' : 'bg-[#00b8e6]/10 blur-sm'} rounded-full group-hover:bg-[#00b8e6]/20 transition-colors duration-300`}></div>
                         <div className="relative w-full h-full flex items-center justify-center text-[#00b8e6] transition-colors duration-300">
                           {React.cloneElement(service.icon, { 
-                            className: "w-8 h-8 stroke-[1.5]",
+                            className: "w-10 h-10 stroke-[1.5]",
                             strokeWidth: 1.5
                           })}
                         </div>
                       </motion.div>
-                      <h4 className="text-base font-semibold text-white mb-2">{service.title}</h4>
+                      <h4 className="text-lg font-semibold text-white">{service.title}</h4>
                     </div>
                     <p className="text-sm text-[#E6EFFF] leading-relaxed">{service.description}</p>
                   </div>
@@ -440,18 +443,18 @@ export default function Services() {
           </div>
 
           {/* Additional Info Bar */}
-          <div className="mt-16">
-            <div className={`relative ${isLowEnd ? 'bg-white/10' : 'bg-white/10 backdrop-blur-md'} rounded-xl border border-white/20 p-6 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-8`} style={{ minHeight: '96px' }}>
-              <div className="flex items-center gap-4 sm:gap-8 w-full sm:w-auto">
-                <div className="w-12 h-12 flex items-center justify-center">
-                  <Zap className="w-10 h-10 text-[#00b8e6]" />
+          <div className="mt-20">
+            <div className={`relative ${isLowEnd ? 'bg-white/10' : 'bg-white/10'} rounded-xl border border-white/20 p-8 flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8`} style={{ minHeight: '120px' }}>
+              <div className="flex items-center gap-6 sm:gap-8 w-full sm:w-auto">
+                <div className="w-16 h-16 flex items-center justify-center">
+                  <Zap className="w-12 h-12 text-[#00b8e6]" />
                 </div>
-                <div className="text-center sm:text-left">
-                  <h3 className="text-lg font-semibold text-white mb-1">En nog veel meer</h3>
-                  <p className="text-sm text-white/80">Persoonlijke digitale ondersteuning voor álles waar u hulp bij nodig hebt!</p>
+                <div className="text-center sm:text-left space-y-2">
+                  <h3 className="text-xl font-semibold text-white">En nog veel meer</h3>
+                  <p className="text-base text-white/80">Persoonlijke digitale ondersteuning voor álles waar u hulp bij nodig hebt!</p>
                 </div>
               </div>
-              <button className="bg-[#00b8e6] text-white font-medium px-4 py-2 rounded-full flex items-center gap-2 mt-2 sm:mt-0">
+              <button className="bg-[#00b8e6] text-white font-medium px-6 py-3 rounded-full flex items-center gap-2 mt-4 sm:mt-0">
                 Vraag maatwerk aan <ChevronRight className="w-4 h-4 inline" />
               </button>
             </div>
@@ -462,20 +465,20 @@ export default function Services() {
       {/* Tarieven Section */}
       <section 
         id="tarieven" 
-        className="relative py-36 sm:py-40 pb-0"
+        className="relative py-20 sm:py-24 lg:py-32 pb-0"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8">
-            <div className="col-span-1 md:col-span-12 mb-24">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
+            <div className="col-span-1 md:col-span-12 mb-20">
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.6 }}
-                className="text-center"
+                className="text-center space-y-6"
               >
-                <h3 className="text-[4.5rem] font-black tracking-tight leading-[1.1] text-center text-[#FFFFFF] mb-6">Tarieven</h3>
-                <p className="text-xl text-[#D8E0FF] max-w-2xl mx-auto">
+                <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-center text-[#FFFFFF]">Tarieven</h3>
+                <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto">
                   Transparante prijzen voor alle computerhulp diensten
                 </p>
               </motion.div>
@@ -655,6 +658,9 @@ export default function Services() {
           </div>
         </div>
       </section>
+
+      {/* Seamless transition to Contact section */}
+      <div className="h-8 sm:h-12 lg:h-16 bg-gradient-to-b from-transparent to-transparent"></div>
 
       <AccessibilityMenu />
     </div>

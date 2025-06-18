@@ -60,22 +60,25 @@ export default function Hero() {
       onMouseMove={handleMouseMove}
       style={{ willChange: isLowEnd ? 'auto' : 'transform', transform: isLowEnd ? 'none' : 'translateZ(0)' }}
     >
+      {/* Subtle dark overlay for better readability */}
+      <div className="absolute inset-0 bg-black/10 mix-blend-overlay pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }}></div>
+      
       {/* Content */}
       <div
-        className="transition-all duration-700 relative mx-auto max-w-7xl px-6 lg:grid lg:grid-cols-12 lg:items-center lg:gap-8 w-full opacity-100 scale-100 z-50"
+        className="transition-all duration-700 relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full opacity-100 scale-100 z-50"
       >
         {/* Left column — copy */}
-        <div className="text-white lg:col-span-12">
+        <div className="text-white lg:col-span-12 py-16 sm:py-20 lg:py-24">
           <TextAnimation startWriting={startWriting} />
         </div>
       </div>
 
       {/* Scroll indicator */}
       <div 
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 transition-all duration-500 z-40 opacity-100 translate-y-0"
+        className="absolute bottom-12 left-1/2 transform -translate-x-1/2 transition-all duration-500 z-40 opacity-100 translate-y-0"
       >
-        <div className="flex flex-col items-center text-white/60">
-          <span className="text-sm mb-2">Scroll om meer te zien</span>
+        <div className="flex flex-col items-center text-white/60 space-y-3">
+          <span className="text-sm font-medium">Scroll om meer te zien</span>
           <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
             <div className="w-1 h-3 bg-white/60 rounded-full mt-2 animate-bounce"></div>
           </div>
