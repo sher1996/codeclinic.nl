@@ -314,32 +314,105 @@ export default function Services() {
       </Suspense>
 
       {/* Main Services Section */}
-      <motion.section
-        id="services"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8 }}
-        className="relative py-32 sm:py-40"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
-          >
-            <h2 className="text-4xl font-semibold text-white">Hulp Die Bij U Past</h2>
-            <p className="mt-4 text-xl text-white/80 max-w-2xl mx-auto text-center">Kies zelf hoe u geholpen wilt worden: op afstand of aan huis</p>
-          </motion.div>
-          
-          <div className="services-grid">
-            <ServiceCard />
+      <div className="relative py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-base font-semibold leading-7 text-[#00b8e6]">Onze Diensten</h2>
+            <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Professionele Computerhulp
+            </p>
+            <p className="mt-6 text-lg leading-8 text-gray-300">
+              Wij bieden een breed scala aan diensten om uw computerproblemen op te lossen.
+            </p>
+          </div>
+
+          {/* Filter Bar */}
+          <div id="filter-bar" className="sticky top-0 z-50 py-4 -mx-4 px-4 sm:mx-0 sm:px-0 pointer-events-none">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex flex-wrap gap-2 sm:gap-3 pb-2 sm:pb-0 sm:justify-center">
+                {categories.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => {
+                      setActiveCategory(category.id);
+                    }}
+                    className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-all duration-300
+                      focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-400 pointer-events-auto
+                      ${activeCategory === category.id 
+                        ? 'bg-[#00b8e6] text-white shadow-lg' 
+                        : isLowEnd ? 'bg-white/10 text-[#D8E0FF]' : 'bg-white/10 backdrop-blur-md text-[#D8E0FF] hover:bg-white/20'}
+                      break-all xs:break-normal`}
+                    aria-pressed={activeCategory === category.id}
+                  >
+                    <span className="hidden xs:inline">{category.label}</span>
+                    <span className="xs:hidden">{category.shortLabel}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Services Grid */}
+          <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+            <AnimatePresence mode="sync">
+              {filteredServices.map((service, index) => (
+                <motion.div
+                  key={service.key}
+                  layout={false}
+                  initial={isLowEnd || prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ 
+                    duration: isLowEnd || prefersReducedMotion ? 0 : 0.2,
+                    type: "tween"
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${service.title} - ${service.description}`}
+                  className={`
+                    w-[280px]
+                    ${isLowEnd ? 'bg-white/10' : 'bg-white/10 backdrop-blur-sm'}
+                    rounded-xl p-4
+                    flex flex-col items-center text-center
+                    cursor-pointer transition-all duration-300
+                    border border-white/10 shadow-lg hover:border-white/20
+                    pointer-events-auto
+                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-400
+                    active:scale-[0.98]
+                    ${isLowEnd ? '' : 'hover:shadow-[0_0_20px_rgba(0,212,255,0.15)]'}
+                  `}
+                  style={{ 
+                    willChange: isLowEnd ? 'auto' : 'transform, opacity', 
+                    transform: isLowEnd ? 'none' : 'translateZ(0)' 
+                  }}
+                >
+                  <div className="flex flex-col items-center justify-between h-full w-full">
+                    <div className="flex flex-col items-center">
+                      <motion.div 
+                        className="relative w-12 h-12 mb-3"
+                        whileHover={isLowEnd ? {} : { scale: 1.1 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                        aria-hidden="true"
+                        style={{ willChange: 'transform', transform: 'translateZ(0)' }}
+                      >
+                        <div className={`absolute inset-0 ${isLowEnd ? 'bg-[#00b8e6]/10' : 'bg-[#00b8e6]/10 blur-sm'} rounded-full group-hover:bg-[#00b8e6]/20 transition-colors duration-300`}></div>
+                        <div className="relative w-full h-full flex items-center justify-center text-[#00b8e6] transition-colors duration-300">
+                          {React.cloneElement(service.icon, { 
+                            className: "w-8 h-8 stroke-[1.5]",
+                            strokeWidth: 1.5
+                          })}
+                        </div>
+                      </motion.div>
+                      <h4 className="text-base font-semibold text-white mb-2">{service.title}</h4>
+                    </div>
+                    <p className="text-sm text-[#E6EFFF] leading-relaxed">{service.description}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         </div>
-      </motion.section>
+      </div>
 
       {/* Diensten Section */}
       <motion.section
@@ -369,89 +442,6 @@ export default function Services() {
                 </p>
               </motion.div>
             </div>
-          </div>
-
-          {/* Category Filter */}
-          <div id="filter-bar" className="sticky top-0 z-50 py-4 -mx-4 px-4 sm:mx-0 sm:px-0 pointer-events-none">
-            <div className="max-w-7xl mx-auto">
-              <div className="flex flex-wrap gap-2 sm:gap-3 pb-2 sm:pb-0 sm:justify-center">
-                {categories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => {
-                      setActiveCategory(category.id);
-                    }}
-                    className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm font-medium transition-all duration-300
-                      focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-400 pointer-events-auto
-                      ${activeCategory === category.id 
-                        ? 'bg-[#00b8e6] text-white shadow-lg' 
-                        : isLowEnd ? 'bg-white/10 text-[#D8E0FF]' : 'bg-white/10 backdrop-blur-md text-[#D8E0FF] hover:bg-white/20'}
-                      break-all xs:break-normal`}
-                    aria-pressed={activeCategory === category.id}
-                  >
-                    <span className="hidden xs:inline">{category.label}</span>
-                    <span className="xs:hidden">{category.shortLabel}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Services Grid */}
-          <div className="flex flex-wrap justify-center gap-6 relative pointer-events-none mt-8">
-            <AnimatePresence mode="sync">
-              {filteredServices.map((service, index) => (
-                <motion.div
-                  key={service.key}
-                  layout={false}
-                  initial={isLowEnd || prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ 
-                    duration: 0.2,
-                    type: "tween"
-                  }}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`${service.title} - ${service.description}`}
-                  className={`
-                    w-[280px]
-                    ${isLowEnd ? 'bg-white/10' : 'bg-white/10 backdrop-blur-sm'}
-                    rounded-xl p-4
-                    flex flex-col items-center text-center
-                    cursor-pointer transition-all duration-300
-                    border border-white/10 shadow-lg hover:border-white/20
-                    pointer-events-auto
-                    focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-400
-                    active:scale-[0.98]
-                    ${isLowEnd ? '' : 'hover:shadow-[0_0_20px_rgba(0,212,255,0.15)]'}
-                  `}
-                  style={{ willChange: 'transform, opacity', transform: 'translateZ(0)' }}
-                >
-                  <div className="flex flex-col items-center justify-between h-full w-full">
-                    <div className="flex flex-col items-center">
-                      <motion.div 
-                        className="relative w-12 h-12 mb-3"
-                        whileHover={isLowEnd ? {} : { scale: 1.1 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                        aria-hidden="true"
-                        style={{ willChange: 'transform', transform: 'translateZ(0)' }}
-                      >
-                        <div className={`absolute inset-0 ${isLowEnd ? 'bg-[#00b8e6]/10' : 'bg-[#00b8e6]/10 blur-sm'} rounded-full group-hover:bg-[#00b8e6]/20 transition-colors duration-300`}></div>
-                        <div className="relative w-full h-full flex items-center justify-center text-[#00b8e6] transition-colors duration-300">
-                          {React.cloneElement(service.icon, { 
-                            className: "w-8 h-8 stroke-[1.5]",
-                            strokeWidth: 1.5
-                          })}
-                        </div>
-                      </motion.div>
-                      <h4 className="text-base font-semibold text-white mb-2">{service.title}</h4>
-                    </div>
-                    <p className="text-sm text-[#E6EFFF] leading-relaxed">{service.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
           </div>
 
           {/* Full-width bar */}

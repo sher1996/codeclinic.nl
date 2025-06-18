@@ -545,14 +545,14 @@
       0deg,
       rgba(0,0,0,0) 0px,
       rgba(0,0,0,0) 5px,
-      rgba(59,130,246,0.1) 5px,
-      rgba(59,130,246,0.1) 6px
+      rgba(16,185,129,0.1) 5px,
+      rgba(16,185,129,0.1) 6px
     ),
     linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.4) 80%, rgba(0,0,0,0.8) 100%);
   background-size: 100% 10px, cover;
   animation: codeRain 12s linear infinite;
-  color: var(--c-primary-500);
-  font-family: 'IBM Plex Mono', monospace;
+  color: #0ee;
+  font-family: 'Courier New', monospace;
 }
 
 /* Animated soft-color blobs */
@@ -1143,6 +1143,204 @@ header a:focus-visible {
   .animate-fade-in-slow,
   .animate-bounce {
     animation-duration: 0.5s !important;
+  }
+}
+
+/* Optimize transitions */
+.transition-all {
+  transition-property: opacity, transform;
+  will-change: opacity, transform;
+}
+
+/* Optimize dust particles animation */
+.dust-particle {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize glass effect */
+.glass-effect {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize service cards */
+.service-card {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize hero section */
+.hero {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize scroll animations */
+.animate-scroll-chevron {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize loading states */
+.loading {
+  will-change: opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize hover effects */
+.btn-hover-effect {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize focus states */
+.focus\:ring-4:focus {
+  will-change: box-shadow;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Typing animation */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100 }
+}
+
+@keyframes blink {
+  50% { border-color: transparent }
+}
+
+.animate-typing {
+  animation: 
+    typing 0.6s steps(25, end) linear,
+    blink-caret 0.3s step-end infinite;
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid white;
+}
+
+/* Simple fade animation for low-end devices */
+@keyframes simpleFade {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.animate-simple-fade {
+  animation: simpleFade 0.5s ease-in-out;
+}
+
+.animate-simple-fade.visible {
+  opacity: 1;
+}
+
+/* Keep the typing animation only for high-end devices */
+@media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+  .animate-typing {
+    animation: typing 3.5s steps(40, end),
+               blink-caret 0.75s step-end infinite;
+  }
+}
+
+/* Optimize background effects for low-end devices */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none !important;
+    background: none !important;
+  }
+
+  .bg-dot {
+    background-image: none !important;
+  }
+
+  .bg-gradient-to-br::before {
+    background-image: none !important;
+  }
+}
+
+/* Optimize particles for low-end devices */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  #particles-js {
+    display: none !important;
+  }
+
+  .particle {
+    display: none !important;
+  }
+
+  .dust-particle {
+    display: none !important;
+  }
+}
+
+/* Optimize glass effect for low-end devices */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* Optimize service cards for low-end devices */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .service-card {
+    transform: none !important;
+    transition: none !important;
+    box-shadow: none !important;
+  }
+
+  .service-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Optimize hero section for low-end devices */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .hero {
+    background: #1F2C90 !important;
+    transform: none !important;
+  }
+}
+
+/* Optimize scroll animations for low-end devices */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .animate-scroll-chevron {
+    animation: none !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimize loading states for low-end devices */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .loading {
+    animation: none !important;
+  }
+}
+
+/* Optimize hover effects for low-end devices */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .btn-hover-effect {
+    transform: none !important;
+  }
+}
+
+/* Optimize focus states for low-end devices */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .focus\:ring-4:focus {
+    box-shadow: none !important;
   }
 }
 

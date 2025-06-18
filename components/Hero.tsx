@@ -23,8 +23,7 @@ export default function Hero() {
   const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 || window.devicePixelRatio > 2 : false;
 
   const PARTICLE_COUNT = useMemo(() => {
-    if (prefersReducedMotion) return 0;
-    if (isLowEnd) return 0;
+    if (prefersReducedMotion || isLowEnd) return 0;
     return isMobile ? 10 : 15;
   }, [prefersReducedMotion, isLowEnd, isMobile]);
 
@@ -58,7 +57,7 @@ export default function Hero() {
 
   // Intersection Observer for particles visibility
   useEffect(() => {
-    if (!particlesContainerRef.current) return;
+    if (!particlesContainerRef.current || isLowEnd) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsParticlesVisible(entry.isIntersecting);
@@ -67,7 +66,7 @@ export default function Hero() {
     );
     observer.observe(particlesContainerRef.current);
     return () => observer.disconnect();
-  }, []);
+  }, [isLowEnd]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (isLowEnd) return;
@@ -80,14 +79,12 @@ export default function Hero() {
   }, [isLowEnd]);
 
   useEffect(() => {
-    const isLowEnd = window.navigator.hardwareConcurrency <= 4;
-
     if (isLowEnd) {
-      // For low-end devices, show everything immediately
+      // For low-end devices, show everything immediately with minimal animations
       setShowLogo(true);
       setShowContent(true);
       setStartWriting(true);
-      setShowParticles(true);
+      setShowParticles(false);
       setShowIllustration(true);
       setShowMetrics(true);
       setShowScrollIndicator(true);
@@ -114,7 +111,7 @@ export default function Hero() {
       clearTimeout(timer3);
       clearTimeout(timer4);
     };
-  }, []);
+  }, [isLowEnd]);
 
   return (
     <section
@@ -123,7 +120,7 @@ export default function Hero() {
       className={`relative isolate overflow-hidden ${isLowEnd ? 'bg-[#1F2C90]/20' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20 backdrop-blur-sm'} min-h-screen flex items-center`}
       aria-label="Hero section"
       onMouseMove={handleMouseMove}
-      style={{ willChange: 'transform', transform: 'translateZ(0)' }}
+      style={{ willChange: isLowEnd ? 'auto' : 'transform', transform: isLowEnd ? 'none' : 'translateZ(0)' }}
     >
       {!isLowEnd && (
         <>

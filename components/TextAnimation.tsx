@@ -15,6 +15,7 @@ export default function TextAnimation({ className = '', startWriting = false }: 
   const frameRef = useRef<number | undefined>(undefined);
   const lastTimeRef = useRef<number>(0);
   const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
+  const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
 
   const texts = [
     'Direct professionele hulp bij al uw computerproblemen.',
@@ -29,10 +30,8 @@ export default function TextAnimation({ className = '', startWriting = false }: 
   }, [startWriting, isTyping]);
 
   useEffect(() => {
-    const isLowEnd = window.navigator.hardwareConcurrency <= 4;
-    
-    if (isLowEnd) {
-      // For low-end devices, just show the text immediately
+    if (isLowEnd || prefersReducedMotion) {
+      // For low-end devices or reduced motion preference, just show the text immediately
       setDisplayText(texts[0]);
       return;
     }
@@ -71,7 +70,7 @@ export default function TextAnimation({ className = '', startWriting = false }: 
         cancelAnimationFrame(frameRef.current);
       }
     };
-  }, [displayText, currentIndex, texts]);
+  }, [displayText, currentIndex, texts, isLowEnd, prefersReducedMotion]);
 
   return (
     <div className={`relative ${className}`}>
@@ -80,7 +79,10 @@ export default function TextAnimation({ className = '', startWriting = false }: 
       </h1>
       <p 
         className={`text-lg leading-[1.6] text-white/90 max-w-[45ch] mb-12 min-h-[3em] transition-opacity duration-500 ease-in-out ${isLowEnd ? '' : 'animate-typing'}`}
-        style={{ opacity }}
+        style={{ 
+          opacity,
+          transition: isLowEnd ? 'none' : 'opacity 0.3s ease-in-out'
+        }}
       >
         {displayText}
       </p>
