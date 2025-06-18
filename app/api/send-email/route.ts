@@ -9,11 +9,15 @@ type Appointment = {
 };
 
 export async function POST(req: Request) {
+  console.log('[send-email] called');           // <- should appear in 'vercel dev' or server logs
+  
   let data: Appointment;
 
   try {
     data = await req.json();
+    console.log('[send-email] received data:', data);
   } catch {
+    console.log('[send-email] Invalid JSON body');
     return NextResponse.json(
       { ok: false, error: "Invalid JSON body" },
       { status: 400 },

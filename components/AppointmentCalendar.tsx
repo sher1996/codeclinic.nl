@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -91,31 +93,58 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setSubmitStatus({
-        ok: true,
-        message: 'Afspraak succesvol ingepland!'
+      // Prepare the data for the email endpoint
+      const appointmentData = {
+        name: formData.name,
+        email: formData.email,
+        date: selectedDate?.toISOString().split('T')[0], // yyyy-mm-dd format
+        time: selectedTime || '',
+        address: `${formData.street} ${formData.houseNumber}, ${formData.postalCode} ${formData.city}`
+      };
+
+      console.log('[AppointmentCalendar] Sending appointment data:', appointmentData);
+
+      // Call the email endpoint
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(appointmentData),
       });
+
+      const result = await response.json();
       
-      // Reset form after success
-      setTimeout(() => {
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          street: '',
-          houseNumber: '',
-          postalCode: '',
-          city: '',
-          notes: ''
+      if (result.ok) {
+        setSubmitStatus({
+          ok: true,
+          message: 'Afspraak succesvol ingepland!'
         });
-        setSelectedDate(null);
-        setSelectedTime(null);
-        setSubmitStatus({ ok: false, message: '' });
-      }, 2000);
+        
+        // Reset form after success
+        setTimeout(() => {
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            street: '',
+            houseNumber: '',
+            postalCode: '',
+            city: '',
+            notes: ''
+          });
+          setSelectedDate(null);
+          setSelectedTime(null);
+          setSubmitStatus({ ok: false, message: '' });
+        }, 2000);
+      } else {
+        setSubmitStatus({
+          ok: false,
+          message: result.error || 'Er is een fout opgetreden. Probeer het later opnieuw.'
+        });
+      }
     } catch (error) {
+      console.error('[AppointmentCalendar] Error submitting appointment:', error);
       setSubmitStatus({
         ok: false,
         message: 'Er is een fout opgetreden. Probeer het later opnieuw.'
@@ -136,6 +165,23 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
       day: 'numeric', 
       month: 'long', 
       year: 'numeric' 
+    });
+  };
+
+  const formatDateCompact = (date: Date | null) => {
+    if (!date) return '';
+    return date.toLocaleDateString('nl-NL', { 
+      weekday: 'short', 
+      day: 'numeric', 
+      month: 'short'
+    });
+  };
+
+  const formatDateShort = (date: Date | null) => {
+    if (!date) return '';
+    return date.toLocaleDateString('nl-NL', { 
+      day: 'numeric', 
+      month: 'long'
     });
   };
 
@@ -188,14 +234,15 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
       <div className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
         <div className={`mx-auto max-w-2xl rounded-2xl ${isLowEnd ? 'bg-white/5' : 'ring-1 ring-white/10'} lg:mx-0 lg:flex lg:max-w-none`}>
           <div className="p-8 sm:p-10 lg:flex-auto">
-            <div className={`w-full max-w-4xl mx-auto ${isLowEnd ? 'bg-white/5' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-6 shadow-xl min-h-[600px]`}>
-              <AnimatePresence>
+            <div className={`w-full max-w-4xl mx-auto ${isLowEnd ? 'bg-white/5' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-6 shadow-xl`}>
+              <AnimatePresence mode="wait">
                 {!selectedDate ? (
                   <motion.div
                     key="calendar"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
                     className="w-full"
                   >
                     <div className="flex justify-between items-center mb-6">
@@ -250,51 +297,229 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                       ))}
                     </div>
                   </motion.div>
+                ) : selectedTime ? (
+                  <motion.div
+                    key="appointment-form"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="w-full"
+                  >
+                    <div className="flex items-center justify-between mb-6">
+                      <button
+                        onClick={() => setSelectedTime(null)}
+                        className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm"
+                      >
+                        ← Terug naar tijden
+                      </button>
+                      <div className="text-center">
+                        <h2 className="text-lg font-semibold">Afspraak maken</h2>
+                      </div>
+                    </div>
+
+                    <div className={`${isLowEnd ? 'bg-transparent' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-6 border border-white/10`}>
+                      <div className="mb-6 p-4 bg-white/5 rounded-lg">
+                        <p className="text-sm text-white/60">Geselecteerde tijd</p>
+                        <p className="text-lg font-medium">{selectedTime}</p>
+                        <p className="text-sm text-white/60">{formatDateShort(selectedDate)}</p>
+                      </div>
+
+                      <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Naam</label>
+                          <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Email</label>
+                          <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Telefoon</label>
+                          <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                            required
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Straat</label>
+                            <input
+                              type="text"
+                              name="street"
+                              value={formData.street}
+                              onChange={handleInputChange}
+                              className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Huisnummer</label>
+                            <input
+                              type="text"
+                              name="houseNumber"
+                              value={formData.houseNumber}
+                              onChange={handleInputChange}
+                              className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Postcode</label>
+                            <input
+                              type="text"
+                              name="postalCode"
+                              value={formData.postalCode}
+                              onChange={handleInputChange}
+                              placeholder="1234 AB"
+                              className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Plaats</label>
+                            <input
+                              type="text"
+                              name="city"
+                              value={formData.city}
+                              onChange={handleInputChange}
+                              className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Opmerkingen</label>
+                          <textarea
+                            name="notes"
+                            value={formData.notes}
+                            onChange={handleInputChange}
+                            className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                            rows={3}
+                          />
+                        </div>
+                        
+                        <div className="relative">
+                          <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className={`
+                              w-full py-3 px-4 rounded-lg font-medium transition-all duration-200
+                              ${isSubmitting 
+                                ? 'bg-white/20 cursor-not-allowed' 
+                                : 'bg-[#00d4ff] hover:bg-[#00b8e6] text-white'}
+                            `}
+                          >
+                            {isSubmitting ? 'Bezig met verwerken...' : 'Afspraak maken'}
+                          </button>
+
+                          <AnimatePresence>
+                            {submitStatus.ok && (
+                              <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="absolute inset-0 flex items-center justify-center bg-green-500/20 backdrop-blur-sm rounded-lg"
+                              >
+                                <div className="text-center">
+                                  <p className="text-green-400 font-medium">{submitStatus.message}</p>
+                                </div>
+                              </motion.div>
+                            )}
+
+                            {submitStatus.message && !submitStatus.ok && (
+                              <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="absolute inset-0 flex items-center justify-center bg-red-500/20 backdrop-blur-sm rounded-lg"
+                              >
+                                <div className="text-center">
+                                  <p className="text-red-400 font-medium">{submitStatus.message}</p>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      </form>
+                    </div>
+                  </motion.div>
                 ) : (
                   <motion.div
                     key="time-slots"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
                     className="w-full"
                   >
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center justify-between mb-4">
                       <button
                         onClick={() => setSelectedDate(null)}
-                        className="flex items-center gap-2 text-white/60 hover:text-white transition-colors"
+                        className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm"
                       >
-                        ← Terug naar kalender
+                        ← Terug
                       </button>
-                      <h2 className="text-xl font-semibold">
-                        {formatDate(selectedDate)}
-                      </h2>
+                      <div className="text-center">
+                        <h2 className="text-lg font-semibold">
+                          {formatDateShort(selectedDate)}
+                        </h2>
+                      </div>
                     </div>
 
                     <div className={`${isLowEnd ? 'bg-transparent' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-6 border border-white/10`}>
-                      <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
-                        <span className="text-[#00d4ff]">Dagplanning</span>
-                        <span className="text-white/60">voor {formatDate(selectedDate)}</span>
+                      <h3 className="text-base font-medium mb-4 text-[#00d4ff]">
+                        Beschikbare tijden
                       </h3>
 
                       <div className="relative">
                         {/* Time markers */}
                         <div className="absolute left-0 top-0 bottom-0 w-16 flex flex-col">
                           {Array.from({ length: 8 }, (_, i) => i + 9).map(hour => (
-                            <div key={hour} className="h-24 flex items-center justify-end pr-4 text-sm text-white/40">
+                            <div key={hour} className="h-16 flex items-center justify-end pr-4 text-sm text-white/40">
                               {hour}:00
                             </div>
                           ))}
                         </div>
 
                         {/* Time slots grid */}
-                        <div className="ml-16 border-l border-white/10">
-                          {Array.from({ length: 8 }, (_, i) => i + 9).map(hour => (
-                            <div key={hour} className="h-24 border-b border-white/10 relative">
+                        <div className="ml-16">
+                          {Array.from({ length: 8 }, (_, i) => i + 9).map((hour, index) => (
+                            <motion.div 
+                              key={hour} 
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ 
+                                delay: index * 0.03, 
+                                duration: 0.2
+                              }}
+                              className="h-16 border-b border-white/10 relative"
+                            >
                               {/* Hour marker line */}
                               <div className="absolute left-0 right-0 top-0 h-px bg-white/10" />
                               
                               {/* Time slots for this hour */}
-                              <div className="absolute inset-0 flex">
+                              <div className="flex h-full">
                                 <motion.button
                                   onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:00`)}
                                   whileHover={!isLowEnd ? { scale: 1.02 } : {}}
@@ -317,6 +542,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                                     />
                                   )}
                                 </motion.button>
+                                
                                 <motion.button
                                   onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:30`)}
                                   whileHover={!isLowEnd ? { scale: 1.02 } : {}}
@@ -340,188 +566,29 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                                   )}
                                 </motion.button>
                               </div>
-                            </div>
+                            </motion.div>
                           ))}
                         </div>
 
                         {/* Current time indicator */}
-                        {selectedDate && isToday(selectedDate) && (
-                          <div 
-                            className="absolute left-0 right-0 h-px bg-[#00d4ff] pointer-events-none"
-                            style={{
-                              top: `${((new Date().getHours() - 9 + new Date().getMinutes() / 60) / 8) * 100}%`
-                            }}
-                          >
-                            <div className="absolute -left-2 -top-1.5 w-3 h-3 rounded-full bg-[#00d4ff]" />
-                          </div>
-                        )}
+                        {(() => {
+                          const now = new Date();
+                          const currentHour = now.getHours();
+                          const currentMinute = now.getMinutes();
+                          const isWithinBusinessHours = currentHour >= 9 && currentHour <= 16;
+                          
+                          return isWithinBusinessHours && (
+                            <div 
+                              className="absolute left-0 right-0 h-px bg-[#00d4ff] pointer-events-none"
+                              style={{
+                                top: `${((currentHour - 9 + currentMinute / 60) / 8) * 100}%`
+                              }}
+                            >
+                              <div className="absolute -left-2 -top-1.5 w-3 h-3 rounded-full bg-[#00d4ff]" />
+                            </div>
+                          );
+                        })()}
                       </div>
-
-                      {selectedTime && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          transition={{ duration: 0.3 }}
-                          className="mt-6"
-                        >
-                          <div className={`${isLowEnd ? 'bg-transparent' : 'bg-white/5'} rounded-lg p-4 mb-6 border border-white/10`}>
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-sm text-white/60">Geselecteerde tijd</p>
-                                <p className="text-lg font-medium">{selectedTime}</p>
-                              </div>
-                              <button
-                                onClick={() => setSelectedTime(null)}
-                                className="text-white/60 hover:text-white transition-colors"
-                              >
-                                Wijzigen
-                              </button>
-                            </div>
-                          </div>
-
-                          <motion.form
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            onSubmit={handleSubmit}
-                            className="space-y-4"
-                          >
-                            <div>
-                              <label className="block text-sm font-medium mb-1">Naam</label>
-                              <input
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleInputChange}
-                                className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
-                                required
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-sm font-medium mb-1">Email</label>
-                              <input
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleInputChange}
-                                className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
-                                required
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-sm font-medium mb-1">Telefoon</label>
-                              <input
-                                type="tel"
-                                name="phone"
-                                value={formData.phone}
-                                onChange={handleInputChange}
-                                className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
-                                required
-                              />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                              <div>
-                                <label className="block text-sm font-medium mb-1">Straat</label>
-                                <input
-                                  type="text"
-                                  name="street"
-                                  value={formData.street}
-                                  onChange={handleInputChange}
-                                  className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
-                                  required
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-sm font-medium mb-1">Huisnummer</label>
-                                <input
-                                  type="text"
-                                  name="houseNumber"
-                                  value={formData.houseNumber}
-                                  onChange={handleInputChange}
-                                  className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
-                                  required
-                                />
-                              </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                              <div>
-                                <label className="block text-sm font-medium mb-1">Postcode</label>
-                                <input
-                                  type="text"
-                                  name="postalCode"
-                                  value={formData.postalCode}
-                                  onChange={handleInputChange}
-                                  placeholder="1234 AB"
-                                  className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
-                                  required
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-sm font-medium mb-1">Plaats</label>
-                                <input
-                                  type="text"
-                                  name="city"
-                                  value={formData.city}
-                                  onChange={handleInputChange}
-                                  className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
-                                  required
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <label className="block text-sm font-medium mb-1">Opmerkingen</label>
-                              <textarea
-                                name="notes"
-                                value={formData.notes}
-                                onChange={handleInputChange}
-                                className={`w-full p-2 rounded-lg ${isLowEnd ? 'bg-transparent' : 'bg-white/5'} border border-white/10 focus:border-blue-500 focus:outline-none`}
-                                rows={3}
-                              />
-                            </div>
-                            <div className="relative">
-                              <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className={`
-                                  w-full py-3 px-4 rounded-lg font-medium transition-all duration-200
-                                  ${isSubmitting 
-                                    ? 'bg-white/20 cursor-not-allowed' 
-                                    : 'bg-[#00d4ff] hover:bg-[#00b8e6] text-white'}
-                                `}
-                              >
-                                {isSubmitting ? 'Bezig met verwerken...' : 'Afspraak maken'}
-                              </button>
-
-                              <AnimatePresence>
-                                {submitStatus.ok && (
-                                  <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    className={`absolute inset-0 flex items-center justify-center ${isLowEnd ? 'bg-green-500/10' : 'bg-green-500/20 backdrop-blur-sm'} rounded-lg`}
-                                  >
-                                    <div className="text-center">
-                                      <p className="text-green-400 font-medium">{submitStatus.message}</p>
-                                    </div>
-                                  </motion.div>
-                                )}
-
-                                {!submitStatus.ok && submitStatus.message && (
-                                  <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    className={`absolute inset-0 flex items-center justify-center ${isLowEnd ? 'bg-red-500/10' : 'bg-red-500/20 backdrop-blur-sm'} rounded-lg`}
-                                  >
-                                    <div className="text-center">
-                                      <p className="text-red-400 font-medium">{submitStatus.message}</p>
-                                    </div>
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
-                            </div>
-                          </motion.form>
-                        </motion.div>
-                      )}
                     </div>
                   </motion.div>
                 )}
@@ -532,4 +599,4 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
       </div>
     </div>
   );
-} 
+}
