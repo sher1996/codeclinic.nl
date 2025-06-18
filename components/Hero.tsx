@@ -80,47 +80,47 @@ export default function Hero() {
   }, [isLowEnd]);
 
   useEffect(() => {
-    setIsLoaded(true);
-    
+    const isLowEnd = window.navigator.hardwareConcurrency <= 4;
+
     if (isLowEnd) {
-      // Simplified sequence for low-end devices
-      setShowLogo(false);
+      // For low-end devices, show everything immediately
+      setShowLogo(true);
       setShowContent(true);
       setStartWriting(true);
+      setShowParticles(true);
+      setShowIllustration(true);
+      setShowMetrics(true);
       setShowScrollIndicator(true);
       return;
     }
 
-    // Full animation sequence for high-end devices
-    const logoTimer = setTimeout(() => {
+    // For high-end devices, keep the smooth animation sequence
+    const timer1 = setTimeout(() => setShowLogo(true), 100);
+    const timer2 = setTimeout(() => {
       setShowLogo(false);
-      setTimeout(() => {
-        setShowContent(true);
-        setTimeout(() => {
-          setShowParticles(true);
-          setTimeout(() => {
-            setShowIllustration(true);
-            setTimeout(() => {
-              setShowMetrics(true);
-              setTimeout(() => {
-                setStartWriting(true);
-                setTimeout(() => {
-                  setShowScrollIndicator(true);
-                }, 1000);
-              }, 500);
-            }, 500);
-          }, 1000);
-        }, 500);
-      }, 500);
+      setShowContent(true);
     }, 2000);
-    return () => clearTimeout(logoTimer);
-  }, [isLowEnd]);
+    const timer3 = setTimeout(() => setStartWriting(true), 2500);
+    const timer4 = setTimeout(() => {
+      setShowParticles(true);
+      setShowIllustration(true);
+      setShowMetrics(true);
+      setShowScrollIndicator(true);
+    }, 3000);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      clearTimeout(timer4);
+    };
+  }, []);
 
   return (
     <section
       ref={heroRef}
       id="hero"
-      className={`relative isolate overflow-hidden ${isLowEnd ? 'bg-transparent' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20 backdrop-blur-sm'} min-h-screen flex items-center`}
+      className={`relative isolate overflow-hidden ${isLowEnd ? 'bg-[#1F2C90]/20' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20 backdrop-blur-sm'} min-h-screen flex items-center`}
       aria-label="Hero section"
       onMouseMove={handleMouseMove}
       style={{ willChange: 'transform', transform: 'translateZ(0)' }}
