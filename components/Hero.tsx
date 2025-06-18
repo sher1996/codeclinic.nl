@@ -147,74 +147,61 @@ export default function Hero() {
         </>
       )}
 
-      {/* Binary Morph Particles with lazy loading */}
-      <div ref={particlesContainerRef} className={`absolute inset-0 z-10 transition-opacity duration-500 ${showParticles ? 'opacity-100' : 'opacity-0'}`} style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
-        <div className="absolute right-0 top-0 w-[40%] h-full">
-          {isParticlesVisible && !isLowEnd && !prefersReducedMotion && (
-            <Suspense fallback={null}>
-              <BinaryMorphParticles startAnimation={showParticles} />
-            </Suspense>
-          )}
+      {/* Binary Morph Particles with lazy loading or static circles for low-end */}
+      {isLowEnd ? (
+        <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+          <div className="absolute w-40 h-40 bg-[#1F2C90]/30 rounded-full blur-2xl left-4 top-10" />
+          <div className="absolute w-32 h-32 bg-[#2B3CA0]/20 rounded-full blur-2xl right-8 top-32" />
+          <div className="absolute w-48 h-48 bg-[#4F4F00]/15 rounded-full blur-3xl left-1/2 bottom-8 -translate-x-1/2" />
         </div>
-      </div>
-
-      {/* Optimize particle layer for low-end devices */}
-      {!isLowEnd && (
-        <div className="absolute inset-0 overflow-hidden z-0" aria-hidden="true" style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
-          {particles.map((_, i) => {
-            const size = 2 + (i % 2);
-            const top = (i * 25) % 100;
-            const left = (i * 20) % 100;
-            const hue = (i * 90) % 360;
-            const delay = i * 0.8;
-            const duration = 10 + (i % 3);
-            
-            return (
-              <div
-                key={i}
-                className="absolute rounded-full animate-float"
-                style={{
-                  width: `${size}px`,
-                  height: `${size}px`,
-                  top: `${top}%`,
-                  left: `${left}%`,
-                  backgroundColor: `hsla(${hue}, 70%, 50%, 0.03)`,
-                  ['--duration' as string]: `${duration}s`,
-                  ['--delay' as string]: `${delay}s`,
-                  willChange: 'transform',
-                  transform: 'translateZ(0)'
-                }}
-              />
-            );
-          })}
+      ) : (
+        <div ref={particlesContainerRef} className={`absolute inset-0 z-10 transition-opacity duration-500 ${showParticles ? 'opacity-100' : 'opacity-0'}`} style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
+          <div className="absolute right-0 top-0 w-[40%] h-full">
+            {isParticlesVisible && !isLowEnd && !prefersReducedMotion && (
+              <Suspense fallback={null}>
+                <BinaryMorphParticles startAnimation={showParticles} />
+              </Suspense>
+            )}
+          </div>
         </div>
       )}
 
-      {/* Logo */}
-      <div 
-        className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-500 z-30
-          ${showLogo ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
-      >
-        <img 
-          src="/logo-cc.png" 
-          alt="CodeClinic Logo" 
-          className="w-48 h-48 object-contain mb-4"
-        />
-        <div className="relative">
-          <h1 className="text-2xl font-bold text-white">
-            <span style={{
-              display: 'inline-block',
-              width: isLowEnd ? 'auto' : '0',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              animation: isLowEnd ? 'none' : 'typing 0.8s ease-out forwards',
-              willChange: 'width'
-            }}>
-              codeclinic.nl
-            </span>
-          </h1>
+      {/* Logo and writing */}
+      {isLowEnd ? (
+        <div className="flex flex-col items-start justify-start z-30 mb-8">
+          <img 
+            src="/logo-cc.png" 
+            alt="CodeClinic Logo" 
+            className="w-32 h-32 object-contain mb-2"
+          />
+          <h1 className="text-2xl font-bold text-white">codeclinic.nl</h1>
         </div>
-      </div>
+      ) : (
+        <div 
+          className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-500 z-30
+            ${showLogo ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
+        >
+          <img 
+            src="/logo-cc.png" 
+            alt="CodeClinic Logo" 
+            className="w-48 h-48 object-contain mb-4"
+          />
+          <div className="relative">
+            <h1 className="text-2xl font-bold text-white">
+              <span style={{
+                display: 'inline-block',
+                width: isLowEnd ? 'auto' : '0',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                animation: isLowEnd ? 'none' : 'typing 0.8s ease-out forwards',
+                willChange: 'width'
+              }}>
+                codeclinic.nl
+              </span>
+            </h1>
+          </div>
+        </div>
+      )}
 
       {/* Content */}
       <div
