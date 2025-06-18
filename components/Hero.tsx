@@ -148,16 +148,10 @@ export default function Hero() {
       )}
 
       {/* Binary Morph Particles with lazy loading or static circles for low-end */}
-      {isLowEnd ? (
-        <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
-          <div className="absolute w-40 h-40 bg-[#1F2C90]/30 rounded-full blur-2xl left-4 top-10" />
-          <div className="absolute w-32 h-32 bg-[#2B3CA0]/20 rounded-full blur-2xl right-8 top-32" />
-          <div className="absolute w-48 h-48 bg-[#4F4F00]/15 rounded-full blur-3xl left-1/2 bottom-8 -translate-x-1/2" />
-        </div>
-      ) : (
+      {!isLowEnd && (
         <div ref={particlesContainerRef} className={`absolute inset-0 z-10 transition-opacity duration-500 ${showParticles ? 'opacity-100' : 'opacity-0'}`} style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
           <div className="absolute right-0 top-0 w-[40%] h-full">
-            {isParticlesVisible && !isLowEnd && !prefersReducedMotion && (
+            {isParticlesVisible && !prefersReducedMotion && (
               <Suspense fallback={null}>
                 <BinaryMorphParticles startAnimation={showParticles} />
               </Suspense>

@@ -54,9 +54,11 @@ export default function RootLayout({
         />
         
         {/* Particles */}
-        <div className="fixed inset-0 z-0">
-          <ParticlesBackground />
-        </div>
+        {typeof window !== 'undefined' && window.navigator.hardwareConcurrency > 4 && (
+          <div className="fixed inset-0 z-0">
+            <ParticlesBackground />
+          </div>
+        )}
 
         {/* Global scrim layer for consistent contrast */}
         <div 
