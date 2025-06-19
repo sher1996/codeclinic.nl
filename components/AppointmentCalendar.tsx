@@ -71,7 +71,8 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
   const fetchBookedTimes = async (date: Date) => {
     setIsLoadingBookings(true);
     try {
-      const dateString = date.toISOString().split('T')[0];
+      const pad = (n: number) => n.toString().padStart(2, '0');
+      const dateString = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
       const response = await fetch('/api/calendar');
       if (response.ok) {
         const data = await response.json();
@@ -137,7 +138,8 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
       }
 
       // 1. Create / confirm booking in DB
-      const dateString = selectedDate.toISOString().split('T')[0]; // yyyy-mm-dd format
+      const pad = (n: number) => n.toString().padStart(2, '0');
+      const dateString = `${selectedDate.getFullYear()}-${pad(selectedDate.getMonth() + 1)}-${pad(selectedDate.getDate())}`;
       console.log('[AppointmentCalendar] Formatted date string:', dateString);
       
       const bookingData = {

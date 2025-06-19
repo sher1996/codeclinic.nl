@@ -29,20 +29,22 @@ function generateTimeSlots(): string[] {
   return slots;
 }
 
-// Helper to validate date is not in the past (uses UTC)
+// Helper to validate date is not in the past (uses local timezone)
 function isValidDate(date: string): boolean {
+  // Parse booking date as local date
   const [year, month, day] = date.split('-').map(Number);
-  // Booking date at midnight UTC
-  const bookingDateUTC = Date.UTC(year, month - 1, day);
+  const bookingDate = new Date(year, month - 1, day);
 
-  // Today's date at midnight UTC
+  // Get tomorrow's date in local time
   const now = new Date();
-  const todayUTC = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
 
-  // Tomorrow's date at midnight UTC
-  const tomorrowUTC = todayUTC + 24 * 60 * 60 * 1000;
+  // Format both as YYYY-MM-DD
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  const bookingStr = `${bookingDate.getFullYear()}-${pad(bookingDate.getMonth() + 1)}-${pad(bookingDate.getDate())}`;
+  const tomorrowStr = `${tomorrow.getFullYear()}-${pad(tomorrow.getMonth() + 1)}-${pad(tomorrow.getDate())}`;
 
-  return bookingDateUTC >= tomorrowUTC;
+  return bookingStr >= tomorrowStr;
 }
 
 // Atomic booking function using Redis transactions
@@ -92,9 +94,10 @@ async function atomicBookSlot(bookingData: any): Promise<{ success: boolean; err
     if (typeof result === 'string') {
       return JSON.parse(result);
     } else if (typeof result === 'object' && result !== null) {
+      // If it's already an object, return it directly
       return result as { success: boolean; error?: string; booking?: any };
     } else {
-      throw new Error('Unexpected result type from Redis eval');
+      throw new Error(`Unexpected result type from Redis eval: ${typeof result}`);
     }
   } catch (error) {
     console.error('[calendar] Atomic booking failed:', error);
@@ -129,9 +132,13 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const data = await request.json();
+    console.log('[calendar] Received booking data:', data);
+    
     const validated = bookingSchema.parse(data);
+    console.log('[calendar] Validated data:', validated);
     
     if (!isValidDate(validated.date)) {
+      console.log('[calendar] Date validation failed for:', validated.date);
       return NextResponse.json({ ok: false, error: 'Bookings must be made at least one day in advance' }, { status: 400 });
     }
 
