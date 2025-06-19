@@ -31,7 +31,16 @@ function generateTimeSlots(): string[] {
 
 // Helper to check if a time slot is available
 async function isTimeSlotAvailable(date: string, time: string): Promise<boolean> {
-  const bookings = (await redis.lrange('bookings', 0, -1)).map((b: string) => JSON.parse(b));
+  const rawBookings = await redis.lrange('bookings', 0, -1);
+  const bookings = [];
+  for (const b of rawBookings) {
+    try {
+      console.log('[calendar] About to parse booking from Redis:', b);
+      bookings.push(JSON.parse(b));
+    } catch (err) {
+      console.error('[calendar] Failed to JSON.parse booking from Redis:', b);
+    }
+  }
   return !bookings.some((b: any) => b.date === date && b.time === time);
 }
 
@@ -45,8 +54,16 @@ function isValidDate(date: string): boolean {
 }
 
 export async function GET(request: Request) {
-  // Optionally, add admin auth here
-  const bookings = (await redis.lrange('bookings', 0, -1)).map((b: string) => JSON.parse(b));
+  const rawBookings = await redis.lrange('bookings', 0, -1);
+  const bookings = [];
+  for (const b of rawBookings) {
+    try {
+      console.log('[calendar] About to parse booking from Redis:', b);
+      bookings.push(JSON.parse(b));
+    } catch (err) {
+      console.error('[calendar] Failed to JSON.parse booking from Redis:', b);
+    }
+  }
   return NextResponse.json({
     ok: true,
     timeSlots: generateTimeSlots(),
@@ -71,6 +88,7 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
+    // Defensive: always store as JSON string
     await redis.rpush('bookings', JSON.stringify(booking));
     return NextResponse.json({ ok: true, booking }, { status: 201 });
   } catch (err: any) {
