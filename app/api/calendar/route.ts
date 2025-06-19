@@ -39,20 +39,22 @@ async function isTimeSlotAvailable(date: string, time: string): Promise<boolean>
 
 // Helper to validate date is not in the past
 function isValidDate(date: string): boolean {
-  // Create booking date at midnight local time
-  const bookingDate = new Date(date + 'T00:00:00');
+  // Parse the date string and create a date object
+  const [year, month, day] = date.split('-').map(Number);
+  const bookingDate = new Date(year, month - 1, day); // month is 0-indexed
   
-  // Create today's date at midnight local time
+  // Create today's date
   const today = new Date();
-  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   
   console.log('[calendar] Validating date:', {
+    inputDate: date,
     bookingDate: bookingDate.toISOString(),
-    todayMidnight: todayMidnight.toISOString(),
-    isValid: bookingDate >= todayMidnight
+    todayDate: todayDate.toISOString(),
+    isValid: bookingDate >= todayDate
   });
   
-  return bookingDate >= todayMidnight;
+  return bookingDate >= todayDate;
 }
 
 export async function GET(request: Request) {

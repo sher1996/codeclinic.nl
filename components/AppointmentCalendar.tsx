@@ -93,12 +93,23 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
     setIsSubmitting(true);
 
     try {
+      // Debug: Check if we have a selected date
+      console.log('[AppointmentCalendar] Selected date:', selectedDate);
+      console.log('[AppointmentCalendar] Selected time:', selectedTime);
+      
+      if (!selectedDate) {
+        throw new Error('Geen datum geselecteerd');
+      }
+
       // 1. Create / confirm booking in DB
+      const dateString = selectedDate.toISOString().split('T')[0]; // yyyy-mm-dd format
+      console.log('[AppointmentCalendar] Formatted date string:', dateString);
+      
       const bookingData = {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        date: selectedDate?.toISOString().split('T')[0], // yyyy-mm-dd format
+        date: dateString,
         time: selectedTime || '',
         notes: formData.notes
       };
@@ -115,6 +126,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
 
       if (!bookingRes.ok) {
         const errorData = await bookingRes.json();
+        console.error('[AppointmentCalendar] Booking failed:', errorData);
         throw new Error(errorData.error || 'Booking failed');
       }
 
@@ -125,7 +137,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
       const emailData = {
         name: formData.name,
         email: formData.email,
-        date: selectedDate?.toISOString().split('T')[0],
+        date: dateString,
         time: selectedTime || '',
         address: `${formData.street} ${formData.houseNumber}, ${formData.postalCode} ${formData.city}`,
         bookingId: bookingResult.booking.id
