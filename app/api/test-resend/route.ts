@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function GET() {
   console.log('[test-resend] Testing email service...');
@@ -13,40 +16,21 @@ export async function GET() {
   }
 
   try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: "Test Bot <onboarding@resend.dev>",
-        to: "delivered@resend.dev",
-        subject: "Test Email from Computer Help",
-        html: "<p>This is a test email to verify the email service is working.</p>",
-        text: "This is a test email to verify the email service is working.",
-      }),
+    const result = await resend.emails.send({
+      from: "Test Bot <onboarding@resend.dev>",
+      to: "delivered@resend.dev",
+      subject: "Test Email from Computer Help",
+      html: "<p>This is a test email to verify the email service is working.</p>",
+      text: "This is a test email to verify the email service is working.",
     });
 
-    console.log('[test-resend] Response status:', res.status);
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error('[test-resend] Error:', errorText);
-      return NextResponse.json(
-        { ok: false, error: "Email service test failed", details: errorText },
-        { status: 502 }
-      );
-    }
-
-    const result = await res.json();
     console.log('[test-resend] Success:', result);
     return NextResponse.json({ ok: true, message: "Test email sent successfully", result });
-  } catch (error) {
-    console.error('[test-resend] Network error:', error);
+  } catch (error: any) {
+    console.error('[test-resend] Error:', error);
     return NextResponse.json(
-      { ok: false, error: "Network error" },
-      { status: 500 }
+      { ok: false, error: "Email service test failed", details: error.message },
+      { status: 502 }
     );
   }
 } 

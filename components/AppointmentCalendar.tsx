@@ -127,7 +127,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
       if (!bookingRes.ok) {
         const errorData = await bookingRes.json();
         console.error('[AppointmentCalendar] Booking failed:', errorData);
-        throw new Error(errorData.error || 'Booking failed');
+        throw new Error(errorData.error || `Booking failed (${bookingRes.status})`);
       }
 
       const bookingResult = await bookingRes.json();
@@ -153,7 +153,10 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
 
       if (!emailRes.ok) {
         const errorData = await emailRes.json();
-        throw new Error(errorData.error || 'Mail failed');
+        console.error('[AppointmentCalendar] Email failed:', errorData);
+        const errorMessage = errorData.error || 'Mail service failed';
+        const details = errorData.details ? ` (${errorData.details})` : '';
+        throw new Error(`${errorMessage}${details}`);
       }
 
       const emailResult = await emailRes.json();

@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 type Appointment = {
   name: string;
@@ -53,47 +56,25 @@ export async function POST(req: Request) {
     <p>Tot ziens!</p>
   `;
 
-  const emailPayload = {
-    from: "Computer Help <noreply@yourdomain.com>",
-    to: email, // Send to the customer's email address
-    subject: "Bevestiging van uw afspraak",
-    html,
-    text: `Beste ${name},\n\nBedankt voor het boeken van uw afspraak op ${date} om ${time}.\nAdres: ${address}${bookingId ? `\nBoekingsnummer: ${bookingId}` : ''}\n\nTot ziens!`,
-  };
-
   console.log('[send-email] Sending email to:', email);
-  console.log('[send-email] Email payload:', emailPayload);
 
   try {
-    // Hit Resend's HTTP API with fetch
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-      },
-      body: JSON.stringify(emailPayload),
+    // Use Resend SDK instead of HTTP API
+    const result = await resend.emails.send({
+      from: "Computer Help <onboarding@resend.dev>", // Use Resend's default domain for testing
+      to: email,
+      subject: "Bevestiging van uw afspraak",
+      html,
+      text: `Beste ${name},\n\nBedankt voor het boeken van uw afspraak op ${date} om ${time}.\nAdres: ${address}${bookingId ? `\nBoekingsnummer: ${bookingId}` : ''}\n\nTot ziens!`,
     });
 
-    console.log('[send-email] Resend response status:', res.status);
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error("[send-email] Resend error:", errorText);
-      return NextResponse.json(
-        { ok: false, error: "Mail service failed", details: errorText },
-        { status: 502 },
-      );
-    }
-
-    const result = await res.json();
     console.log('[send-email] Email sent successfully:', result);
-    return NextResponse.json({ ok: true, message: "Email sent successfully" });
-  } catch (error) {
-    console.error('[send-email] Network error:', error);
+    return NextResponse.json({ ok: true, message: "Email sent successfully", result });
+  } catch (error: any) {
+    console.error('[send-email] Resend error:', error);
     return NextResponse.json(
-      { ok: false, error: "Network error sending email" },
-      { status: 500 },
+      { ok: false, error: "Mail service failed", details: error.message },
+      { status: 502 },
     );
   }
 } 
