@@ -28,9 +28,19 @@ export async function POST(req: Request) {
   // Basic server-side validation
   const { name, email, date, time, address, bookingId } = data;
   if (!name || !email || !date || !time || !address) {
+    console.log('[send-email] Missing required fields:', { name, email, date, time, address });
     return NextResponse.json(
       { ok: false, error: "Missing required fields" },
       { status: 422 },
+    );
+  }
+
+  // Check if RESEND_API_KEY is configured
+  if (!process.env.RESEND_API_KEY) {
+    console.error('[send-email] RESEND_API_KEY not configured');
+    return NextResponse.json(
+      { ok: false, error: "Email service not configured" },
+      { status: 500 },
     );
   }
 
@@ -43,30 +53,47 @@ export async function POST(req: Request) {
     <p>Tot ziens!</p>
   `;
 
-  // Hit Resend's HTTP API with fetch
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-    },
-    body: JSON.stringify({
-      from: "Test Bot <onboarding@resend.dev>",
-      to: "delivered@resend.dev",
-      subject: "Bevestiging van uw afspraak",
-      html,
-      text: `Beste ${name},\n\nBedankt voor het boeken van uw afspraak op ${date} om ${time}.\nAdres: ${address}${bookingId ? `\nBoekingsnummer: ${bookingId}` : ''}\n\nTot ziens!`,
-    }),
-  });
+  const emailPayload = {
+    from: "Computer Help <noreply@yourdomain.com>",
+    to: email, // Send to the customer's email address
+    subject: "Bevestiging van uw afspraak",
+    html,
+    text: `Beste ${name},\n\nBedankt voor het boeken van uw afspraak op ${date} om ${time}.\nAdres: ${address}${bookingId ? `\nBoekingsnummer: ${bookingId}` : ''}\n\nTot ziens!`,
+  };
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    console.error("Resend error:", errorText);
+  console.log('[send-email] Sending email to:', email);
+  console.log('[send-email] Email payload:', emailPayload);
+
+  try {
+    // Hit Resend's HTTP API with fetch
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      },
+      body: JSON.stringify(emailPayload),
+    });
+
+    console.log('[send-email] Resend response status:', res.status);
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("[send-email] Resend error:", errorText);
+      return NextResponse.json(
+        { ok: false, error: "Mail service failed", details: errorText },
+        { status: 502 },
+      );
+    }
+
+    const result = await res.json();
+    console.log('[send-email] Email sent successfully:', result);
+    return NextResponse.json({ ok: true, message: "Email sent successfully" });
+  } catch (error) {
+    console.error('[send-email] Network error:', error);
     return NextResponse.json(
-      { ok: false, error: "Mail service failed" },
-      { status: 502 },
+      { ok: false, error: "Network error sending email" },
+      { status: 500 },
     );
   }
-
-  return NextResponse.json({ ok: true });
 } 
