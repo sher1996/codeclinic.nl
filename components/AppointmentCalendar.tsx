@@ -29,6 +29,8 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{ ok: boolean; message: string }>({ ok: false, message: '' });
+  const [bookedTimes, setBookedTimes] = useState<string[]>([]);
+  const [isLoadingBookings, setIsLoadingBookings] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -57,6 +59,34 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
     return () => window.removeEventListener('resize', checkDeviceCapabilities);
   }, []);
 
+  // Fetch booked times when a date is selected
+  useEffect(() => {
+    if (selectedDate) {
+      fetchBookedTimes(selectedDate);
+    } else {
+      setBookedTimes([]);
+    }
+  }, [selectedDate]);
+
+  const fetchBookedTimes = async (date: Date) => {
+    setIsLoadingBookings(true);
+    try {
+      const dateString = date.toISOString().split('T')[0];
+      const response = await fetch('/api/calendar');
+      if (response.ok) {
+        const data = await response.json();
+        const bookedForDate = data.bookings
+          .filter((booking: any) => booking.date === dateString)
+          .map((booking: any) => booking.time);
+        setBookedTimes(bookedForDate);
+      }
+    } catch (error) {
+      console.error('Failed to fetch booked times:', error);
+    } finally {
+      setIsLoadingBookings(false);
+    }
+  };
+
   const weekDays = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'];
 
   const handlePrevMonth = () => {
@@ -70,6 +100,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
   const handleDateClick = (date: Date | null) => {
     if (date) {
       setSelectedDate(date);
+      setSelectedTime(null); // Reset time selection when date changes
       if (onDateSelect) {
         onDateSelect(date);
       }
@@ -77,6 +108,10 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
   };
 
   const handleTimeSelect = (time: string) => {
+    // Don't allow selection of booked times
+    if (bookedTimes.includes(time)) {
+      return;
+    }
     setSelectedTime(time);
   };
 
@@ -163,6 +198,11 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
       console.log('[AppointmentCalendar] Email sent:', emailResult);
 
       setSubmitStatus({ ok: true, message: 'Afspraak succesvol ingepland!' });
+      
+      // Refresh booked times to show the new booking
+      if (selectedDate) {
+        await fetchBookedTimes(selectedDate);
+      }
       
       // Reset form after success
       setTimeout(() => {
@@ -526,17 +566,43 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                         Beschikbare tijden
                       </h3>
 
+                      {/* Loading state */}
+                      {isLoadingBookings && (
+                        <div className="flex justify-center mb-4">
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00d4ff]"></div>
+                        </div>
+                      )}
+
+                      {/* Legend */}
+                      <div className="flex flex-wrap gap-4 mb-4 text-xs sm:text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-white/5 rounded"></div>
+                          <span className="text-white/70">Beschikbaar</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-red-500/60 rounded"></div>
+                          <span className="text-white/70">Bezet</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-[#00d4ff] rounded"></div>
+                          <span className="text-white/70">Geselecteerd</span>
+                        </div>
+                      </div>
+
                       {/* Mobile-optimized time grid */}
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                         {Array.from({ length: 8 }, (_, i) => i + 9).map((hour, index) => (
                           <React.Fragment key={hour}>
                             <motion.button
                               onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:00`)}
-                              whileHover={!isLowEnd ? { scale: 1.02 } : {}}
-                              whileTap={!isLowEnd ? { scale: 0.98 } : {}}
+                              disabled={bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`)}
+                              whileHover={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) ? { scale: 1.02 } : {}}
+                              whileTap={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) ? { scale: 0.98 } : {}}
                               className={`
                                 p-2 sm:p-4 rounded-lg transition-all duration-200 relative text-center
-                                ${selectedTime === `${hour.toString().padStart(2, '0')}:00`
+                                ${bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`)
+                                  ? 'bg-red-500/60 text-white/50 cursor-not-allowed'
+                                  : selectedTime === `${hour.toString().padStart(2, '0')}:00`
                                   ? 'bg-[#00d4ff] text-white'
                                   : 'bg-white/5 hover:bg-white/10 text-white'}
                               `}
@@ -544,7 +610,12 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                               <span className="text-sm sm:text-base font-medium">
                                 {hour}:00
                               </span>
-                              {selectedTime === `${hour.toString().padStart(2, '0')}:00` && (
+                              {bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <span className="text-xs text-white/40">Bezet</span>
+                                </div>
+                              )}
+                              {selectedTime === `${hour.toString().padStart(2, '0')}:00` && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) && (
                                 <motion.div
                                   initial={{ scale: 0 }}
                                   animate={{ scale: 1 }}
@@ -555,11 +626,14 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                             
                             <motion.button
                               onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:30`)}
-                              whileHover={!isLowEnd ? { scale: 1.02 } : {}}
-                              whileTap={!isLowEnd ? { scale: 0.98 } : {}}
+                              disabled={bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`)}
+                              whileHover={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) ? { scale: 1.02 } : {}}
+                              whileTap={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) ? { scale: 0.98 } : {}}
                               className={`
                                 p-2 sm:p-4 rounded-lg transition-all duration-200 relative text-center
-                                ${selectedTime === `${hour.toString().padStart(2, '0')}:30`
+                                ${bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`)
+                                  ? 'bg-red-500/60 text-white/50 cursor-not-allowed'
+                                  : selectedTime === `${hour.toString().padStart(2, '0')}:30`
                                   ? 'bg-[#00d4ff] text-white'
                                   : 'bg-white/5 hover:bg-white/10 text-white'}
                               `}
@@ -567,7 +641,12 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                               <span className="text-sm sm:text-base font-medium">
                                 {hour}:30
                               </span>
-                              {selectedTime === `${hour.toString().padStart(2, '0')}:30` && (
+                              {bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <span className="text-xs text-white/40">Bezet</span>
+                                </div>
+                              )}
+                              {selectedTime === `${hour.toString().padStart(2, '0')}:30` && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) && (
                                 <motion.div
                                   initial={{ scale: 0 }}
                                   animate={{ scale: 1 }}
