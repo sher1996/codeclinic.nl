@@ -90,8 +90,8 @@ export default function Header() {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 bg-black/80 z-40" onClick={closeMobileMenu}>
-          <div className="absolute top-0 left-0 right-0 bg-[rgba(14,23,53,0.98)] border-b border-white/10">
+        <div className="md:hidden fixed inset-0 z-40" onClick={closeMobileMenu}>
+          <div className="absolute top-16 left-0 right-0 bg-[rgba(14,23,53,0.98)] border-b border-white/10">
             <nav className="flex flex-col py-4">
               <Link 
                 href="#diensten" 

@@ -265,10 +265,10 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
         </>
       )}
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-24 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-24 lg:px-8">
         <div className={`mx-auto max-w-2xl rounded-2xl ${isLowEnd ? 'bg-white/5' : 'ring-1 ring-white/10'} lg:mx-0 lg:flex lg:max-w-none`}>
-          <div className="p-4 sm:p-8 lg:flex-auto">
-            <div className={`w-full max-w-4xl mx-auto ${isLowEnd ? 'bg-white/5' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-4 sm:p-6 shadow-xl`}>
+          <div className="p-3 sm:p-8 lg:flex-auto">
+            <div className={`w-full max-w-4xl mx-auto ${isLowEnd ? 'bg-white/5' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-3 sm:p-6 shadow-xl`}>
               <AnimatePresence mode="wait">
                 {!selectedDate ? (
                   <motion.div
@@ -279,7 +279,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                     transition={{ duration: 0.2 }}
                     className="w-full"
                   >
-                    <div className="flex justify-between items-center mb-4 sm:mb-6">
+                    <div className="flex justify-between items-center mb-3 sm:mb-6">
                       <button
                         onClick={handlePrevMonth}
                         className="p-2 sm:p-3 hover:bg-white/10 rounded-lg transition-colors text-lg sm:text-xl"
@@ -340,7 +340,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                     transition={{ duration: 0.2 }}
                     className="w-full"
                   >
-                    <div className="flex items-center justify-between mb-4 sm:mb-6">
+                    <div className="flex items-center justify-between mb-3 sm:mb-6">
                       <button
                         onClick={() => setSelectedTime(null)}
                         className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm"
@@ -352,14 +352,14 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                       </div>
                     </div>
 
-                    <div className={`${isLowEnd ? 'bg-transparent' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-4 sm:p-6 border border-white/10`}>
-                      <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white/5 rounded-lg">
+                    <div className={`${isLowEnd ? 'bg-transparent' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-3 sm:p-6 border border-white/10`}>
+                      <div className="mb-3 sm:mb-6 p-2 sm:p-4 bg-white/5 rounded-lg">
                         <p className="text-sm text-white/60">Geselecteerde tijd</p>
                         <p className="text-base sm:text-lg font-medium">{selectedTime}</p>
                         <p className="text-sm text-white/60">{formatDateShort(selectedDate)}</p>
                       </div>
 
-                      <form onSubmit={handleSubmit} className="space-y-4">
+                      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                         <div>
                           <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Naam</label>
                           <input
@@ -367,7 +367,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
-                            className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                            className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                             required
                           />
                         </div>
@@ -378,7 +378,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                            className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                             required
                           />
                         </div>
@@ -389,11 +389,11 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                            className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                             required
                           />
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                           <div>
                             <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Straat</label>
                             <input
@@ -401,7 +401,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                               name="street"
                               value={formData.street}
                               onChange={handleInputChange}
-                              className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                              className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                               required
                             />
                           </div>
@@ -412,12 +412,12 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                               name="houseNumber"
                               value={formData.houseNumber}
                               onChange={handleInputChange}
-                              className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                              className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                               required
                             />
                           </div>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                           <div>
                             <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Postcode</label>
                             <input
@@ -426,7 +426,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                               value={formData.postalCode}
                               onChange={handleInputChange}
                               placeholder="1234 AB"
-                              className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                              className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                               required
                             />
                           </div>
@@ -437,7 +437,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                               name="city"
                               value={formData.city}
                               onChange={handleInputChange}
-                              className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                              className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                               required
                             />
                           </div>
@@ -448,8 +448,8 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                             name="notes"
                             value={formData.notes}
                             onChange={handleInputChange}
-                            className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
-                            rows={3}
+                            className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                            rows={2}
                           />
                         </div>
                         
@@ -458,7 +458,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                             type="submit"
                             disabled={isSubmitting}
                             className={`
-                              w-full py-4 px-4 rounded-lg font-medium transition-all duration-200 text-base
+                              w-full py-3 sm:py-4 px-4 rounded-lg font-medium transition-all duration-200 text-base
                               ${isSubmitting 
                                 ? 'bg-white/20 cursor-not-allowed' 
                                 : 'bg-[#00d4ff] hover:bg-[#00b8e6] text-white'}
@@ -507,7 +507,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                     transition={{ duration: 0.2 }}
                     className="w-full"
                   >
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
                       <button
                         onClick={() => setSelectedDate(null)}
                         className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm"
@@ -521,8 +521,8 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                       </div>
                     </div>
 
-                    <div className={`${isLowEnd ? 'bg-transparent' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-4 sm:p-6 border border-white/10`}>
-                      <h3 className="text-base font-medium mb-4 text-[#00d4ff]">
+                    <div className={`${isLowEnd ? 'bg-transparent' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-3 sm:p-6 border border-white/10`}>
+                      <h3 className="text-base font-medium mb-3 sm:mb-4 text-[#00d4ff]">
                         Beschikbare tijden
                       </h3>
 
@@ -535,7 +535,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                               whileHover={!isLowEnd ? { scale: 1.02 } : {}}
                               whileTap={!isLowEnd ? { scale: 0.98 } : {}}
                               className={`
-                                p-3 sm:p-4 rounded-lg transition-all duration-200 relative text-center
+                                p-2 sm:p-4 rounded-lg transition-all duration-200 relative text-center
                                 ${selectedTime === `${hour.toString().padStart(2, '0')}:00`
                                   ? 'bg-[#00d4ff] text-white'
                                   : 'bg-white/5 hover:bg-white/10 text-white'}
@@ -558,7 +558,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                               whileHover={!isLowEnd ? { scale: 1.02 } : {}}
                               whileTap={!isLowEnd ? { scale: 0.98 } : {}}
                               className={`
-                                p-3 sm:p-4 rounded-lg transition-all duration-200 relative text-center
+                                p-2 sm:p-4 rounded-lg transition-all duration-200 relative text-center
                                 ${selectedTime === `${hour.toString().padStart(2, '0')}:30`
                                   ? 'bg-[#00d4ff] text-white'
                                   : 'bg-white/5 hover:bg-white/10 text-white'}
