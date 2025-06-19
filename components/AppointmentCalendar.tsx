@@ -265,10 +265,10 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
         </>
       )}
 
-      <div className="relative mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-24 lg:px-8">
         <div className={`mx-auto max-w-2xl rounded-2xl ${isLowEnd ? 'bg-white/5' : 'ring-1 ring-white/10'} lg:mx-0 lg:flex lg:max-w-none`}>
-          <div className="p-8 sm:p-10 lg:flex-auto">
-            <div className={`w-full max-w-4xl mx-auto ${isLowEnd ? 'bg-white/5' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-6 shadow-xl`}>
+          <div className="p-4 sm:p-8 lg:flex-auto">
+            <div className={`w-full max-w-4xl mx-auto ${isLowEnd ? 'bg-white/5' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-4 sm:p-6 shadow-xl`}>
               <AnimatePresence mode="wait">
                 {!selectedDate ? (
                   <motion.div
@@ -279,49 +279,49 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                     transition={{ duration: 0.2 }}
                     className="w-full"
                   >
-                    <div className="flex justify-between items-center mb-6">
+                    <div className="flex justify-between items-center mb-4 sm:mb-6">
                       <button
                         onClick={handlePrevMonth}
-                        className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                        className="p-2 sm:p-3 hover:bg-white/10 rounded-lg transition-colors text-lg sm:text-xl"
                       >
                         ←
                       </button>
-                      <h2 className="text-xl font-semibold">
+                      <h2 className="text-lg sm:text-xl font-semibold text-center">
                         {formatMonthYear(currentDate)}
                       </h2>
                       <button
                         onClick={handleNextMonth}
-                        className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                        className="p-2 sm:p-3 hover:bg-white/10 rounded-lg transition-colors text-lg sm:text-xl"
                       >
                         →
                       </button>
                     </div>
 
-                    <div className="grid grid-cols-7 gap-2 mb-4">
+                    <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-3 sm:mb-4">
                       {weekDays.map(day => (
-                        <div key={day} className="text-center text-sm font-medium text-gray-400">
+                        <div key={day} className="text-center text-xs sm:text-sm font-medium text-gray-400 p-1">
                           {day}
                         </div>
                       ))}
                     </div>
 
-                    <div className="grid grid-cols-7 gap-2">
+                    <div className="grid grid-cols-7 gap-1 sm:gap-2">
                       {days.map((day, index) => (
                         <button
                           key={index}
                           onClick={() => handleDateClick(day)}
                           className={`
-                            p-2 rounded-lg text-center transition-colors relative
+                            aspect-square p-1 sm:p-2 rounded-lg text-center transition-colors relative min-h-[40px] sm:min-h-[50px]
                             ${!day ? 'opacity-0' : ''}
                             ${day && isSelected(day) ? 'bg-blue-500 text-white' : ''}
                             ${day && isToday(day) && !isSelected(day) ? 'bg-blue-500/20' : ''}
                             ${day && !isSelected(day) && !isToday(day) ? 'hover:bg-white/10' : ''}
                           `}
                         >
-                          <div className="flex flex-col items-center">
-                            <span>{day?.getDate()}</span>
+                          <div className="flex flex-col items-center justify-center h-full">
+                            <span className="text-sm sm:text-base font-medium">{day?.getDate()}</span>
                             {day && isToday(day) && (
-                              <span className="text-xs text-[#00d4ff] font-medium mt-1">Vandaag</span>
+                              <span className="text-xs text-[#00d4ff] font-medium mt-0.5">Vandaag</span>
                             )}
                           </div>
                           {day && isToday(day) && (
@@ -340,7 +340,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                     transition={{ duration: 0.2 }}
                     className="w-full"
                   >
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center justify-between mb-4 sm:mb-6">
                       <button
                         onClick={() => setSelectedTime(null)}
                         className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm"
@@ -348,14 +348,14 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                         ← Terug naar tijden
                       </button>
                       <div className="text-center">
-                        <h2 className="text-lg font-semibold">Afspraak maken</h2>
+                        <h2 className="text-base sm:text-lg font-semibold">Afspraak maken</h2>
                       </div>
                     </div>
 
-                    <div className={`${isLowEnd ? 'bg-transparent' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-6 border border-white/10`}>
-                      <div className="mb-6 p-4 bg-white/5 rounded-lg">
+                    <div className={`${isLowEnd ? 'bg-transparent' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-4 sm:p-6 border border-white/10`}>
+                      <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-white/5 rounded-lg">
                         <p className="text-sm text-white/60">Geselecteerde tijd</p>
-                        <p className="text-lg font-medium">{selectedTime}</p>
+                        <p className="text-base sm:text-lg font-medium">{selectedTime}</p>
                         <p className="text-sm text-white/60">{formatDateShort(selectedDate)}</p>
                       </div>
 
@@ -367,7 +367,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
-                            className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                            className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                             required
                           />
                         </div>
@@ -378,7 +378,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                            className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                             required
                           />
                         </div>
@@ -389,11 +389,11 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                            className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                             required
                           />
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Straat</label>
                             <input
@@ -401,7 +401,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                               name="street"
                               value={formData.street}
                               onChange={handleInputChange}
-                              className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                              className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                               required
                             />
                           </div>
@@ -412,12 +412,12 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                               name="houseNumber"
                               value={formData.houseNumber}
                               onChange={handleInputChange}
-                              className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                              className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                               required
                             />
                           </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Postcode</label>
                             <input
@@ -426,7 +426,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                               value={formData.postalCode}
                               onChange={handleInputChange}
                               placeholder="1234 AB"
-                              className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                              className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                               required
                             />
                           </div>
@@ -437,7 +437,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                               name="city"
                               value={formData.city}
                               onChange={handleInputChange}
-                              className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                              className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                               required
                             />
                           </div>
@@ -448,7 +448,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                             name="notes"
                             value={formData.notes}
                             onChange={handleInputChange}
-                            className="w-full p-2 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none"
+                            className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
                             rows={3}
                           />
                         </div>
@@ -458,7 +458,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                             type="submit"
                             disabled={isSubmitting}
                             className={`
-                              w-full py-3 px-4 rounded-lg font-medium transition-all duration-200
+                              w-full py-4 px-4 rounded-lg font-medium transition-all duration-200 text-base
                               ${isSubmitting 
                                 ? 'bg-white/20 cursor-not-allowed' 
                                 : 'bg-[#00d4ff] hover:bg-[#00b8e6] text-white'}
@@ -515,113 +515,68 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                         ← Terug
                       </button>
                       <div className="text-center">
-                        <h2 className="text-lg font-semibold">
+                        <h2 className="text-base sm:text-lg font-semibold">
                           {formatDateShort(selectedDate)}
                         </h2>
                       </div>
                     </div>
 
-                    <div className={`${isLowEnd ? 'bg-transparent' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-6 border border-white/10`}>
+                    <div className={`${isLowEnd ? 'bg-transparent' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-4 sm:p-6 border border-white/10`}>
                       <h3 className="text-base font-medium mb-4 text-[#00d4ff]">
                         Beschikbare tijden
                       </h3>
 
-                      <div className="relative">
-                        {/* Time markers */}
-                        <div className="absolute left-0 top-0 bottom-0 w-16 flex flex-col">
-                          {Array.from({ length: 8 }, (_, i) => i + 9).map(hour => (
-                            <div key={hour} className="h-16 flex items-center justify-end pr-4 text-sm text-white/40">
-                              {hour}:00
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Time slots grid */}
-                        <div className="ml-16">
-                          {Array.from({ length: 8 }, (_, i) => i + 9).map((hour, index) => (
-                            <motion.div 
-                              key={hour} 
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ 
-                                delay: index * 0.03, 
-                                duration: 0.2
-                              }}
-                              className="h-16 border-b border-white/10 relative"
+                      {/* Mobile-optimized time grid */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+                        {Array.from({ length: 8 }, (_, i) => i + 9).map((hour, index) => (
+                          <React.Fragment key={hour}>
+                            <motion.button
+                              onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:00`)}
+                              whileHover={!isLowEnd ? { scale: 1.02 } : {}}
+                              whileTap={!isLowEnd ? { scale: 0.98 } : {}}
+                              className={`
+                                p-3 sm:p-4 rounded-lg transition-all duration-200 relative text-center
+                                ${selectedTime === `${hour.toString().padStart(2, '0')}:00`
+                                  ? 'bg-[#00d4ff] text-white'
+                                  : 'bg-white/5 hover:bg-white/10 text-white'}
+                              `}
                             >
-                              {/* Hour marker line */}
-                              <div className="absolute left-0 right-0 top-0 h-px bg-white/10" />
-                              
-                              {/* Time slots for this hour */}
-                              <div className="flex h-full">
-                                <motion.button
-                                  onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:00`)}
-                                  whileHover={!isLowEnd ? { scale: 1.02 } : {}}
-                                  whileTap={!isLowEnd ? { scale: 0.98 } : {}}
-                                  className={`
-                                    flex-1 h-full transition-all duration-200 relative
-                                    ${selectedTime === `${hour.toString().padStart(2, '0')}:00`
-                                      ? 'bg-[#00d4ff] text-white'
-                                      : 'hover:bg-white/5'}
-                                  `}
-                                >
-                                  <span className="absolute inset-0 flex items-center justify-center text-sm font-medium">
-                                    {hour}:00
-                                  </span>
-                                  {selectedTime === `${hour.toString().padStart(2, '0')}:00` && (
-                                    <motion.div
-                                      initial={{ scale: 0 }}
-                                      animate={{ scale: 1 }}
-                                      className="absolute inset-0 bg-[#00d4ff]/20 animate-pulse pointer-events-none"
-                                    />
-                                  )}
-                                </motion.button>
-                                
-                                <motion.button
-                                  onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:30`)}
-                                  whileHover={!isLowEnd ? { scale: 1.02 } : {}}
-                                  whileTap={!isLowEnd ? { scale: 0.98 } : {}}
-                                  className={`
-                                    flex-1 h-full transition-all duration-200 relative
-                                    ${selectedTime === `${hour.toString().padStart(2, '0')}:30`
-                                      ? 'bg-[#00d4ff] text-white'
-                                      : 'hover:bg-white/5'}
-                                  `}
-                                >
-                                  <span className="absolute inset-0 flex items-center justify-center text-sm font-medium">
-                                    {hour}:30
-                                  </span>
-                                  {selectedTime === `${hour.toString().padStart(2, '0')}:30` && (
-                                    <motion.div
-                                      initial={{ scale: 0 }}
-                                      animate={{ scale: 1 }}
-                                      className="absolute inset-0 bg-[#00d4ff]/20 animate-pulse pointer-events-none"
-                                    />
-                                  )}
-                                </motion.button>
-                              </div>
-                            </motion.div>
-                          ))}
-                        </div>
-
-                        {/* Current time indicator */}
-                        {(() => {
-                          const now = new Date();
-                          const currentHour = now.getHours();
-                          const currentMinute = now.getMinutes();
-                          const isWithinBusinessHours = currentHour >= 9 && currentHour <= 16;
-                          
-                          return isWithinBusinessHours && (
-                            <div 
-                              className="absolute left-0 right-0 h-px bg-[#00d4ff] pointer-events-none"
-                              style={{
-                                top: `${((currentHour - 9 + currentMinute / 60) / 8) * 100}%`
-                              }}
+                              <span className="text-sm sm:text-base font-medium">
+                                {hour}:00
+                              </span>
+                              {selectedTime === `${hour.toString().padStart(2, '0')}:00` && (
+                                <motion.div
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: 1 }}
+                                  className="absolute inset-0 bg-[#00d4ff]/20 animate-pulse pointer-events-none rounded-lg"
+                                />
+                              )}
+                            </motion.button>
+                            
+                            <motion.button
+                              onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:30`)}
+                              whileHover={!isLowEnd ? { scale: 1.02 } : {}}
+                              whileTap={!isLowEnd ? { scale: 0.98 } : {}}
+                              className={`
+                                p-3 sm:p-4 rounded-lg transition-all duration-200 relative text-center
+                                ${selectedTime === `${hour.toString().padStart(2, '0')}:30`
+                                  ? 'bg-[#00d4ff] text-white'
+                                  : 'bg-white/5 hover:bg-white/10 text-white'}
+                              `}
                             >
-                              <div className="absolute -left-2 -top-1.5 w-3 h-3 rounded-full bg-[#00d4ff]" />
-                            </div>
-                          );
-                        })()}
+                              <span className="text-sm sm:text-base font-medium">
+                                {hour}:30
+                              </span>
+                              {selectedTime === `${hour.toString().padStart(2, '0')}:30` && (
+                                <motion.div
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: 1 }}
+                                  className="absolute inset-0 bg-[#00d4ff]/20 animate-pulse pointer-events-none rounded-lg"
+                                />
+                              )}
+                            </motion.button>
+                          </React.Fragment>
+                        ))}
                       </div>
                     </div>
                   </motion.div>
