@@ -39,10 +39,20 @@ async function isTimeSlotAvailable(date: string, time: string): Promise<boolean>
 
 // Helper to validate date is not in the past
 function isValidDate(date: string): boolean {
-  const bookingDate = new Date(date);
+  // Create booking date at midnight local time
+  const bookingDate = new Date(date + 'T00:00:00');
+  
+  // Create today's date at midnight local time
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return bookingDate >= today;
+  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  
+  console.log('[calendar] Validating date:', {
+    bookingDate: bookingDate.toISOString(),
+    todayMidnight: todayMidnight.toISOString(),
+    isValid: bookingDate >= todayMidnight
+  });
+  
+  return bookingDate >= todayMidnight;
 }
 
 export async function GET(request: Request) {
@@ -89,11 +99,17 @@ export async function POST(request: Request) {
 
   try {
     const data = await request.json();
+    console.log('[calendar] Received booking data:', data);
+    
     const validated = bookingSchema.parse(data);
+    console.log('[calendar] Validated data:', validated);
 
     if (!isValidDate(validated.date)) {
+      console.log('[calendar] Date validation failed for:', validated.date);
       return NextResponse.json({ ok: false, error: 'Cannot book in the past' }, { status: 400 });
     }
+
+    console.log('[calendar] Date validation passed for:', validated.date);
 
     const [h, m] = validated.time.split(':').map(Number);
     const startTime = new Date(validated.date);
@@ -130,6 +146,7 @@ export async function POST(request: Request) {
     }, { status: 201 });
   } catch (err) {
     if (err instanceof z.ZodError) {
+      console.log('[calendar] Validation error:', err.errors);
       return NextResponse.json({ ok: false, error: 'Invalid data', details: err.errors }, { status: 400 });
     }
     console.error('POST error:', err);
