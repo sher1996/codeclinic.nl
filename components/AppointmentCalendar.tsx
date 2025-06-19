@@ -273,6 +273,28 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
       date.getFullYear() === selectedDate.getFullYear();
   };
 
+  const isPastDate = (date: Date) => {
+    // Get today's date at midnight (start of day)
+    const today = new Date();
+    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
+    // Get tomorrow's date at midnight
+    const tomorrowDate = new Date(todayDate);
+    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+    
+    // Set input date to midnight for proper comparison
+    const inputDateMidnight = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    
+    return inputDateMidnight < tomorrowDate;
+  };
+
+  const isPastTime = (date: Date, time: string) => {
+    const today = new Date();
+    const [hours, minutes] = time.split(':').map(Number);
+    const slotTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), hours, minutes);
+    return slotTime <= today;
+  };
+
   // Generate days for the current month
   const days = (() => {
     const year = currentDate.getFullYear();
@@ -350,21 +372,23 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                         <button
                           key={index}
                           onClick={() => handleDateClick(day)}
+                          disabled={day ? isPastDate(day) : false}
                           className={`
                             aspect-square p-1 sm:p-2 rounded-lg text-center transition-colors relative min-h-[40px] sm:min-h-[50px]
                             ${!day ? 'opacity-0' : ''}
-                            ${day && isSelected(day) ? 'bg-blue-500 text-white' : ''}
-                            ${day && isToday(day) && !isSelected(day) ? 'bg-blue-500/20' : ''}
-                            ${day && !isSelected(day) && !isToday(day) ? 'hover:bg-white/10' : ''}
+                            ${day && isPastDate(day) ? 'opacity-30 cursor-not-allowed bg-gray-600/20' : ''}
+                            ${day && !isPastDate(day) && isSelected(day) ? 'bg-[#00d4ff] text-white' : ''}
+                            ${day && !isPastDate(day) && isToday(day) && !isSelected(day) ? 'bg-[#00d4ff]/20' : ''}
+                            ${day && !isPastDate(day) && !isSelected(day) && !isToday(day) ? 'hover:bg-white/10' : ''}
                           `}
                         >
                           <div className="flex flex-col items-center justify-center h-full">
                             <span className="text-sm sm:text-base font-medium">{day?.getDate()}</span>
-                            {day && isToday(day) && (
+                            {day && isToday(day) && !isPastDate(day) && (
                               <span className="text-xs text-[#00d4ff] font-medium mt-0.5">Vandaag</span>
                             )}
                           </div>
-                          {day && isToday(day) && (
+                          {day && isToday(day) && !isPastDate(day) && (
                             <div className="absolute inset-0 rounded-lg bg-[#00d4ff]/20 animate-pulse pointer-events-none" />
                           )}
                         </button>
@@ -576,16 +600,8 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                       {/* Legend */}
                       <div className="flex flex-wrap gap-4 mb-4 text-xs sm:text-sm">
                         <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 bg-white/5 rounded"></div>
-                          <span className="text-white/70">Beschikbaar</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 bg-red-500/60 rounded"></div>
+                          <div className="w-3 h-3 bg-gray-900/40 rounded border border-gray-700/40"></div>
                           <span className="text-white/70">Bezet</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 bg-[#00d4ff] rounded"></div>
-                          <span className="text-white/70">Geselecteerd</span>
                         </div>
                       </div>
 
@@ -593,67 +609,59 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                         {Array.from({ length: 8 }, (_, i) => i + 9).map((hour, index) => (
                           <React.Fragment key={hour}>
-                            <motion.button
-                              onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:00`)}
-                              disabled={bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`)}
-                              whileHover={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) ? { scale: 1.02 } : {}}
-                              whileTap={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) ? { scale: 0.98 } : {}}
-                              className={`
-                                p-2 sm:p-4 rounded-lg transition-all duration-200 relative text-center
-                                ${bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`)
-                                  ? 'bg-red-500/60 text-white/50 cursor-not-allowed'
-                                  : selectedTime === `${hour.toString().padStart(2, '0')}:00`
-                                  ? 'bg-[#00d4ff] text-white'
-                                  : 'bg-white/5 hover:bg-white/10 text-white'}
-                              `}
-                            >
-                              <span className="text-sm sm:text-base font-medium">
-                                {hour}:00
-                              </span>
-                              {bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) && (
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                  <span className="text-xs text-white/40">Bezet</span>
-                                </div>
-                              )}
-                              {selectedTime === `${hour.toString().padStart(2, '0')}:00` && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) && (
-                                <motion.div
-                                  initial={{ scale: 0 }}
-                                  animate={{ scale: 1 }}
-                                  className="absolute inset-0 bg-[#00d4ff]/20 animate-pulse pointer-events-none rounded-lg"
-                                />
-                              )}
-                            </motion.button>
+                            {!isPastTime(selectedDate!, `${hour.toString().padStart(2, '0')}:00`) && (
+                              <motion.button
+                                onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:00`)}
+                                disabled={bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`)}
+                                whileHover={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) ? { scale: 1.02 } : {}}
+                                whileTap={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) ? { scale: 0.98 } : {}}
+                                className={`
+                                  p-2 sm:p-4 rounded-lg transition-all duration-200 relative text-center border
+                                  ${bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`)
+                                    ? 'bg-gray-900/40 border-gray-700/40 text-gray-500 cursor-not-allowed'
+                                    : 'bg-green-500/60 hover:bg-green-500/80 text-white border-green-500/40 cursor-pointer'}
+                                `}
+                              >
+                                <span className="text-sm sm:text-base font-medium">
+                                  {hour}:00
+                                </span>
+                                {selectedTime === `${hour.toString().padStart(2, '0')}:00` && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) && (
+                                  <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    className="absolute inset-0 bg-[#00d4ff]/20 animate-pulse pointer-events-none rounded-lg"
+                                  />
+                                )}
+                              </motion.button>
+                            )}
                             
-                            <motion.button
-                              onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:30`)}
-                              disabled={bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`)}
-                              whileHover={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) ? { scale: 1.02 } : {}}
-                              whileTap={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) ? { scale: 0.98 } : {}}
-                              className={`
-                                p-2 sm:p-4 rounded-lg transition-all duration-200 relative text-center
-                                ${bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`)
-                                  ? 'bg-red-500/60 text-white/50 cursor-not-allowed'
-                                  : selectedTime === `${hour.toString().padStart(2, '0')}:30`
-                                  ? 'bg-[#00d4ff] text-white'
-                                  : 'bg-white/5 hover:bg-white/10 text-white'}
-                              `}
-                            >
-                              <span className="text-sm sm:text-base font-medium">
-                                {hour}:30
-                              </span>
-                              {bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) && (
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                  <span className="text-xs text-white/40">Bezet</span>
-                                </div>
-                              )}
-                              {selectedTime === `${hour.toString().padStart(2, '0')}:30` && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) && (
-                                <motion.div
-                                  initial={{ scale: 0 }}
-                                  animate={{ scale: 1 }}
-                                  className="absolute inset-0 bg-[#00d4ff]/20 animate-pulse pointer-events-none rounded-lg"
-                                />
-                              )}
-                            </motion.button>
+                            {!isPastTime(selectedDate!, `${hour.toString().padStart(2, '0')}:30`) && (
+                              <motion.button
+                                onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:30`)}
+                                disabled={bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`)}
+                                whileHover={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) ? { scale: 1.02 } : {}}
+                                whileTap={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) ? { scale: 0.98 } : {}}
+                                className={`
+                                  p-2 sm:p-4 rounded-lg transition-all duration-200 relative text-center border
+                                  ${bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`)
+                                    ? 'bg-gray-900/40 border-gray-700/40 text-gray-500 cursor-not-allowed'
+                                    : selectedTime === `${hour.toString().padStart(2, '0')}:30`
+                                    ? 'bg-[#00d4ff] border-[#00d4ff] text-white'
+                                    : 'bg-green-500/60 hover:bg-green-500/80 text-white border-green-500/40'}
+                                `}
+                              >
+                                <span className="text-sm sm:text-base font-medium">
+                                  {hour}:30
+                                </span>
+                                {selectedTime === `${hour.toString().padStart(2, '0')}:30` && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) && (
+                                  <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    className="absolute inset-0 bg-[#00d4ff]/20 animate-pulse pointer-events-none rounded-lg"
+                                  />
+                                )}
+                              </motion.button>
+                            )}
                           </React.Fragment>
                         ))}
                       </div>
