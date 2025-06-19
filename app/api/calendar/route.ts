@@ -119,10 +119,12 @@ export async function POST(request: Request) {
     const endTime = new Date(startTime);
     endTime.setMinutes(endTime.getMinutes() + 30);
 
+    console.log('[calendar] Checking time slot availability...');
     if (!(await isTimeSlotAvailable(validated.date, validated.time))) {
       return NextResponse.json({ ok: false, error: 'Slot already booked' }, { status: 409 });
     }
 
+    console.log('[calendar] Creating booking in database...');
     const booking = await prisma.booking.create({ data: {
       name: validated.name,
       email: validated.email,
@@ -131,6 +133,8 @@ export async function POST(request: Request) {
       time: validated.time,
       notes: validated.notes,
     }});
+
+    console.log('[calendar] Booking created successfully:', booking);
 
     return NextResponse.json({
       ok: true,
@@ -146,12 +150,23 @@ export async function POST(request: Request) {
         updatedAt: booking.updatedAt,
       }
     }, { status: 201 });
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof z.ZodError) {
       console.log('[calendar] Validation error:', err.errors);
       return NextResponse.json({ ok: false, error: 'Invalid data', details: err.errors }, { status: 400 });
     }
-    console.error('POST error:', err);
-    return NextResponse.json({ ok: false, error: 'Server error' }, { status: 500 });
+    
+    // Log the full error details
+    console.error('[calendar] POST error details:', {
+      message: err.message,
+      stack: err.stack,
+      name: err.name
+    });
+    
+    return NextResponse.json({ 
+      ok: false, 
+      error: 'Server error',
+      details: process.env.NODE_ENV === 'development' ? err.message : 'Database connection failed'
+    }, { status: 500 });
   }
 } 
