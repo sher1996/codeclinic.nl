@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
 import ContrastTest from '@/components/ContrastTest';
 import ErrorOverlay from '@/components/ErrorOverlay';
+import HiddenAdminAccess from '@/components/HiddenAdminAccess';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -64,6 +65,9 @@ export default function RootLayout({
             {children}
           </main>
         </div>
+
+        {/* Hidden Admin Access */}
+        <HiddenAdminAccess />
 
         {/* Error overlay - rendered at root level */}
         <div id="error-overlay-root" style={{ position: 'relative', zIndex: 2147483647 }} />

@@ -280,14 +280,11 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
     const today = new Date();
     const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     
-    // Get tomorrow's date at midnight
-    const tomorrowDate = new Date(todayDate);
-    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-    
     // Set input date to midnight for proper comparison
     const inputDateMidnight = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     
-    return inputDateMidnight < tomorrowDate;
+    // A date is past if it's before today (not including today)
+    return inputDateMidnight < todayDate;
   };
 
   const isPastTime = (date: Date, time: string) => {
