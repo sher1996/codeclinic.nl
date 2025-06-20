@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { Resend } from 'resend';
 
 // Import Upstash Redis
 import { Redis } from '@upstash/redis';
@@ -8,6 +9,8 @@ const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Validation schema for booking data
 const bookingSchema = z.object({
@@ -105,6 +108,41 @@ async function atomicBookSlot(bookingData: any): Promise<{ success: boolean; err
   }
 }
 
+// Function to send admin notification email
+async function sendAdminNotification(booking: any) {
+  if (!process.env.ADMIN_EMAIL || !process.env.RESEND_API_KEY) {
+    console.log('[calendar] Admin email not configured, skipping notification');
+    return;
+  }
+
+  try {
+    const html = `
+      <h2>Nieuwe afspraak geboekt!</h2>
+      <p><strong>Naam:</strong> ${booking.name}</p>
+      <p><strong>Email:</strong> ${booking.email}</p>
+      <p><strong>Telefoon:</strong> ${booking.phone}</p>
+      <p><strong>Datum:</strong> ${booking.date}</p>
+      <p><strong>Tijd:</strong> ${booking.time}</p>
+      <p><strong>Notities:</strong> ${booking.notes || 'Geen notities'}</p>
+      <p><strong>Boekingsnummer:</strong> ${booking.id}</p>
+      <p><strong>Geboekt op:</strong> ${new Date(booking.createdAt).toLocaleString('nl-NL')}</p>
+    `;
+
+    await resend.emails.send({
+      from: "Computer Help <onboarding@resend.dev>",
+      to: process.env.ADMIN_EMAIL,
+      subject: `Nieuwe afspraak: ${booking.name} - ${booking.date} om ${booking.time}`,
+      html,
+      text: `Nieuwe afspraak geboekt!\n\nNaam: ${booking.name}\nEmail: ${booking.email}\nTelefoon: ${booking.phone}\nDatum: ${booking.date}\nTijd: ${booking.time}\nNotities: ${booking.notes || 'Geen notities'}\nBoekingsnummer: ${booking.id}\nGeboekt op: ${new Date(booking.createdAt).toLocaleString('nl-NL')}`,
+    });
+
+    console.log('[calendar] Admin notification sent successfully');
+  } catch (error: any) {
+    console.error('[calendar] Failed to send admin notification:', error);
+    // Don't fail the booking if admin notification fails
+  }
+}
+
 export async function GET(request: Request) {
   const rawBookings = await redis.lrange('bookings', 0, -1);
   const bookings = [];
@@ -156,6 +194,9 @@ export async function POST(request: Request) {
     if (!result.success) {
       return NextResponse.json({ ok: false, error: result.error }, { status: 409 });
     }
+
+    // Send admin notification email
+    await sendAdminNotification(result.booking);
 
     return NextResponse.json({ ok: true, booking: result.booking }, { status: 201 });
   } catch (err: any) {
