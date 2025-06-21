@@ -1,24 +1,14 @@
 import { NextResponse } from 'next/server';
 
-export async function GET(request: Request) {
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  
-  const tomorrowString = tomorrow.toISOString().split('T')[0];
-  
-  // Test the validation logic
-  const [year, month, day] = tomorrowString.split('-').map(Number);
-  const bookingDate = new Date(year, month - 1, day);
-  
+export async function GET() {
   return NextResponse.json({
-    currentTime: now.toISOString(),
-    today: today.toISOString(),
-    tomorrow: tomorrow.toISOString(),
-    tomorrowString,
-    bookingDate: bookingDate.toISOString(),
-    isValid: bookingDate >= tomorrow,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    ok: true,
+    message: "Environment test endpoint",
+    env: {
+      hasResendKey: !!process.env.RESEND_API_KEY,
+      hasAdminEmail: !!process.env.ADMIN_EMAIL,
+      hasRedisUrl: !!process.env.UPSTASH_REDIS_REST_URL,
+      hasRedisToken: !!process.env.UPSTASH_REDIS_REST_TOKEN,
+    }
   });
 } 

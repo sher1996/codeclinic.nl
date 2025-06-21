@@ -124,10 +124,11 @@ Computer Help`;
 
     console.log('[send-email] Email sent successfully:', result);
     return NextResponse.json({ ok: true, message: "Email sent successfully", result });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[send-email] Resend error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { ok: false, error: "Mail service failed", details: error.message },
+      { ok: false, error: "Mail service failed", details: errorMessage },
       { status: 502 },
     );
   }

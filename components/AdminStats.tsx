@@ -87,12 +87,12 @@ export default function AdminStats({ bookings }: AdminStatsProps) {
     <div className="space-y-6">
       {/* Statistics Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, index) => (
+        {stats.map((stat) => (
           <motion.div
             key={stat.title}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: 0.1 }}
             className={`bg-gradient-to-r ${stat.color} rounded-lg p-4 text-white`}
           >
             <div className="flex items-center justify-between">

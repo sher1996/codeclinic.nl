@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { Redis } from '@upstash/redis';
+import { Booking, BookingUpdateData } from '@/types/booking';
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
@@ -36,16 +37,16 @@ function isValidDate(date: string): boolean {
 }
 
 // Find booking by ID
-async function findBookingById(bookingId: string): Promise<any | null> {
+async function findBookingById(bookingId: string): Promise<Booking | null> {
   const rawBookings = await redis.lrange('bookings', 0, -1);
   
   for (const b of rawBookings) {
     try {
-      let booking;
+      let booking: Booking;
       if (typeof b === 'string') {
         booking = JSON.parse(b);
       } else {
-        booking = b;
+        booking = b as Booking;
       }
       
       if (booking.id === bookingId) {
@@ -60,23 +61,23 @@ async function findBookingById(bookingId: string): Promise<any | null> {
 }
 
 // Update booking in Redis
-async function updateBookingInRedis(bookingId: string, updatedBooking: any): Promise<boolean> {
+async function updateBookingInRedis(bookingId: string, updatedBooking: BookingUpdateData): Promise<boolean> {
   const rawBookings = await redis.lrange('bookings', 0, -1);
   const updatedBookings = [];
   let found = false;
   
   for (const b of rawBookings) {
     try {
-      let booking;
+      let booking: Booking;
       if (typeof b === 'string') {
         booking = JSON.parse(b);
       } else {
-        booking = b;
+        booking = b as Booking;
       }
       
       if (booking.id === bookingId) {
         // Update the booking
-        const newBooking = {
+        const newBooking: Booking = {
           ...booking,
           ...updatedBooking,
           updatedAt: new Date().toISOString()
@@ -112,11 +113,11 @@ async function deleteBookingFromRedis(bookingId: string): Promise<boolean> {
   
   for (const b of rawBookings) {
     try {
-      let booking;
+      let booking: Booking;
       if (typeof b === 'string') {
         booking = JSON.parse(b);
       } else {
-        booking = b;
+        booking = b as Booking;
       }
       
       if (booking.id !== bookingId) {
@@ -203,11 +204,11 @@ export async function PUT(
     const rawBookings = await redis.lrange('bookings', 0, -1);
     for (const b of rawBookings) {
       try {
-        let booking;
+        let booking: Booking;
         if (typeof b === 'string') {
           booking = JSON.parse(b);
         } else {
-          booking = b;
+          booking = b as Booking;
         }
         
         // Skip the current booking being updated
@@ -242,7 +243,7 @@ export async function PUT(
       ok: true, 
       booking: updatedBooking 
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ 
         ok: false, 
@@ -251,10 +252,11 @@ export async function PUT(
       }, { status: 400 });
     }
     console.error('[calendar] Failed to update booking:', err);
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json({ 
       ok: false, 
       error: 'Server error', 
-      details: err.message 
+      details: errorMessage 
     }, { status: 500 });
   }
 }

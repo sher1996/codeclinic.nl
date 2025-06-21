@@ -4,6 +4,7 @@ import { Resend } from 'resend';
 
 // Import Upstash Redis
 import { Redis } from '@upstash/redis';
+import { Booking, AtomicBookingResult } from '@/types/booking';
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
@@ -52,7 +53,7 @@ function isValidDate(date: string): boolean {
 }
 
 // Atomic booking function using Redis transactions
-async function atomicBookSlot(bookingData: any): Promise<{ success: boolean; error?: string; booking?: any }> {
+async function atomicBookSlot(bookingData: Booking): Promise<AtomicBookingResult> {
   try {
     // Use Redis transaction to ensure atomicity
     const result = await redis.eval(`
@@ -101,7 +102,7 @@ async function atomicBookSlot(bookingData: any): Promise<{ success: boolean; err
       return JSON.parse(result);
     } else if (typeof result === 'object' && result !== null) {
       // If it's already an object, return it directly
-      return result as { success: boolean; error?: string; booking?: any };
+      return result as AtomicBookingResult;
     } else {
       throw new Error(`Unexpected result type from Redis eval: ${typeof result}`);
     }
@@ -112,7 +113,7 @@ async function atomicBookSlot(bookingData: any): Promise<{ success: boolean; err
 }
 
 // Function to send admin notification email
-async function sendAdminNotification(booking: any) {
+async function sendAdminNotification(booking: Booking) {
   if (!process.env.ADMIN_EMAIL || !process.env.RESEND_API_KEY) {
     console.log('[calendar] Admin email not configured, skipping notification');
     return;
@@ -145,26 +146,26 @@ async function sendAdminNotification(booking: any) {
     });
 
     console.log('[calendar] Admin notification sent successfully');
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[calendar] Failed to send admin notification:', error);
     // Don't fail the booking if admin notification fails
   }
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   const rawBookings = await redis.lrange('bookings', 0, -1);
-  const bookings = [];
+  const bookings: Booking[] = [];
   for (const b of rawBookings) {
     try {
       // Check if it's already an object or needs parsing
-      let booking;
+      let booking: Booking;
       if (typeof b === 'string') {
         booking = JSON.parse(b);
       } else {
-        booking = b;
+        booking = b as Booking;
       }
       bookings.push(booking);
-    } catch (err) {
+    } catch {
       console.error('[calendar] Failed to parse booking from Redis:', typeof b === 'string' ? b : JSON.stringify(b));
     }
   }
@@ -189,7 +190,7 @@ export async function POST(request: Request) {
     }
 
     // Add a unique ID and timestamps
-    const booking = {
+    const booking: Booking = {
       ...validated,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
@@ -204,13 +205,16 @@ export async function POST(request: Request) {
     }
 
     // Send admin notification email
-    await sendAdminNotification(result.booking);
+    if (result.booking) {
+      await sendAdminNotification(result.booking);
+    }
 
     return NextResponse.json({ ok: true, booking: result.booking }, { status: 201 });
-  } catch (err: any) {
+  } catch (err: unknown) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ ok: false, error: 'Invalid data', details: err.errors }, { status: 400 });
     }
-    return NextResponse.json({ ok: false, error: 'Server error', details: err.message }, { status: 500 });
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ ok: false, error: 'Server error', details: errorMessage }, { status: 500 });
   }
 } 

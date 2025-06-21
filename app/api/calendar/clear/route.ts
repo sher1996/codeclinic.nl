@@ -6,7 +6,7 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
-export async function POST(request: Request) {
+export async function POST() {
   try {
     // Clear all bookings
     await redis.del('bookings');

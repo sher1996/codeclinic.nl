@@ -64,10 +64,11 @@ export async function GET() {
       result,
       adminEmail: process.env.ADMIN_EMAIL 
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[test-admin-email] Failed to send test email:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { ok: false, error: "Failed to send test email", details: error.message },
+      { ok: false, error: "Failed to send test email", details: errorMessage },
       { status: 500 }
     );
   }

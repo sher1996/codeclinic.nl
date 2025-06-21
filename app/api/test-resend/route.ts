@@ -26,10 +26,11 @@ export async function GET() {
 
     console.log('[test-resend] Success:', result);
     return NextResponse.json({ ok: true, message: "Test email sent successfully", result });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[test-resend] Error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { ok: false, error: "Email service test failed", details: error.message },
+      { ok: false, error: "Email service test failed", details: errorMessage },
       { status: 502 }
     );
   }

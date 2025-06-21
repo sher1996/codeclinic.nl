@@ -227,7 +227,7 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
                 <div className="flex flex-wrap gap-4">
                   <select
                     value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value as any)}
+                    onChange={(e) => setFilterStatus(e.target.value as 'all' | 'today' | 'upcoming' | 'past')}
                     className="px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white"
                   >
                     <option value="all">All Bookings</option>
