@@ -63,8 +63,11 @@ export async function POST(req: Request) {
       <p>Klik op de onderstaande, veilige link. Het programma hoeft niet geïnstalleerd te worden; kies gewoon 'Uitvoeren'.</p>
       <p>▸ <a href="https://download.teamviewer.com/download/TeamViewerQS_x64.exe" style="color: #00d4ff;">https://download.teamviewer.com/download/TeamViewerQS_x64.exe</a></p>
       
-      <h3>Stap 2 – Ontvang de downloadlink per e-mail</h3>
-      <p>U ontvangt de downloadlink per e-mail op het afgesproken tijdstip.</p>
+      <h3>Stap 2 – Start het programma</h3>
+      <p>Dubbelklik op het gedownloade bestand om TeamViewer te starten.</p>
+      
+      <h3>Stap 3 – Wij maken verbinding</h3>
+      <p>Op het afgesproken tijdstip maken wij verbinding en lossen we uw probleem op.</p>
       
       <h3>Hulp nodig?</h3>
       <p>Vindt u het downloaden of starten van het programma lastig? Bel ons gerust op <strong>0624837889</strong> – we helpen u stap voor stap verder.</p>
@@ -84,8 +87,11 @@ Stap 1 – Download TeamViewer QuickSupport
 Klik op de onderstaande, veilige link. Het programma hoeft niet geïnstalleerd te worden; kies gewoon 'Uitvoeren'.
 ▸ https://download.teamviewer.com/download/TeamViewerQS_x64.exe
 
-Stap 2 – Ontvang de downloadlink per e-mail
-U ontvangt de downloadlink per e-mail op het afgesproken tijdstip.
+Stap 2 – Start het programma
+Dubbelklik op het gedownloade bestand om TeamViewer te starten.
+
+Stap 3 – Wij maken verbinding
+Op het afgesproken tijdstip maken wij verbinding en lossen we uw probleem op.
 
 Hulp nodig?
 Vindt u het downloaden of starten van het programma lastig? Bel ons gerust op 0624837889 – we helpen u stap voor stap verder.

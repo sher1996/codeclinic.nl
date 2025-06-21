@@ -1,5 +1,5 @@
 import { Computer, Home, Zap, Shield, Wifi, Mail, Smartphone, Database, Lock, Video, CreditCard, Play, Image, Printer, RefreshCw, Accessibility, ChevronRight, ChevronDown } from 'lucide-react';
-import { useState, lazy, Suspense, useMemo, useCallback } from 'react';
+import { useState, lazy, Suspense, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import React from 'react';
 const PricingSchema = lazy(() => import('./PricingSchema'));
@@ -18,7 +18,7 @@ const services = [
     title: 'Virus- & malware-verwijdering', 
     price: 'vanaf €49',
     icon: <Shield className="w-8 h-8 text-white" />,
-    description: 'Professionele verwijdering van virussen en malware',
+    description: 'Veilig verwijderen van schadelijke programma\'s van uw computer',
     category: 'security'
   },
   { 
@@ -26,7 +26,7 @@ const services = [
     title: 'Computer opschonen & versnellen', 
     price: 'vanaf €39',
     icon: <Zap className="w-8 h-8 text-white" />,
-    description: 'Optimalisatie van uw computer voor betere prestaties',
+    description: 'Uw computer sneller en soepeler laten werken',
     category: 'hardware'
   },
   { 
@@ -34,39 +34,39 @@ const services = [
     title: 'Wifi- & netwerkoptimalisatie', 
     price: 'vanaf €45',
     icon: <Wifi className="w-8 h-8 text-white" />,
-    description: 'Verbetering van wifi-bereik en netwerkverbinding',
+    description: 'Wifi sterker maken en internetverbinding verbeteren',
     category: 'hardware'
   },
   { 
     key: 'email', 
-    title: 'E-mail & internetconfiguratie', 
+    title: 'E-mail & internet instellen', 
     price: 'vanaf €35',
     icon: <Mail className="w-8 h-8 text-white" />,
-    description: 'Inrichten van e-mail en veilige internetinstellingen',
+    description: 'E-mail en veilige internetinstellingen voor u regelen',
     category: 'software'
   },
   { 
     key: 'smartphone', 
-    title: 'Smartphone/tablet-uitleg', 
+    title: 'Smartphone/tablet uitleg', 
     price: 'vanaf €35',
     icon: <Smartphone className="w-8 h-8 text-white" />,
-    description: 'Praktische uitleg voor Android en iOS apparaten',
+    description: 'Stap-voor-stap uitleg voor uw telefoon of tablet',
     category: 'hardware'
   },
   { 
     key: 'backup', 
-    title: 'Back-up & gegevensherstel', 
+    title: 'Back-up & bestanden herstellen', 
     price: 'vanaf €45',
     icon: <Database className="w-8 h-8 text-white" />,
-    description: 'Automatische back-ups en herstel van bestanden',
+    description: 'Automatisch opslaan van uw foto\'s en documenten',
     category: 'software'
   },
   { 
     key: 'wachtwoord', 
-    title: 'Wachtwoordbeheer & beveiliging', 
+    title: 'Wachtwoorden & beveiliging', 
     price: 'vanaf €35',
     icon: <Lock className="w-8 h-8 text-white" />,
-    description: 'Beveiliging van accounts en wachtwoordbeheer',
+    description: 'Veilige wachtwoorden en accountbeveiliging instellen',
     category: 'security'
   },
   { 
@@ -74,7 +74,7 @@ const services = [
     title: 'Videobellen & online contact', 
     price: 'vanaf €35',
     icon: <Video className="w-8 h-8 text-white" />,
-    description: 'Installatie en uitleg van videobel-apps',
+    description: 'Apps installeren en uitleggen voor videobellen',
     category: 'productivity'
   },
   { 
@@ -82,47 +82,47 @@ const services = [
     title: 'Online bankieren & betalingen', 
     price: 'vanaf €45',
     icon: <CreditCard className="w-8 h-8 text-white" />,
-    description: 'Veilige inrichting van internetbankieren',
+    description: 'Veilig internetbankieren instellen en uitleggen',
     category: 'security'
   },
   { 
     key: 'streaming', 
-    title: 'Streamingdiensten & multimedia', 
+    title: 'Films kijken & muziek luisteren', 
     price: 'vanaf €35',
     icon: <Play className="w-8 h-8 text-white" />,
-    description: 'Accounts voor Netflix, Spotify en andere diensten',
+    description: 'Netflix, Spotify en andere diensten instellen',
     category: 'productivity'
   },
   { 
     key: 'foto', 
-    title: 'Digitale foto- & documentenbeheer', 
+    title: 'Foto\'s & documenten ordenen', 
     price: 'vanaf €45',
     icon: <Image className="w-8 h-8 text-white" />,
-    description: 'Organiseren van foto\'s en documenten',
+    description: 'Foto\'s en documenten netjes organiseren',
     category: 'productivity'
   },
   { 
     key: 'printer', 
-    title: 'Printer- & scannersupport', 
+    title: 'Printer & scanner hulp', 
     price: 'vanaf €35',
     icon: <Printer className="w-8 h-8 text-white" />,
-    description: 'Installatie en configuratie van printers',
+    description: 'Printer aansluiten en instellen',
     category: 'hardware'
   },
   { 
     key: 'updates', 
-    title: 'Software-updates & licentiebeheer', 
+    title: 'Programma\'s bijwerken', 
     price: 'vanaf €35',
     icon: <RefreshCw className="w-8 h-8 text-white" />,
-    description: 'Beheer van updates en softwarelicenties',
+    description: 'Alle programma\'s veilig bijwerken',
     category: 'software'
   },
   { 
     key: 'toegankelijkheid', 
-    title: 'Toegankelijkheidsinstellingen', 
+    title: 'Lettergrootte & contrast aanpassen', 
     price: 'vanaf €35',
     icon: <Accessibility className="w-8 h-8 text-white" />,
-    description: 'Aanpassen van lettergrootte en contrast',
+    description: 'Computer aanpassen voor betere leesbaarheid',
     category: 'software'
   }
 ];
@@ -148,10 +148,11 @@ function ServiceCard() {
       icon: <Computer className="service-card-icon" />,
       steps: [
         'Maak een afspraak via de planner of telefonisch (0624837889)',
-        'Ontvang de downloadlink per e-mail',
-        'Installeer het programma',
-        'TeamViewer verbinding: wij nemen uw scherm over en lossen het probleem op'
+        'Download en start TeamViewer (link in bevestigingsmail)',
+        'Wij maken verbinding en lossen uw probleem op',
+        'Klaar! U betaalt alleen voor de werkelijk bestede tijd'
       ],
+      teamviewerLogo: true,
       fallback: 'Komt het er niet van? Lukt downloaden of installeren niet, dan sturen we <strong>eenmalig</strong> een monteur langs (tegen een kleine toeslag).'
     },
     {
@@ -165,7 +166,8 @@ function ServiceCard() {
         'Bezoek aan huis: probleem wordt ter plaatse opgelost',
         'Afronding & advies: duidelijke uitleg en vrijblijvende prijsopgave'
       ],
-      fallback: 'Kosten: vanaf €49 plus eventuele hardware-onderdelen'
+      teamviewerLogo: false,
+      fallback: 'Kosten: vanaf €49 plus eventuele onderdelen die vervangen moeten worden'
     }
   ], []);
 
@@ -235,6 +237,30 @@ function ServiceCard() {
                           </a>
                         </div>
                       )}
+                      {/* Plan Appointment Button for first step of Aan Huis Service */}
+                      {card.key === 'aan-huis' && index === 0 && (
+                        <div className="mt-4">
+                          <a 
+                            href="#contact" 
+                            className="inline-flex items-center gap-2 bg-[#00d4ff] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#00b8e6] transition-colors"
+                            style={{ minHeight: '48px' }}
+                          >
+                            <span>📅</span>
+                            Plan een Afspraak
+                          </a>
+                        </div>
+                      )}
+                      {/* TeamViewer logo for step 2 of Remote Help */}
+                      {card.key === 'remote' && index === 1 && card.teamviewerLogo && (
+                        <div className="mt-4">
+                          {/* TeamViewer logo (generated at https://www.teamviewer.com) */}
+                          <div style={{position: 'relative', width: '234px', height: '60px'}}>
+                            <a href="https://www.teamviewer.com/link/?url=842558" style={{textDecoration: 'none'}}>
+                              <img src="https://static.teamviewer.com/resources/badges/teamviewer_badge_flat4.png" alt="Download TeamViewer Remote Control" title="Download TeamViewer Remote Control" width="234" height="60" />
+                            </a>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </li>
                 ))}
@@ -250,14 +276,77 @@ function ServiceCard() {
 }
 
 function AccessibilityMenu() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [fontSize, setFontSize] = useState(1); // 1 = normal, 1.2 = large, 1.4 = extra large
+
+  const increaseFontSize = () => {
+    setFontSize(prev => Math.min(prev + 0.2, 1.6));
+  };
+
+  const decreaseFontSize = () => {
+    setFontSize(prev => Math.max(prev - 0.2, 0.8));
+  };
+
+  const resetFontSize = () => {
+    setFontSize(1);
+  };
+
+  // Apply font size to document
+  useEffect(() => {
+    document.documentElement.style.fontSize = `${fontSize * 16}px`;
+  }, [fontSize]);
+
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      <button
-        className="bg-white/10 backdrop-blur-md text-white p-2 rounded-full hover:bg-white/20 transition-colors"
-        aria-label="Toegankelijkheidsmenu"
-      >
-        <Accessibility className="w-6 h-6" />
-      </button>
+      <div className={`bg-white/15 backdrop-blur-md rounded-2xl border border-white/20 transition-all duration-300 ${
+        isOpen ? 'p-4' : 'p-2'
+      }`}>
+        {isOpen && (
+          <div className="mb-4 space-y-3">
+            <div className="text-center">
+              <p className="text-white text-sm font-medium mb-2">Tekstgrootte</p>
+              <div className="flex items-center gap-2 justify-center">
+                <button
+                  onClick={decreaseFontSize}
+                  className="bg-white/20 text-white p-2 rounded-lg hover:bg-white/30 transition-colors"
+                  aria-label="Tekst kleiner maken"
+                  disabled={fontSize <= 0.8}
+                >
+                  <span className="text-lg font-bold">A-</span>
+                </button>
+                <button
+                  onClick={resetFontSize}
+                  className="bg-[#00d4ff] text-white px-3 py-2 rounded-lg hover:bg-[#00b8e6] transition-colors text-sm"
+                  aria-label="Tekstgrootte resetten"
+                >
+                  Normaal
+                </button>
+                <button
+                  onClick={increaseFontSize}
+                  className="bg-white/20 text-white p-2 rounded-lg hover:bg-white/30 transition-colors"
+                  aria-label="Tekst groter maken"
+                  disabled={fontSize >= 1.6}
+                >
+                  <span className="text-lg font-bold">A+</span>
+                </button>
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-white/80 text-xs">
+                Huidige grootte: {Math.round(fontSize * 100)}%
+              </p>
+            </div>
+          </div>
+        )}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="bg-white/10 backdrop-blur-md text-white p-2 rounded-full hover:bg-white/20 transition-colors w-full"
+          aria-label="Toegankelijkheidsmenu"
+          aria-expanded={isOpen}
+        >
+          <Accessibility className="w-6 h-6" />
+        </button>
+      </div>
     </div>
   );
 }
@@ -305,8 +394,8 @@ export default function Services() {
                 <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-[#FFFFFF]">
                   Hulp Die Bij U Past
                 </h3>
-                <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto">
-                  Kies de manier van hulp die het beste bij u past
+                <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto senior-description">
+                  Kies de manier van hulp die het beste bij u past - op afstand of bij u thuis
                 </p>
               </motion.div>
             </div>
@@ -341,8 +430,8 @@ export default function Services() {
                 <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-[#FFFFFF]">
                   Onze Diensten
                 </h3>
-                <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto">
-                  Wij bieden een breed scala aan diensten om uw computerproblemen op te lossen.
+                <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto senior-description">
+                  Wij helpen u met alle computerproblemen - van virussen tot wifi problemen
                 </p>
               </motion.div>
             </div>
@@ -422,7 +511,7 @@ export default function Services() {
                       </motion.div>
                       <h4 className="text-lg font-semibold text-white">{service.title}</h4>
                     </div>
-                    <p className="text-sm text-[#E6EFFF] leading-relaxed">{service.description}</p>
+                    <p className="text-sm text-[#E6EFFF] leading-relaxed senior-description">{service.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -438,7 +527,7 @@ export default function Services() {
                 </div>
                 <div className="text-center sm:text-left space-y-3">
                   <h3 className="text-xl font-semibold text-white">En nog veel meer</h3>
-                  <p className="text-base text-white/80">Persoonlijke digitale ondersteuning voor álles waar u hulp bij nodig hebt!</p>
+                  <p className="text-base text-white/80 senior-description">Persoonlijke hulp voor álles waar u problemen mee heeft!</p>
                 </div>
               </div>
               <button className="bg-[#00b8e6] text-white font-medium px-6 py-3 rounded-full flex items-center gap-2 mt-4 sm:mt-0">
@@ -467,8 +556,8 @@ export default function Services() {
                 <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-[#FFFFFF]">
                   Transparante Tarieven
                 </h3>
-                <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto">
-                  Duidelijke prijzen zonder verrassingen
+                <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto senior-description">
+                  Duidelijke prijzen zonder verrassingen - u betaalt alleen voor wat we doen
                 </p>
               </motion.div>
             </div>
@@ -504,13 +593,13 @@ export default function Services() {
                 </div>
                 <p className="text-[#FFFFFF]/80 mb-8">Klaar terwijl u kijkt</p>
                 <div className="space-y-8 flex-grow">
-                  <p className="text-3xl font-semibold text-[#FFFFFF]">€11 <span className="text-base">/15 min</span></p>
-                  <p className="text-[#FFFFFF]/80">(≈ €44/u)</p>
+                  <p className="text-3xl font-semibold text-[#FFFFFF]">€44 <span className="text-base">/uur</span></p>
+                  <p className="text-[#FFFFFF]/80">Direct start, per-minuut facturering</p>
                   <p className="text-sm text-[#FFFFFF]/80">Daarna afrekening per minuut, geen minimum.</p>
                   <ul className="space-y-6">
                     <li className="flex items-center gap-4">
                       <span className="text-2xl text-[#FFFFFF]/80">⚡</span>
-                      <span className="text-[#FFFFFF]/80">Direct start, per-minuut facturering</span>
+                      <span className="text-[#FFFFFF]/80">Direct start, betalen per minuut</span>
                     </li>
                     <li className="flex items-center gap-4">
                       <span className="text-2xl text-[#FFFFFF]/80">💳</span>
@@ -570,7 +659,7 @@ export default function Services() {
                       <span className="text-[#FFFFFF]/80"><strong className="text-[#FFFFFF]">Computer Tune-up</strong> — €79</span>
                     </li>
                   </ul>
-                  <div className="mt-6 text-sm text-[#FFFFFF]/80">Niet opgelost = geen kosten</div>
+                  <div className="mt-6 text-sm text-[#FFFFFF]/80">Probleem niet opgelost? Dan betaalt u niets</div>
                 </div>
                 <a href="#boek" className="mt-10 bg-[#00d4ff] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4ff] hover:bg-[#00b8e6]" data-analytics="pricing_button_bundle">
                   Boek bundle <ChevronRight className="w-4 h-4" />
@@ -617,7 +706,7 @@ export default function Services() {
                       <span className="text-[#FFFFFF]/80">iDEAL, contant of pin</span>
                     </li>
                   </ul>
-                  <div className="mt-6 text-sm text-[#FFFFFF]/80">Niet opgelost = geen kosten</div>
+                  <div className="mt-6 text-sm text-[#FFFFFF]/80">Probleem niet opgelost? Dan betaalt u niets</div>
                 </div>
                 <a href="#boek" className="mt-10 bg-[#00d4ff] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4ff] hover:bg-[#00b8e6]" data-analytics="pricing_button_onsite">
                   Plan bezoek <ChevronRight className="w-4 h-4" />

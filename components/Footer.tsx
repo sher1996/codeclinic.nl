@@ -6,8 +6,8 @@ export default function Footer() {
             {/* Company Info */}
             <div className="space-y-6">
               <h3 className="text-xl font-bold text-white mb-6">CodeClinic.nl</h3>
-              <p className="text-lg text-white/80 leading-relaxed">
-                Professionele computerhulp voor senioren. Remote hulp en aan huis service.
+              <p className="text-lg text-white/80 leading-relaxed senior-description">
+                Professionele computerhulp voor senioren. Hulp op afstand en bij u thuis.
               </p>
               <div className="space-y-3 text-lg">
                 <p className="text-white/90">📞 <a href="tel:+31612345678" className="footer-link">+31 6 12345678</a></p>
@@ -21,9 +21,9 @@ export default function Footer() {
               <ul className="space-y-3 text-lg">
                 <li><a href="#diensten" className="footer-link">Virus verwijdering</a></li>
                 <li><a href="#diensten" className="footer-link">Computer opschonen</a></li>
-                <li><a href="#diensten" className="footer-link">Wifi optimalisatie</a></li>
-                <li><a href="#diensten" className="footer-link">Remote hulp</a></li>
-                <li><a href="#diensten" className="footer-link">Aan huis service</a></li>
+                <li><a href="#diensten" className="footer-link">Wifi verbeteren</a></li>
+                <li><a href="#diensten" className="footer-link">Hulp op afstand</a></li>
+                <li><a href="#diensten" className="footer-link">Hulp bij u thuis</a></li>
               </ul>
             </div>
 
@@ -44,7 +44,7 @@ export default function Footer() {
             <p className="text-lg text-white/70">
               © {new Date().getFullYear()} CodeClinic.nl · KvK 12345678 · BTW NL001234567B01
             </p>
-            <p className="text-base text-white/60 mt-3">
+            <p className="text-base text-white/60 mt-3 senior-description">
               Professionele computerhulp voor senioren in heel Nederland
             </p>
           </div>

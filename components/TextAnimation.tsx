@@ -19,7 +19,7 @@ export default function TextAnimation({ className = '', startWriting = false }: 
 
   const texts = [
     'Direct professionele hulp bij al uw computerproblemen.',
-    '90% van de problemen opgelost in één sessie.'
+    '90% van de problemen opgelost in één keer.'
   ];
 
   // Start typing when startWriting becomes true
@@ -83,7 +83,7 @@ export default function TextAnimation({ className = '', startWriting = false }: 
         Expert computerhulp
       </h1>
       <p 
-        className="text-lg leading-[1.6] text-white/90 max-w-[45ch] mb-16 min-h-[3em] transition-opacity duration-500 ease-in-out"
+        className="text-lg leading-[1.6] text-white/90 max-w-[45ch] mb-16 min-h-[3em] transition-opacity duration-500 ease-in-out senior-description"
         style={{ 
           opacity,
           transition: isLowEnd ? 'none' : 'opacity 0.3s ease-in-out'

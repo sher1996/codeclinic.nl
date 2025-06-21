@@ -33,8 +33,8 @@ export default function Contact() {
             className="text-center mb-20 space-y-8"
           >
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white">Plan een afspraak</h2>
-            <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto">
-              Heeft u een vraag of wilt u een afspraak maken? Neem gerust contact met ons op.
+            <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto senior-description">
+              Heeft u een computerprobleem? Maak eenvoudig een afspraak met ons.
             </p>
           </motion.div>
 
@@ -55,9 +55,6 @@ export default function Contact() {
                   <h3 className="text-2xl sm:text-3xl font-semibold text-white mb-4">
                     Kies uw type afspraak
                   </h3>
-                  <p className="text-gray-300">
-                    Selecteer het type computerhulp dat u nodig heeft
-                  </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -74,8 +71,8 @@ export default function Contact() {
                       </div>
                       <h4 className="text-xl font-semibold text-white">Aan huis bezoek</h4>
                     </div>
-                    <p className="text-gray-300 mb-4">
-                      Wij komen bij u langs voor persoonlijke computerhulp aan huis.
+                    <p className="text-gray-300 mb-4 senior-description">
+                      Wij komen bij u thuis langs voor persoonlijke computerhulp.
                     </p>
                     <ul className="space-y-2 text-sm text-gray-400">
                       <li>• Persoonlijke begeleiding</li>
@@ -103,16 +100,16 @@ export default function Contact() {
                       </div>
                       <h4 className="text-xl font-semibold text-white">Remote hulp</h4>
                     </div>
-                    <p className="text-gray-300 mb-4">
-                      Computerhulp op afstand via een veilige verbinding.
+                    <p className="text-gray-300 mb-4 senior-description">
+                      Computerhulp op afstand via internet - veilig en snel.
                     </p>
                     <ul className="space-y-2 text-sm text-gray-400">
                       <li>• Hulp op afstand</li>
                       <li>• Geen reiskosten</li>
-                      <li>• €50/uur</li>
+                      <li>• €44/uur</li>
                     </ul>
                     <div className="mt-6 flex items-center justify-between">
-                      <span className="text-[#00d4ff] font-semibold">€50/uur</span>
+                      <span className="text-[#00d4ff] font-semibold">€44/uur</span>
                       <span className="text-white/60 group-hover:text-white transition-colors">
                         Kies deze optie →
                       </span>

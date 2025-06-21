@@ -83,6 +83,14 @@
   --elderly-high-contrast-bg: #1F2C90; /* High contrast background */
   --elderly-text-contrast: #FFFFFF;    /* High contrast text color */
   --elderly-text-contrast-secondary: #E8F0FF; /* High contrast secondary text */
+  
+  /* Additional senior-friendly improvements */
+  --elderly-text-spacing: 0.05em;      /* Letter spacing for better readability */
+  --elderly-paragraph-spacing: 1.5em;  /* Space between paragraphs */
+  --elderly-section-spacing: 3em;      /* Space between sections */
+  --elderly-button-text-size: 18px;    /* Button text size */
+  --elderly-link-text-size: 18px;      /* Link text size */
+  --elderly-description-text-size: 16px; /* Description text size */
 }
 
 @layer components {
@@ -1650,4 +1658,63 @@ p {
     padding-left: var(--spacing-2xl);
     padding-right: var(--spacing-2xl);
   }
+}
+
+/* Senior-friendly text improvements */
+.senior-text {
+  font-size: var(--elderly-font-size-base);
+  line-height: var(--elderly-line-height);
+  letter-spacing: var(--elderly-text-spacing);
+}
+
+.senior-text-large {
+  font-size: var(--elderly-font-size-large);
+  line-height: var(--elderly-line-height);
+  letter-spacing: var(--elderly-text-spacing);
+}
+
+.senior-text-xl {
+  font-size: var(--elderly-font-size-xl);
+  line-height: var(--elderly-line-height);
+  letter-spacing: var(--elderly-text-spacing);
+}
+
+.senior-description {
+  font-size: var(--elderly-description-text-size);
+  line-height: var(--elderly-line-height);
+  letter-spacing: var(--elderly-text-spacing);
+}
+
+.senior-button {
+  font-size: var(--elderly-button-text-size);
+  padding: var(--elderly-button-padding);
+  min-height: var(--elderly-min-touch-target);
+}
+
+.senior-link {
+  font-size: var(--elderly-link-text-size);
+  text-decoration-thickness: var(--elderly-link-underline);
+}
+
+/* Improved spacing for seniors */
+.senior-spacing {
+  margin-bottom: var(--elderly-paragraph-spacing);
+}
+
+.senior-section-spacing {
+  margin-bottom: var(--elderly-section-spacing);
+}
+
+/* High contrast improvements */
+.senior-high-contrast {
+  color: var(--elderly-high-contrast);
+  background-color: var(--elderly-high-contrast-bg);
+}
+
+.senior-text-contrast {
+  color: var(--elderly-text-contrast);
+}
+
+.senior-text-contrast-secondary {
+  color: var(--elderly-text-contrast-secondary);
 } 
