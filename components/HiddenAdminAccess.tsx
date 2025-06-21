@@ -10,7 +10,6 @@ export default function HiddenAdminAccess() {
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState('');
-  const [keySequence, setKeySequence] = useState('');
 
   // Simple admin password - in production, this should be more secure
   const ADMIN_PASSWORD = 'admin123'; // You can change this password
@@ -36,21 +35,6 @@ export default function HiddenAdminAccess() {
           setShowPasswordModal(true);
         }
       }
-
-      // Alternative: Type "admin" to trigger
-      setKeySequence(prev => {
-        const newSequence = prev + (event.key?.toLowerCase() || '');
-        if (newSequence.includes('admin')) {
-          if (isAuthenticated) {
-            setShowAdmin(true);
-          } else {
-            setShowPasswordModal(true);
-          }
-          return '';
-        }
-        // Keep only last 5 characters to prevent memory buildup
-        return newSequence.slice(-5);
-      });
     };
 
     window.addEventListener('keydown', handleKeyPress);

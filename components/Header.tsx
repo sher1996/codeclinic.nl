@@ -5,9 +5,6 @@ import Link from 'next/link';
 import { Phone, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
-const linkBase =
-  'relative after:absolute after:inset-x-0 after:-bottom-1 after:h-[2px] after:scale-x-0 after:bg-primary-500 after:transition-transform hover:after:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B] focus-visible:rounded-md';
-
 export default function Header() {
   const [hasScrolled, setHasScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

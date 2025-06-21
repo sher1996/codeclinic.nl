@@ -3,22 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-type SubmitStatus = {
-  ok: boolean;
-  message: string;
-};
-
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  street: string;
-  houseNumber: string;
-  postalCode: string;
-  city: string;
-  notes: string;
-}
-
 interface AppointmentCalendarProps {
   onDateSelect?: (date: Date) => void;
   appointmentType?: 'onsite' | 'remote';
@@ -29,7 +13,6 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<{ ok: boolean; message: string }>({ ok: false, message: '' });
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
   const [isLoadingBookings, setIsLoadingBookings] = useState(false);
   const [formData, setFormData] = useState({
@@ -78,8 +61,8 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       if (response.ok) {
         const data = await response.json();
         const bookedForDate = data.bookings
-          .filter((booking: any) => booking.date === dateString)
-          .map((booking: any) => booking.time);
+          .filter((booking: { date: string; time: string }) => booking.date === dateString)
+          .map((booking: { date: string; time: string }) => booking.time);
         setBookedTimes(bookedForDate);
       }
     } catch (error) {
@@ -201,9 +184,6 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
 
       const emailResult = await emailRes.json();
       console.log('[AppointmentCalendar] Email sent:', emailResult);
-
-      const typeText = appointmentType === 'remote' ? 'remote computerhulp' : 'aan huis bezoek';
-      setSubmitStatus({ ok: true, message: `${typeText.charAt(0).toUpperCase() + typeText.slice(1)} succesvol ingepland!` });
       
       // Refresh booked times to show the new booking
       if (selectedDate) {
@@ -224,11 +204,10 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
         });
         setSelectedDate(null);
         setSelectedTime(null);
-        setSubmitStatus({ ok: false, message: '' });
       }, 2000);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('[AppointmentCalendar] Error:', err);
-      setSubmitStatus({ ok: false, message: err.message || 'Er is een fout opgetreden.' });
+      // You could add a toast notification here if needed
     } finally {
       setIsSubmitting(false);
     }
@@ -238,38 +217,12 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
     return date.toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' });
   };
 
-  const formatDate = (date: Date | null) => {
-    if (!date) return '';
-    return date.toLocaleDateString('nl-NL', { 
-      weekday: 'long', 
-      day: 'numeric', 
-      month: 'long', 
-      year: 'numeric' 
-    });
-  };
-
-  const formatDateCompact = (date: Date | null) => {
-    if (!date) return '';
-    return date.toLocaleDateString('nl-NL', { 
-      weekday: 'short', 
-      day: 'numeric', 
-      month: 'short'
-    });
-  };
-
   const formatDateShort = (date: Date | null) => {
     if (!date) return '';
     return date.toLocaleDateString('nl-NL', { 
       day: 'numeric', 
       month: 'long'
     });
-  };
-
-  const isToday = (date: Date) => {
-    const today = new Date();
-    return date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear();
   };
 
   const isSelected = (date: Date) => {
@@ -570,7 +523,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
 
                       {/* Mobile-optimized time grid */}
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                        {Array.from({ length: 8 }, (_, i) => i + 9).map((hour, index) => (
+                        {Array.from({ length: 8 }, (_, i) => i + 9).map((hour) => (
                           <React.Fragment key={hour}>
                             {!isPastTime(selectedDate!, `${hour.toString().padStart(2, '0')}:00`) && (
                               <motion.button

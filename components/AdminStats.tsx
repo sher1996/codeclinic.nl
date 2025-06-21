@@ -111,7 +111,7 @@ export default function AdminStats({ bookings }: AdminStatsProps) {
         <h3 className="text-lg font-semibold text-white mb-3">Most Popular Time Slots</h3>
         <div className="space-y-2">
           {popularTimeSlots.length > 0 ? (
-            popularTimeSlots.map(([time, count], index) => (
+            popularTimeSlots.map(([time, count]) => (
               <div key={time} className="flex justify-between items-center">
                 <span className="text-gray-300">{time}</span>
                 <span className="text-blue-400 font-medium">{count} bookings</span>

@@ -7,7 +7,7 @@ interface GradientBackgroundProps {
   className?: string;
 }
 
-const GradientBackground: React.FC<GradientBackgroundProps> = ({ children, className = '' }) => {
+const GradientBackground: React.FC<GradientBackgroundProps> = ({ children }) => {
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1E3A8A]/40 via-[#1E40AF]/30 to-[#1E3A8A]/20 backdrop-blur-sm" />

@@ -1,33 +1,21 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import TextAnimation from './TextAnimation';
 
 export default function Hero() {
-  const [showContent, setShowContent] = useState(true);
-  const [startWriting, setStartWriting] = useState(true);
-  const [showIllustration, setShowIllustration] = useState(false);
-  const [showMetrics, setShowMetrics] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isVisible, setIsVisible] = useState(false);
-  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const heroRef = useRef<HTMLElement>(null);
-  const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
   const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
-  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 || window.devicePixelRatio > 2 : false;
 
   // Intersection Observer for fade-in effect
   useEffect(() => {
     if (isLowEnd) {
-      setIsVisible(true);
       return;
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setIsVisible(true);
           observer.disconnect();
         }
       },
@@ -41,13 +29,10 @@ export default function Hero() {
     return () => observer.disconnect();
   }, [isLowEnd]);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+  const handleMouseMove = useCallback(() => {
     if (isLowEnd) return;
     requestAnimationFrame(() => {
-      const { clientX, clientY } = e;
-      const x = (clientX / window.innerWidth - 0.5) * 10;
-      const y = (clientY / window.innerHeight - 0.5) * 10;
-      setMousePosition({ x, y });
+      // Mouse move handling for future use
     });
   }, [isLowEnd]);
 
@@ -69,7 +54,7 @@ export default function Hero() {
       >
         {/* Left column — copy */}
         <div className="text-white lg:col-span-12 py-20 sm:py-24 lg:py-32">
-          <TextAnimation startWriting={startWriting} />
+          <TextAnimation startWriting={true} />
         </div>
       </div>
 

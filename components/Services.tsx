@@ -1,9 +1,7 @@
-import { Computer, Home, Zap, Download, X, Shield, Wifi, Mail, Smartphone, Database, Lock, Video, CreditCard, Play, Image, Printer, RefreshCw, Accessibility, Plus, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
-import { useState, useRef, useEffect, useLayoutEffect, lazy, Suspense, useMemo, useCallback } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { Computer, Home, Zap, Shield, Wifi, Mail, Smartphone, Database, Lock, Video, CreditCard, Play, Image, Printer, RefreshCw, Accessibility, ChevronRight, ChevronDown } from 'lucide-react';
+import { useState, lazy, Suspense, useMemo, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import React from 'react';
-import { Disclosure } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
 const PricingSchema = lazy(() => import('./PricingSchema'));
 
 const categories = [
@@ -128,27 +126,6 @@ const services = [
     category: 'software'
   }
 ];
-
-function useKeepCentered(targetRef: React.RefObject<HTMLElement | null>, active: boolean) {
-  const observerRef = useRef<ResizeObserver | null>(null);
-
-  useLayoutEffect(() => {
-    if (!active || !targetRef.current) return;
-
-    const el = targetRef.current;
-    const centre = () => {
-      el.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'center',
-        inline: 'center'
-      });
-    };
-    centre();
-    observerRef.current = new ResizeObserver(() => centre());
-    observerRef.current.observe(el);
-    return () => observerRef.current?.disconnect();
-  }, [active, targetRef]);
-}
 
 function ServiceCard() {
   const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({
@@ -285,21 +262,11 @@ function AccessibilityMenu() {
   );
 }
 
-function ScrollCue() {
-  return (
-    <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/60 animate-bounce">
-      <ChevronDown className="w-6 h-6" />
-    </div>
-  );
-}
-
 export default function Services() {
   const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
   const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
-  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 || window.devicePixelRatio > 2 : false;
 
   const [activeCategory, setActiveCategory] = useState('all');
-  const { scrollYProgress } = useScroll();
 
   const filteredServices = activeCategory === 'all' 
     ? services 
@@ -405,7 +372,7 @@ export default function Services() {
           {/* Services Grid */}
           <div className="mx-auto grid max-w-2xl grid-cols-1 gap-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             <AnimatePresence mode="sync">
-              {filteredServices.map((service, index) => (
+              {filteredServices.map((service) => (
                 <motion.div
                   key={service.key}
                   layout={false}
