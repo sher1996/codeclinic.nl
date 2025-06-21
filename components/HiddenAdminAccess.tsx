@@ -39,7 +39,7 @@ export default function HiddenAdminAccess() {
 
       // Alternative: Type "admin" to trigger
       setKeySequence(prev => {
-        const newSequence = prev + event.key.toLowerCase();
+        const newSequence = prev + (event.key?.toLowerCase() || '');
         if (newSequence.includes('admin')) {
           if (isAuthenticated) {
             setShowAdmin(true);

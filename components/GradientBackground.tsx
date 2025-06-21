@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import ParticlesBackground from './ParticlesBackground';
 
 interface GradientBackgroundProps {
   children: React.ReactNode;
@@ -18,7 +17,6 @@ const GradientBackground: React.FC<GradientBackgroundProps> = ({ children, class
         backgroundRepeat: 'repeat',
         backgroundSize: '150px 150px'
       }} aria-hidden="true" />
-      <ParticlesBackground />
       <div className="relative z-10">
         {children}
       </div>

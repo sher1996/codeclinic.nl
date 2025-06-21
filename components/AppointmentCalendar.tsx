@@ -21,9 +21,10 @@ interface FormData {
 
 interface AppointmentCalendarProps {
   onDateSelect?: (date: Date) => void;
+  appointmentType?: 'onsite' | 'remote';
 }
 
-export default function AppointmentCalendar({ onDateSelect }: AppointmentCalendarProps) {
+export default function AppointmentCalendar({ onDateSelect, appointmentType = 'onsite' }: AppointmentCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -148,7 +149,8 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
         phone: formData.phone,
         date: dateString,
         time: selectedTime || '',
-        notes: formData.notes
+        notes: formData.notes,
+        appointmentType: appointmentType
       };
 
       console.log('[AppointmentCalendar] Creating booking:', bookingData);
@@ -177,7 +179,8 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
         date: dateString,
         time: selectedTime || '',
         address: `${formData.street} ${formData.houseNumber}, ${formData.postalCode} ${formData.city}`,
-        bookingId: bookingResult.booking.id
+        bookingId: bookingResult.booking.id,
+        appointmentType: appointmentType
       };
 
       console.log('[AppointmentCalendar] Sending email:', emailData);
@@ -199,7 +202,8 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
       const emailResult = await emailRes.json();
       console.log('[AppointmentCalendar] Email sent:', emailResult);
 
-      setSubmitStatus({ ok: true, message: 'Afspraak succesvol ingepland!' });
+      const typeText = appointmentType === 'remote' ? 'remote computerhulp' : 'aan huis bezoek';
+      setSubmitStatus({ ok: true, message: `${typeText.charAt(0).toUpperCase() + typeText.slice(1)} succesvol ingepland!` });
       
       // Refresh booked times to show the new booking
       if (selectedDate) {
@@ -283,8 +287,8 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
     // Set input date to midnight for proper comparison
     const inputDateMidnight = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     
-    // A date is past if it's before today (not including today)
-    return inputDateMidnight < todayDate;
+    // A date is past if it's before or equal to today (including today)
+    return inputDateMidnight <= todayDate;
   };
 
   const isPastTime = (date: Date, time: string) => {
@@ -366,30 +370,23 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                       ))}
                     </div>
 
-                    <div className="grid grid-cols-7 gap-1 sm:gap-2">
+                    <div className="grid grid-cols-7 gap-2 sm:gap-3">
                       {days.map((day, index) => (
                         <button
                           key={index}
                           onClick={() => handleDateClick(day)}
                           disabled={day ? isPastDate(day) : false}
                           className={`
-                            aspect-square p-1 sm:p-2 rounded-lg text-center transition-colors relative min-h-[40px] sm:min-h-[50px]
+                            calendar-day
                             ${!day ? 'opacity-0' : ''}
                             ${day && isPastDate(day) ? 'opacity-30 cursor-not-allowed bg-gray-600/20' : ''}
                             ${day && !isPastDate(day) && isSelected(day) ? 'bg-[#00d4ff] text-white' : ''}
-                            ${day && !isPastDate(day) && isToday(day) && !isSelected(day) ? 'bg-[#00d4ff]/20' : ''}
-                            ${day && !isPastDate(day) && !isSelected(day) && !isToday(day) ? 'hover:bg-white/10' : ''}
+                            ${day && !isPastDate(day) && !isSelected(day) ? 'hover:bg-white/10' : ''}
                           `}
                         >
                           <div className="flex flex-col items-center justify-center h-full">
-                            <span className="text-sm sm:text-base font-medium">{day?.getDate()}</span>
-                            {day && isToday(day) && !isPastDate(day) && (
-                              <span className="text-xs text-[#00d4ff] font-medium mt-0.5">Vandaag</span>
-                            )}
+                            <span className="text-base sm:text-lg font-semibold">{day?.getDate()}</span>
                           </div>
-                          {day && isToday(day) && !isPastDate(day) && (
-                            <div className="absolute inset-0 rounded-lg bg-[#00d4ff]/20 animate-pulse pointer-events-none" />
-                          )}
                         </button>
                       ))}
                     </div>
@@ -411,7 +408,9 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                         ← Terug naar tijden
                       </button>
                       <div className="text-center">
-                        <h2 className="text-base sm:text-lg font-semibold">Afspraak maken</h2>
+                        <h2 className="text-base sm:text-lg font-semibold">
+                          {appointmentType === 'remote' ? 'Remote hulp boeken' : 'Aan huis bezoek boeken'}
+                        </h2>
                       </div>
                     </div>
 
@@ -422,142 +421,107 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                         <p className="text-sm text-white/60">{formatDateShort(selectedDate)}</p>
                       </div>
 
-                      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+                      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                         <div>
-                          <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Naam</label>
+                          <label className="form-label">Naam</label>
                           <input
                             type="text"
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
-                            className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                            className="form-input"
                             required
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Email</label>
+                          <label className="form-label">Email</label>
                           <input
                             type="email"
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                            className="form-input"
                             required
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Telefoon</label>
+                          <label className="form-label">Telefoon</label>
                           <input
                             type="tel"
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                            className="form-input"
                             required
                           />
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                           <div>
-                            <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Straat</label>
+                            <label className="form-label">Straat</label>
                             <input
                               type="text"
                               name="street"
                               value={formData.street}
                               onChange={handleInputChange}
-                              className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                              className="form-input"
                               required
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Huisnummer</label>
+                            <label className="form-label">Huisnummer</label>
                             <input
                               type="text"
                               name="houseNumber"
                               value={formData.houseNumber}
                               onChange={handleInputChange}
-                              className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                              className="form-input"
                               required
                             />
                           </div>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                           <div>
-                            <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Postcode</label>
+                            <label className="form-label">Postcode</label>
                             <input
                               type="text"
                               name="postalCode"
                               value={formData.postalCode}
                               onChange={handleInputChange}
                               placeholder="1234 AB"
-                              className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                              className="form-input"
                               required
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Plaats</label>
+                            <label className="form-label">Plaats</label>
                             <input
                               type="text"
                               name="city"
                               value={formData.city}
                               onChange={handleInputChange}
-                              className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
+                              className="form-input"
                               required
                             />
                           </div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium mb-1 text-[#00d4ff]">Opmerkingen</label>
+                          <label className="form-label">Notities (optioneel)</label>
                           <textarea
                             name="notes"
                             value={formData.notes}
                             onChange={handleInputChange}
-                            className="w-full p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 focus:border-blue-500 focus:outline-none text-base"
-                            rows={2}
+                            rows={4}
+                            className="form-input"
+                            placeholder="Beschrijf uw probleem of specifieke wensen..."
                           />
                         </div>
-                        
-                        <div className="relative">
-                          <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className={`
-                              w-full py-3 sm:py-4 px-4 rounded-lg font-medium transition-all duration-200 text-base
-                              ${isSubmitting 
-                                ? 'bg-white/20 cursor-not-allowed' 
-                                : 'bg-[#00d4ff] hover:bg-[#00b8e6] text-white'}
-                            `}
-                          >
-                            {isSubmitting ? 'Bezig met verwerken...' : 'Afspraak maken'}
-                          </button>
-
-                          <AnimatePresence>
-                            {submitStatus.ok && (
-                              <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="absolute inset-0 flex items-center justify-center bg-green-500/20 backdrop-blur-sm rounded-lg"
-                              >
-                                <div className="text-center">
-                                  <p className="text-green-400 font-medium">{submitStatus.message}</p>
-                                </div>
-                              </motion.div>
-                            )}
-
-                            {submitStatus.message && !submitStatus.ok && (
-                              <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="absolute inset-0 flex items-center justify-center bg-red-500/20 backdrop-blur-sm rounded-lg"
-                              >
-                                <div className="text-center">
-                                  <p className="text-red-400 font-medium">{submitStatus.message}</p>
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
+                        <button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className="btn-primary w-full text-xl py-5"
+                        >
+                          {isSubmitting ? 'Bezig met boeken...' : `${appointmentType === 'remote' ? 'Remote hulp' : 'Aan huis bezoek'} bevestigen`}
+                        </button>
                       </form>
                     </div>
                   </motion.div>
@@ -605,23 +569,23 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                       </div>
 
                       {/* Mobile-optimized time grid */}
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                         {Array.from({ length: 8 }, (_, i) => i + 9).map((hour, index) => (
                           <React.Fragment key={hour}>
                             {!isPastTime(selectedDate!, `${hour.toString().padStart(2, '0')}:00`) && (
                               <motion.button
                                 onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:00`)}
                                 disabled={bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`)}
-                                whileHover={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) ? { scale: 1.02 } : {}}
-                                whileTap={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) ? { scale: 0.98 } : {}}
+                                whileHover={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) ? { scale: 1.05 } : {}}
+                                whileTap={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) ? { scale: 0.95 } : {}}
                                 className={`
-                                  p-2 sm:p-4 rounded-lg transition-all duration-200 relative text-center border
+                                  time-slot
                                   ${bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`)
                                     ? 'bg-gray-900/40 border-gray-700/40 text-gray-500 cursor-not-allowed'
                                     : 'bg-green-500/60 hover:bg-green-500/80 text-white border-green-500/40 cursor-pointer'}
                                 `}
                               >
-                                <span className="text-sm sm:text-base font-medium">
+                                <span className="text-base sm:text-lg font-semibold">
                                   {hour}:00
                                 </span>
                                 {selectedTime === `${hour.toString().padStart(2, '0')}:00` && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) && (
@@ -638,10 +602,10 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                               <motion.button
                                 onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:30`)}
                                 disabled={bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`)}
-                                whileHover={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) ? { scale: 1.02 } : {}}
-                                whileTap={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) ? { scale: 0.98 } : {}}
+                                whileHover={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) ? { scale: 1.05 } : {}}
+                                whileTap={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) ? { scale: 0.95 } : {}}
                                 className={`
-                                  p-2 sm:p-4 rounded-lg transition-all duration-200 relative text-center border
+                                  time-slot
                                   ${bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`)
                                     ? 'bg-gray-900/40 border-gray-700/40 text-gray-500 cursor-not-allowed'
                                     : selectedTime === `${hour.toString().padStart(2, '0')}:30`
@@ -649,7 +613,7 @@ export default function AppointmentCalendar({ onDateSelect }: AppointmentCalenda
                                     : 'bg-green-500/60 hover:bg-green-500/80 text-white border-green-500/40'}
                                 `}
                               >
-                                <span className="text-sm sm:text-base font-medium">
+                                <span className="text-base sm:text-lg font-semibold">
                                   {hour}:30
                                 </span>
                                 {selectedTime === `${hour.toString().padStart(2, '0')}:30` && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) && (

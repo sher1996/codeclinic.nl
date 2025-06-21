@@ -18,7 +18,7 @@ export const DynamicAppointmentCalendar = dynamic(
       </div>
     )
   }
-);
+) as React.ComponentType<{ appointmentType?: 'onsite' | 'remote' }>;
 
 // Services component with loading fallback
 export const DynamicServices = dynamic(

@@ -152,8 +152,8 @@ function useKeepCentered(targetRef: React.RefObject<HTMLElement | null>, active:
 
 function ServiceCard() {
   const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({
-    'remote': false,
-    'aan-huis': false
+    'remote': true,
+    'aan-huis': true
   });
 
   const toggleCard = useCallback((key: string) => {
@@ -170,10 +170,10 @@ function ServiceCard() {
       tagline: 'Veilige hulp via internet – eenvoudig programma downloaden',
       icon: <Computer className="service-card-icon" />,
       steps: [
-        'Maak een afspraak via de planner of telefonisch',
-        'Ontvang de downloadlink per e-mail of sms',
-        'Installeer het programma met hulp van onze expert',
-        'Direct verbinding maken en het probleem oplossen'
+        'Maak een afspraak via de planner of telefonisch (0624837889)',
+        'Ontvang de downloadlink per e-mail',
+        'Installeer het programma',
+        'TeamViewer verbinding: wij nemen uw scherm over en lossen het probleem op'
       ],
       fallback: 'Komt het er niet van? Lukt downloaden of installeren niet, dan sturen we <strong>eenmalig</strong> een monteur langs (tegen een kleine toeslag).'
     },
@@ -183,7 +183,7 @@ function ServiceCard() {
       tagline: 'Persoonlijke hulp bij u thuis – geen gedoe met slepen',
       icon: <Home className="service-card-icon" />,
       steps: [
-        'Maak een afspraak: kies dag en tijd in onze planner of telefonisch',
+        'Maak een afspraak: kies dag en tijd in onze planner of telefonisch (0624837889)',
         'Bevestiging & telefonisch overleg: monteur belt 30 min voor aankomst',
         'Bezoek aan huis: probleem wordt ter plaatse opgelost',
         'Afronding & advies: duidelijke uitleg en vrijblijvende prijsopgave'
@@ -193,7 +193,7 @@ function ServiceCard() {
   ], []);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       {serviceCards.map((card) => (
         <div 
           key={card.key} 
@@ -201,49 +201,69 @@ function ServiceCard() {
             expandedCards[card.key] ? 'bg-white/15' : 'bg-white/10'
           }`}
         >
-          <button
-            onClick={() => toggleCard(card.key)}
-            className="w-full text-left p-6"
-            aria-expanded={expandedCards[card.key]}
-          >
-            <div className="flex items-start gap-4">
+          <div className="p-8">
+            <div className="flex items-start gap-6">
               <div className="flex-shrink-0">
                 {card.icon}
               </div>
               <div className="flex-grow">
-                <h3 className="text-xl font-semibold text-white mb-2">{card.title}</h3>
+                <h3 className="text-xl font-semibold text-white mb-3">{card.title}</h3>
                 <p className="text-white/80">
                   {card.tagline}
                 </p>
               </div>
-              <div className="flex-shrink-0">
-                <ChevronDown 
-                  className={`w-5 h-5 text-white/80 transition-transform duration-300 ${
-                    expandedCards[card.key] ? 'rotate-180' : ''
-                  }`}
-                />
+              <div className="flex-shrink-0 flex items-center gap-4">
+                <button
+                  onClick={() => toggleCard(card.key)}
+                  className="flex items-center justify-center"
+                  aria-expanded={expandedCards[card.key]}
+                  aria-label={`${expandedCards[card.key] ? 'Sluit' : 'Open'} ${card.title} sectie`}
+                  style={{ minHeight: '48px', minWidth: '48px' }}
+                >
+                  <ChevronDown 
+                    className={`w-6 h-6 text-white/80 transition-transform duration-300 ${
+                      expandedCards[card.key] ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
               </div>
             </div>
-          </button>
+          </div>
 
           <div
             className={`overflow-hidden transition-all duration-300 ease-in-out ${
-              expandedCards[card.key] ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+              expandedCards[card.key] ? 'max-h-none opacity-100' : 'max-h-0 opacity-0'
             }`}
           >
-            <div className="px-6 pb-6">
-              <div className="h-px bg-white/20 mb-6" />
-              <ol className="space-y-4">
+            <div className="px-8 pb-8">
+              <div className="h-px bg-white/20 mb-8" />
+              <ol className="space-y-6">
                 {card.steps.map((step, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#00b8e6]/20 flex items-center justify-center text-[#00b8e6] text-sm font-medium">
+                  <li key={index} className="flex items-start gap-4">
+                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#00b8e6]/20 flex items-center justify-center text-[#00b8e6] font-medium">
                       {index + 1}
                     </span>
-                    <span className="text-white/80">{step}</span>
+                    <div className="flex-grow">
+                      <span className="text-white/80">{step}</span>
+                      {/* Plan Appointment Button for first step of Remote Help */}
+                      {card.key === 'remote' && index === 0 && (
+                        <div className="mt-4">
+                          <a 
+                            href="#contact" 
+                            className="inline-flex items-center gap-2 bg-[#00d4ff] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#00b8e6] transition-colors"
+                            style={{ minHeight: '48px' }}
+                          >
+                            <span>📅</span>
+                            Plan een Afspraak
+                          </a>
+                        </div>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ol>
-              <p className="mt-6 text-white/60 text-sm" dangerouslySetInnerHTML={{ __html: card.fallback }} />
+              
+              <p className="mt-8 text-white/60 text-sm" dangerouslySetInnerHTML={{ __html: card.fallback }} />
             </div>
           </div>
         </div>
@@ -303,17 +323,17 @@ export default function Services() {
         exit={{ opacity: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
-        className="relative py-20 sm:py-24 lg:py-32"
+        className="relative py-24 sm:py-28 lg:py-36"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
-            <div className="col-span-1 md:col-span-12 mb-16">
+            <div className="col-span-1 md:col-span-12 mb-20">
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.6 }}
-                className="text-center space-y-6"
+                className="text-center space-y-8"
               >
                 <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-[#FFFFFF]">
                   Hulp Die Bij U Past
@@ -339,17 +359,17 @@ export default function Services() {
         exit={{ opacity: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
-        className="relative py-20 sm:py-24 lg:py-32"
+        className="relative py-24 sm:py-28 lg:py-36"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
-            <div className="col-span-1 md:col-span-12 mb-16">
+            <div className="col-span-1 md:col-span-12 mb-20">
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.6 }}
-                className="text-center space-y-6"
+                className="text-center space-y-8"
               >
                 <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-[#FFFFFF]">
                   Onze Diensten
@@ -362,8 +382,8 @@ export default function Services() {
           </div>
 
           {/* Filter Bar */}
-          <div id="filter-bar" className="sticky top-0 z-50 py-6 -mx-4 px-4 sm:mx-0 sm:px-0 pointer-events-none mb-20">
-            <div className="flex flex-wrap gap-3 justify-center pointer-events-auto">
+          <div id="filter-bar" className="sticky top-0 z-50 py-8 -mx-4 px-4 sm:mx-0 sm:px-0 pointer-events-none mb-24">
+            <div className="flex flex-wrap gap-4 justify-center pointer-events-auto">
               {categories.map((category) => (
                 <button
                   key={category.id}
@@ -383,7 +403,7 @@ export default function Services() {
           </div>
 
           {/* Services Grid */}
-          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-8 gap-y-12 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             <AnimatePresence mode="sync">
               {filteredServices.map((service, index) => (
                 <motion.div
@@ -402,7 +422,7 @@ export default function Services() {
                   className={`
                     w-full max-w-[320px] mx-auto
                     ${isLowEnd ? 'bg-white/10' : 'bg-white/10'}
-                    rounded-xl p-6
+                    rounded-xl p-8
                     flex flex-col items-center text-center
                     cursor-pointer transition-all duration-300
                     border border-white/10 shadow-lg hover:border-white/20
@@ -416,8 +436,8 @@ export default function Services() {
                     transform: isLowEnd ? 'none' : 'translateZ(0)' 
                   }}
                 >
-                  <div className="flex flex-col items-center justify-between h-full w-full space-y-6">
-                    <div className="flex flex-col items-center space-y-4">
+                  <div className="flex flex-col items-center justify-between h-full w-full space-y-8">
+                    <div className="flex flex-col items-center space-y-6">
                       <motion.div 
                         className="relative w-16 h-16 mb-2"
                         whileHover={isLowEnd ? {} : { scale: 1.1 }}
@@ -443,13 +463,13 @@ export default function Services() {
           </div>
 
           {/* Additional Info Bar */}
-          <div className="mt-20">
-            <div className={`relative ${isLowEnd ? 'bg-white/10' : 'bg-white/10'} rounded-xl border border-white/20 p-8 flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8`} style={{ minHeight: '120px' }}>
-              <div className="flex items-center gap-6 sm:gap-8 w-full sm:w-auto">
+          <div className="mt-24">
+            <div className={`relative ${isLowEnd ? 'bg-white/10' : 'bg-white/10'} rounded-xl border border-white/20 p-10 flex flex-col sm:flex-row items-center justify-between gap-8 sm:gap-10`} style={{ minHeight: '120px' }}>
+              <div className="flex items-center gap-8 sm:gap-10 w-full sm:w-auto">
                 <div className="w-16 h-16 flex items-center justify-center">
                   <Zap className="w-12 h-12 text-[#00b8e6]" />
                 </div>
-                <div className="text-center sm:text-left space-y-2">
+                <div className="text-center sm:text-left space-y-3">
                   <h3 className="text-xl font-semibold text-white">En nog veel meer</h3>
                   <p className="text-base text-white/80">Persoonlijke digitale ondersteuning voor álles waar u hulp bij nodig hebt!</p>
                 </div>
@@ -465,28 +485,30 @@ export default function Services() {
       {/* Tarieven Section */}
       <section 
         id="tarieven" 
-        className="relative py-20 sm:py-24 lg:py-32 pb-0"
+        className="relative py-24 sm:py-28 lg:py-36 pb-0"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
-            <div className="col-span-1 md:col-span-12 mb-20">
+            <div className="col-span-1 md:col-span-12 mb-24">
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.6 }}
-                className="text-center space-y-6"
+                className="text-center space-y-8"
               >
-                <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-center text-[#FFFFFF]">Tarieven</h3>
+                <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-[#FFFFFF]">
+                  Transparante Tarieven
+                </h3>
                 <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto">
-                  Transparante prijzen voor alle computerhulp diensten
+                  Duidelijke prijzen zonder verrassingen
                 </p>
               </motion.div>
             </div>
             
             {/* Remote Support Pricing */}
             <motion.div 
-              className="col-span-1 md:col-span-4 mb-6 md:mb-0"
+              className="col-span-1 md:col-span-4 mb-8 md:mb-0"
               initial={{ opacity: 0, y: 30, scale: 0.95 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               whileHover={{ 
@@ -501,9 +523,9 @@ export default function Services() {
                 stiffness: 100
               }}
             >
-              <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-8 h-full flex flex-col justify-between w-full
+              <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-10 h-full flex flex-col justify-between w-full
                 hover:shadow-[0_0_30px_rgba(0,212,255,0.15)] transition-all duration-300">
-                <div className="flex items-center gap-4 mb-8">
+                <div className="flex items-center gap-6 mb-10">
                   <motion.span 
                     className="text-4xl w-6 text-[#FFFFFF]" 
                     role="img" 
@@ -513,28 +535,28 @@ export default function Services() {
                   >💻</motion.span>
                   <h4 className="text-2xl font-bold text-[#FFFFFF]">Remote Hulp</h4>
                 </div>
-                <p className="text-[#FFFFFF]/80 mb-6">Klaar terwijl u kijkt</p>
-                <div className="space-y-6 flex-grow">
+                <p className="text-[#FFFFFF]/80 mb-8">Klaar terwijl u kijkt</p>
+                <div className="space-y-8 flex-grow">
                   <p className="text-3xl font-semibold text-[#FFFFFF]">€11 <span className="text-base">/15 min</span></p>
                   <p className="text-[#FFFFFF]/80">(≈ €44/u)</p>
                   <p className="text-sm text-[#FFFFFF]/80">Daarna afrekening per minuut, geen minimum.</p>
-                  <ul className="space-y-4">
-                    <li className="flex items-center gap-3">
+                  <ul className="space-y-6">
+                    <li className="flex items-center gap-4">
                       <span className="text-2xl text-[#FFFFFF]/80">⚡</span>
                       <span className="text-[#FFFFFF]/80">Direct start, per-minuut facturering</span>
                     </li>
-                    <li className="flex items-center gap-3">
+                    <li className="flex items-center gap-4">
                       <span className="text-2xl text-[#FFFFFF]/80">💳</span>
                       <span className="text-[#FFFFFF]/80">iDEAL betaling</span>
                     </li>
-                    <li className="flex items-center gap-3">
+                    <li className="flex items-center gap-4">
                       <span className="text-2xl text-[#FFFFFF]/80">⏰</span>
                       <span className="text-[#FFFFFF]/80">Meestal binnen 5 min verbonden</span>
                     </li>
                   </ul>
                 </div>
-                <div className="mt-4 text-sm text-[#FFFFFF]/80">Niet opgelost = geen kosten</div>
-                <a href="#boek" className="mt-8 bg-[#00d4ff] text-[#FFFFFF] font-bold px-6 py-3 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4ff] hover:bg-[#00b8e6]" data-analytics="pricing_button_remote">
+                <div className="mt-6 text-sm text-[#FFFFFF]/80">Niet opgelost = geen kosten</div>
+                <a href="#boek" className="mt-10 bg-[#00d4ff] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4ff] hover:bg-[#00b8e6]" data-analytics="pricing_button_remote">
                   Start direct <ChevronRight className="w-4 h-4" />
                 </a>
               </div>
@@ -542,7 +564,7 @@ export default function Services() {
 
             {/* Bundles Pricing */}
             <motion.div 
-              className="col-span-1 md:col-span-4 mb-6 md:mb-0"
+              className="col-span-1 md:col-span-4 mb-8 md:mb-0"
               initial={{ opacity: 0, y: 30, scale: 0.95 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               whileHover={{ 
@@ -557,9 +579,9 @@ export default function Services() {
                 stiffness: 100
               }}
             >
-              <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-8 h-full flex flex-col justify-between w-full
+              <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-10 h-full flex flex-col justify-between w-full
                 hover:shadow-[0_0_30px_rgba(0,212,255,0.15)] transition-all duration-300">
-                <div className="flex items-center gap-4 mb-8">
+                <div className="flex items-center gap-6 mb-10">
                   <motion.span 
                     className="text-4xl w-6 text-[#FFFFFF]" 
                     role="img" 
@@ -569,21 +591,21 @@ export default function Services() {
                   >🛠️</motion.span>
                   <h4 className="text-2xl font-bold text-[#FFFFFF]">Service Bundles</h4>
                 </div>
-                <p className="text-[#FFFFFF]/80 mb-6">Vaste prijs, geen verrassingen</p>
-                <div className="space-y-6 flex-grow">
-                  <ul className="space-y-4">
-                    <li className="flex items-center gap-3">
+                <p className="text-[#FFFFFF]/80 mb-8">Vaste prijs, geen verrassingen</p>
+                <div className="space-y-8 flex-grow">
+                  <ul className="space-y-6">
+                    <li className="flex items-center gap-4">
                       <span className="text-2xl text-[#FFFFFF]/80">✅</span>
                       <span className="text-[#FFFFFF]/80"><strong className="text-[#FFFFFF]">Virus & Malware Scan</strong> — €99</span>
                     </li>
-                    <li className="flex items-center gap-3">
+                    <li className="flex items-center gap-4">
                       <span className="text-2xl text-[#FFFFFF]/80">✅</span>
                       <span className="text-[#FFFFFF]/80"><strong className="text-[#FFFFFF]">Computer Tune-up</strong> — €79</span>
                     </li>
                   </ul>
-                  <div className="mt-4 text-sm text-[#FFFFFF]/80">Niet opgelost = geen kosten</div>
+                  <div className="mt-6 text-sm text-[#FFFFFF]/80">Niet opgelost = geen kosten</div>
                 </div>
-                <a href="#boek" className="mt-8 bg-[#00d4ff] text-[#FFFFFF] font-bold px-6 py-3 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4ff] hover:bg-[#00b8e6]" data-analytics="pricing_button_bundle">
+                <a href="#boek" className="mt-10 bg-[#00d4ff] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4ff] hover:bg-[#00b8e6]" data-analytics="pricing_button_bundle">
                   Boek bundle <ChevronRight className="w-4 h-4" />
                 </a>
               </div>
@@ -606,9 +628,9 @@ export default function Services() {
                 stiffness: 100
               }}
             >
-              <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-8 h-full flex flex-col justify-between w-full
+              <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-10 h-full flex flex-col justify-between w-full
                 hover:shadow-[0_0_30px_rgba(0,212,255,0.15)] transition-all duration-300">
-                <div className="flex items-center gap-4 mb-8">
+                <div className="flex items-center gap-6 mb-10">
                   <motion.span 
                     className="text-4xl w-6 text-[#FFFFFF]" 
                     role="img" 
@@ -618,29 +640,29 @@ export default function Services() {
                   >🏠</motion.span>
                   <h4 className="text-2xl font-bold text-[#FFFFFF]">Computerhulp aan huis</h4>
                 </div>
-                <p className="text-[#FFFFFF]/80 mb-6">Geen voorrijkosten in Rotterdam</p>
-                <div className="space-y-6 flex-grow">
+                <p className="text-[#FFFFFF]/80 mb-8">Geen voorrijkosten in Rotterdam</p>
+                <div className="space-y-8 flex-grow">
                   <p className="text-3xl font-semibold text-[#FFFFFF]">€50 <span className="text-base">/uur</span></p>
                   <p className="text-[#FFFFFF]/80">≤ 10 km vanaf Rotterdam-centrum, daarna €0,25/km</p>
-                  <ul className="space-y-4">
-                    <li className="flex items-center gap-3">
+                  <ul className="space-y-6">
+                    <li className="flex items-center gap-4">
                       <span className="text-2xl text-[#FFFFFF]/80">💳</span>
                       <span className="text-[#FFFFFF]/80">iDEAL, contant of pin</span>
                     </li>
                   </ul>
-                  <div className="mt-4 text-sm text-[#FFFFFF]/80">Niet opgelost = geen kosten</div>
+                  <div className="mt-6 text-sm text-[#FFFFFF]/80">Niet opgelost = geen kosten</div>
                 </div>
-                <a href="#boek" className="mt-8 bg-[#00d4ff] text-[#FFFFFF] font-bold px-6 py-3 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4ff] hover:bg-[#00b8e6]" data-analytics="pricing_button_onsite">
+                <a href="#boek" className="mt-10 bg-[#00d4ff] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4ff] hover:bg-[#00b8e6]" data-analytics="pricing_button_onsite">
                   Plan bezoek <ChevronRight className="w-4 h-4" />
                 </a>
               </div>
             </motion.div>
 
             {/* FAQ Link */}
-            <div className="col-span-1 md:col-span-12 mt-12 text-center">
+            <div className="col-span-1 md:col-span-12 mt-16 text-center">
               <a 
                 href="#faq" 
-                className="inline-flex items-center gap-2 text-[#FFFFFF] hover:text-[#00d4ff] transition-colors"
+                className="inline-flex items-center gap-3 text-[#FFFFFF] hover:text-[#00d4ff] transition-colors"
                 data-analytics="faq_link"
               >
                 <span>Veelgestelde vragen</span>
@@ -649,7 +671,7 @@ export default function Services() {
             </div>
 
             {/* VAT Notice */}
-            <div className="col-span-1 md:col-span-12 mt-4 text-center">
+            <div className="col-span-1 md:col-span-12 mt-6 text-center">
               <p className="text-xs opacity-70">
                 Alle bedragen incl. 21% btw.
                 <a href="/terms" className="ml-1 text-[#00d4ff] hover:underline">Zie voorwaarden voor details</a>

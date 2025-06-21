@@ -10,6 +10,7 @@ type Appointment = {
   time: string;   // HH:mm
   address: string;
   bookingId?: string; // Optional booking ID from database
+  appointmentType?: 'onsite' | 'remote'; // New field for appointment type
 };
 
 export async function POST(req: Request) {
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
   }
 
   // Basic server-side validation
-  const { name, email, date, time, address, bookingId } = data;
+  const { name, email, date, time, address, bookingId, appointmentType = 'onsite' } = data;
   if (!name || !email || !date || !time || !address) {
     console.log('[send-email] Missing required fields:', { name, email, date, time, address });
     return NextResponse.json(
@@ -47,14 +48,67 @@ export async function POST(req: Request) {
     );
   }
 
-  // Compose the email
-  const html = `
-    <p>Beste ${name},</p>
-    <p>Bedankt voor het boeken van uw afspraak op <strong>${date}</strong> om <strong>${time}</strong>.</p>
-    <p>Adres: ${address}</p>
-    ${bookingId ? `<p>Boekingsnummer: ${bookingId}</p>` : ''}
-    <p>Tot ziens!</p>
-  `;
+  // Compose different emails based on appointment type
+  let userSubject: string;
+  let userHtml: string;
+  let userText: string;
+
+  if (appointmentType === 'remote') {
+    userSubject = "Bevestiging van uw afspraak - Remote hulp";
+    userHtml = `
+      <p>Beste ${name},</p>
+      <p>Bedankt voor het boeken van uw afspraak voor <strong>remote computerhulp</strong> op <strong>${date}</strong> om <strong>${time}</strong>.</p>
+      
+      <h3>Stap 1 – Download TeamViewer QuickSupport</h3>
+      <p>Klik op de onderstaande, veilige link. Het programma hoeft niet geïnstalleerd te worden; kies gewoon 'Uitvoeren'.</p>
+      <p>▸ <a href="https://download.teamviewer.com/download/TeamViewerQS_x64.exe" style="color: #00d4ff;">https://download.teamviewer.com/download/TeamViewerQS_x64.exe</a></p>
+      
+      <h3>Stap 2 – Ontvang de downloadlink per e-mail</h3>
+      <p>U ontvangt de downloadlink per e-mail op het afgesproken tijdstip.</p>
+      
+      <h3>Hulp nodig?</h3>
+      <p>Vindt u het downloaden of starten van het programma lastig? Bel ons gerust op <strong>0624837889</strong> – we helpen u stap voor stap verder.</p>
+      
+      <h3>Praktische gegevens</h3>
+      <p><strong>Adres administratie:</strong> ${address}</p>
+      ${bookingId ? `<p><strong>Boekingsnummer:</strong> ${bookingId}</p>` : ''}
+      
+      <p>Tot ziens!</p>
+      <p>Met vriendelijke groet,<br>Computer Help</p>
+    `;
+    userText = `Beste ${name},
+
+Bedankt voor het boeken van uw afspraak voor remote computerhulp op ${date} om ${time}.
+
+Stap 1 – Download TeamViewer QuickSupport
+Klik op de onderstaande, veilige link. Het programma hoeft niet geïnstalleerd te worden; kies gewoon 'Uitvoeren'.
+▸ https://download.teamviewer.com/download/TeamViewerQS_x64.exe
+
+Stap 2 – Ontvang de downloadlink per e-mail
+U ontvangt de downloadlink per e-mail op het afgesproken tijdstip.
+
+Hulp nodig?
+Vindt u het downloaden of starten van het programma lastig? Bel ons gerust op 0624837889 – we helpen u stap voor stap verder.
+
+Praktische gegevens
+Adres administratie: ${address}${bookingId ? `\nBoekingsnummer: ${bookingId}` : ''}
+
+Tot ziens!
+
+Met vriendelijke groet,
+Computer Help`;
+  } else {
+    userSubject = "Bevestiging van uw afspraak - Aan huis bezoek";
+    userHtml = `
+      <p>Beste ${name},</p>
+      <p>Bedankt voor het boeken van uw afspraak voor <strong>aan huis computerhulp</strong> op <strong>${date}</strong> om <strong>${time}</strong>.</p>
+      <p>Wij komen bij u langs op het opgegeven adres.</p>
+      <p>Adres: ${address}</p>
+      ${bookingId ? `<p>Boekingsnummer: ${bookingId}</p>` : ''}
+      <p>Tot ziens!</p>
+    `;
+    userText = `Beste ${name},\n\nBedankt voor het boeken van uw afspraak voor aan huis computerhulp op ${date} om ${time}.\nWij komen bij u langs op het opgegeven adres.\nAdres: ${address}${bookingId ? `\nBoekingsnummer: ${bookingId}` : ''}\n\nTot ziens!`;
+  }
 
   console.log('[send-email] Sending email to:', email);
 
@@ -63,9 +117,9 @@ export async function POST(req: Request) {
     const result = await resend.emails.send({
       from: "Computer Help <onboarding@resend.dev>", // Use Resend's default domain for testing
       to: email,
-      subject: "Bevestiging van uw afspraak",
-      html,
-      text: `Beste ${name},\n\nBedankt voor het boeken van uw afspraak op ${date} om ${time}.\nAdres: ${address}${bookingId ? `\nBoekingsnummer: ${bookingId}` : ''}\n\nTot ziens!`,
+      subject: userSubject,
+      html: userHtml,
+      text: userText,
     });
 
     console.log('[send-email] Email sent successfully:', result);

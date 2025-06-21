@@ -79,11 +79,11 @@ export default function TextAnimation({ className = '', startWriting = false }: 
 
   return (
     <div className={`relative ${className}`}>
-      <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl lg:max-w-[18ch] mb-8">
+      <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl lg:max-w-[18ch] mb-10">
         Expert computerhulp
       </h1>
       <p 
-        className="text-lg leading-[1.6] text-white/90 max-w-[45ch] mb-12 min-h-[3em] transition-opacity duration-500 ease-in-out"
+        className="text-lg leading-[1.6] text-white/90 max-w-[45ch] mb-16 min-h-[3em] transition-opacity duration-500 ease-in-out"
         style={{ 
           opacity,
           transition: isLowEnd ? 'none' : 'opacity 0.3s ease-in-out'
@@ -96,7 +96,7 @@ export default function TextAnimation({ className = '', startWriting = false }: 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.5 }}
-        className="group relative inline-flex items-center gap-2.5 bg-[#00d4ff] text-white font-medium px-7 py-3.5 rounded-lg transition-all duration-300 hover:bg-[#00b8e6] hover:shadow-[0_0_20px_rgba(0,212,255,0.3)]"
+        className="group relative inline-flex items-center gap-3 bg-[#00d4ff] text-white font-medium px-8 py-4 rounded-lg transition-all duration-300 hover:bg-[#00b8e6] hover:shadow-[0_0_20px_rgba(0,212,255,0.3)]"
       >
         <span className="relative z-10">Plan een afspraak</span>
         <ChevronRight className="w-4 h-4 relative z-10 transition-transform duration-300 group-hover:translate-x-0.5" />

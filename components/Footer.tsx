@@ -1,16 +1,54 @@
 export default function Footer() {
     return (
-      <footer className="bg-transparent text-ink-500 text-sm py-6 text-center border-t border-surface-700">
-        <p>
-          © {new Date().getFullYear()} Computer Help · KvK 12345678 · BTW NL001234567B01 ·{' '}
-          <a href="/privacy" className="text-ink-300 hover:text-primary-500">
-            Privacy & Cookies
-          </a>{' '}
-          ·{' '}
-          <a href="/terms" className="text-ink-300 hover:text-primary-500">
-            Algemene voorwaarden
-          </a>
-        </p>
+      <footer className="bg-transparent text-white py-16 border-t-2 border-white/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {/* Company Info */}
+            <div className="space-y-6">
+              <h3 className="text-xl font-bold text-white mb-6">CodeClinic.nl</h3>
+              <p className="text-lg text-white/80 leading-relaxed">
+                Professionele computerhulp voor senioren. Remote hulp en aan huis service.
+              </p>
+              <div className="space-y-3 text-lg">
+                <p className="text-white/90">📞 <a href="tel:+31612345678" className="footer-link">+31 6 12345678</a></p>
+                <p className="text-white/90">📧 <a href="mailto:info@codeclinic.nl" className="footer-link">info@codeclinic.nl</a></p>
+              </div>
+            </div>
+
+            {/* Services */}
+            <div className="space-y-6">
+              <h3 className="text-xl font-bold text-white mb-6">Onze Diensten</h3>
+              <ul className="space-y-3 text-lg">
+                <li><a href="#diensten" className="footer-link">Virus verwijdering</a></li>
+                <li><a href="#diensten" className="footer-link">Computer opschonen</a></li>
+                <li><a href="#diensten" className="footer-link">Wifi optimalisatie</a></li>
+                <li><a href="#diensten" className="footer-link">Remote hulp</a></li>
+                <li><a href="#diensten" className="footer-link">Aan huis service</a></li>
+              </ul>
+            </div>
+
+            {/* Legal & Contact */}
+            <div className="space-y-6">
+              <h3 className="text-xl font-bold text-white mb-6">Informatie</h3>
+              <ul className="space-y-3 text-lg">
+                <li><a href="#contact" className="footer-link">Afspraak maken</a></li>
+                <li><a href="#tarieven" className="footer-link">Prijzen</a></li>
+                <li><a href="/privacy" className="footer-link">Privacy & Cookies</a></li>
+                <li><a href="/terms" className="footer-link">Algemene voorwaarden</a></li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom section */}
+          <div className="mt-12 pt-12 border-t border-white/10 text-center">
+            <p className="text-lg text-white/70">
+              © {new Date().getFullYear()} CodeClinic.nl · KvK 12345678 · BTW NL001234567B01
+            </p>
+            <p className="text-base text-white/60 mt-3">
+              Professionele computerhulp voor senioren in heel Nederland
+            </p>
+          </div>
+        </div>
       </footer>
     );
   }

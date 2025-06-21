@@ -20,6 +20,7 @@ const bookingSchema = z.object({
   date: z.string().regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/, 'Invalid date format (YYYY-MM-DD)'),
   time: z.string().regex(/^([01]\d|2[0-3]):[0-3]0$/, 'Invalid time format (HH:30 or HH:00)'),
   notes: z.string().max(1000, 'Notes are too long').optional(),
+  appointmentType: z.enum(['onsite', 'remote']).default('onsite'),
 });
 
 // Generate all 30-minute slots from 09:00 to 16:00
@@ -74,9 +75,10 @@ async function atomicBookSlot(bookingData: any): Promise<{ success: boolean; err
         date = ARGV[1],
         time = ARGV[2],
         notes = ARGV[6],
-        id = ARGV[7],
-        createdAt = ARGV[8],
-        updatedAt = ARGV[9]
+        appointmentType = ARGV[7],
+        id = ARGV[8],
+        createdAt = ARGV[9],
+        updatedAt = ARGV[10]
       })
       
       redis.call('RPUSH', 'bookings', newBooking)
@@ -88,6 +90,7 @@ async function atomicBookSlot(bookingData: any): Promise<{ success: boolean; err
       bookingData.email,
       bookingData.phone,
       bookingData.notes || '',
+      bookingData.appointmentType || 'onsite',
       bookingData.id,
       bookingData.createdAt,
       bookingData.updatedAt
@@ -116,8 +119,13 @@ async function sendAdminNotification(booking: any) {
   }
 
   try {
+    const appointmentType = booking.appointmentType || 'onsite';
+    const typeText = appointmentType === 'remote' ? 'Remote hulp' : 'Aan huis bezoek';
+    const typeEmoji = appointmentType === 'remote' ? '💻' : '🏠';
+    
     const html = `
-      <h2>Nieuwe afspraak geboekt!</h2>
+      <h2>${typeEmoji} Nieuwe afspraak geboekt - ${typeText}!</h2>
+      <p><strong>Type:</strong> ${typeText}</p>
       <p><strong>Naam:</strong> ${booking.name}</p>
       <p><strong>Email:</strong> ${booking.email}</p>
       <p><strong>Telefoon:</strong> ${booking.phone}</p>
@@ -131,9 +139,9 @@ async function sendAdminNotification(booking: any) {
     await resend.emails.send({
       from: "Computer Help <onboarding@resend.dev>",
       to: process.env.ADMIN_EMAIL,
-      subject: `Nieuwe afspraak: ${booking.name} - ${booking.date} om ${booking.time}`,
+      subject: `${typeEmoji} Nieuwe ${typeText}: ${booking.name} - ${booking.date} om ${booking.time}`,
       html,
-      text: `Nieuwe afspraak geboekt!\n\nNaam: ${booking.name}\nEmail: ${booking.email}\nTelefoon: ${booking.phone}\nDatum: ${booking.date}\nTijd: ${booking.time}\nNotities: ${booking.notes || 'Geen notities'}\nBoekingsnummer: ${booking.id}\nGeboekt op: ${new Date(booking.createdAt).toLocaleString('nl-NL')}`,
+      text: `${typeEmoji} Nieuwe afspraak geboekt - ${typeText}!\n\nType: ${typeText}\nNaam: ${booking.name}\nEmail: ${booking.email}\nTelefoon: ${booking.phone}\nDatum: ${booking.date}\nTijd: ${booking.time}\nNotities: ${booking.notes || 'Geen notities'}\nBoekingsnummer: ${booking.id}\nGeboekt op: ${new Date(booking.createdAt).toLocaleString('nl-NL')}`,
     });
 
     console.log('[calendar] Admin notification sent successfully');

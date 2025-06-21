@@ -68,19 +68,19 @@ export default function Hero() {
         className="transition-all duration-700 relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full opacity-100 scale-100 z-50"
       >
         {/* Left column — copy */}
-        <div className="text-white lg:col-span-12 py-16 sm:py-20 lg:py-24">
+        <div className="text-white lg:col-span-12 py-20 sm:py-24 lg:py-32">
           <TextAnimation startWriting={startWriting} />
         </div>
       </div>
 
       {/* Scroll indicator */}
       <div 
-        className="absolute bottom-12 left-1/2 transform -translate-x-1/2 transition-all duration-500 z-40 opacity-100 translate-y-0"
+        className="absolute bottom-24 left-1/2 transform -translate-x-1/2 transition-all duration-500 z-40 opacity-100 translate-y-0"
       >
-        <div className="flex flex-col items-center text-white/60 space-y-3">
-          <span className="text-sm font-medium">Scroll om meer te zien</span>
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/60 rounded-full mt-2 animate-bounce"></div>
+        <div className="scroll-indicator">
+          <span className="scroll-indicator-text">Scroll om meer te zien</span>
+          <div className="scroll-indicator-arrow">
+            <div className="scroll-indicator-dot"></div>
           </div>
         </div>
       </div>
