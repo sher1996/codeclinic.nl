@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'CodeClinic.nl - Expert Computerhulp voor Senioren | Remote & Aan Huis',
-  description: 'Professionele computerhulp voor senioren. Virus verwijdering, computer opschonen, wifi optimalisatie en meer. Remote hulp of aan huis service. Vanaf €35. KvK 12345678.',
+  description: 'Professionele computerhulp voor senioren. Virus verwijdering, computer opschonen, wifi optimalisatie en meer. Remote hulp of aan huis service. Vanaf €35. KvK 86438948.',
   keywords: 'computerhulp, computer reparatie, virus verwijdering, wifi optimalisatie, computer opschonen, senioren computerhulp, remote hulp, aan huis service, computer ondersteuning, IT support',
   authors: [{ name: 'CodeClinic.nl' }],
   creator: 'CodeClinic.nl',

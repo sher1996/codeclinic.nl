@@ -48,7 +48,7 @@ export default function Footer() {
           {/* Bottom section */}
           <div className="mt-12 pt-12 border-t border-white/10 text-center">
             <p className="text-lg text-white/70">
-              © {new Date().getFullYear()} CodeClinic.nl · KvK 12345678 · BTW NL001234567B01
+              © {new Date().getFullYear()} CodeClinic.nl · KvK 86438948 · BTW NL004247935B44
             </p>
             <p className="text-base text-white/60 mt-3 senior-description">
               Professionele computerhulp voor senioren in heel Nederland
