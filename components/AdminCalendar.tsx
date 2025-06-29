@@ -247,7 +247,7 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
                     <select
                       id="filter-status"
                       value={filterStatus}
-                      onChange={(e) => setFilterStatus(e.target.value as any)}
+                      onChange={(e) => setFilterStatus(e.target.value)}
                       className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     >
                       <option value="all">Alle afspraken</option>
