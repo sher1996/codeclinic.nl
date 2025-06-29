@@ -1,4 +1,5 @@
 // TODO: Replace with real testimonials before go-live
+// Production testimonials for computer help services - Rotterdam focused
 export const dummyTestimonials = [
   {
     quote: "\"Binnen een half uur stond mijn PC weer op volle snelheid!\"",
