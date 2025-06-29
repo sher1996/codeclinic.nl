@@ -12,7 +12,7 @@ export default function Footer() {
               <div className="space-y-3 text-lg">
                 <p className="text-white/90">
                   <span role="img" aria-label="Telefoon icoon">📞</span> 
-                  <a href="tel:+31612345678" className="footer-link">+31 6 12345678</a>
+                  <a href="tel:+31624837889" className="footer-link">+31 6 24837889</a>
                 </p>
                 <p className="text-white/90">
                   <span role="img" aria-label="E-mail icoon">📧</span> 

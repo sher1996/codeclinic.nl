@@ -100,7 +100,7 @@ export default function RootLayout({
               "url": "https://codeclinic.nl",
               "logo": "https://codeclinic.nl/logo-cc.png",
               "image": "https://codeclinic.nl/logo-cc.png",
-              "telephone": "+31-6-12345678",
+              "telephone": "+31-6-24837889",
               "email": "info@codeclinic.nl",
               "address": {
                 "@type": "PostalAddress",
