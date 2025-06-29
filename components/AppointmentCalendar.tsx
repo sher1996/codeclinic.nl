@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface AppointmentCalendarProps {
@@ -35,38 +35,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   // Check if device is low-end
   const [isLowEnd, setIsLowEnd] = useState(false);
 
-  useEffect(() => {
-    const checkDeviceCapabilities = () => {
-      const isLowEndDevice = 
-        navigator.hardwareConcurrency <= 4 || // Low CPU cores
-        !window.matchMedia('(prefers-reduced-motion: no-preference)').matches || // Reduced motion preference
-        window.innerWidth < 768; // Small screen
-      setIsLowEnd(isLowEndDevice);
-    };
-
-    checkDeviceCapabilities();
-    window.addEventListener('resize', checkDeviceCapabilities);
-    return () => window.removeEventListener('resize', checkDeviceCapabilities);
-  }, []);
-
-  // Fetch booked times when a date is selected
-  useEffect(() => {
-    if (selectedDate) {
-      fetchBookedTimes(selectedDate);
-    } else {
-      setBookedTimes([]);
-    }
-  }, [selectedDate]);
-
-  // Announce changes to screen readers
-  useEffect(() => {
-    if (announcement) {
-      const timer = setTimeout(() => setAnnouncement(''), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [announcement]);
-
-  const fetchBookedTimes = async (date: Date) => {
+  const fetchBookedTimes = useCallback(async (date: Date) => {
     setIsLoadingBookings(true);
     try {
       const pad = (n: number) => n.toString().padStart(2, '0');
@@ -94,7 +63,37 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
     } finally {
       setIsLoadingBookings(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (selectedDate) {
+      fetchBookedTimes(selectedDate);
+    } else {
+      setBookedTimes([]);
+    }
+  }, [selectedDate, fetchBookedTimes]);
+
+  // Announce changes to screen readers
+  useEffect(() => {
+    if (announcement) {
+      const timer = setTimeout(() => setAnnouncement(''), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [announcement]);
+
+  useEffect(() => {
+    const checkDeviceCapabilities = () => {
+      const isLowEndDevice = 
+        navigator.hardwareConcurrency <= 4 || // Low CPU cores
+        !window.matchMedia('(prefers-reduced-motion: no-preference)').matches || // Reduced motion preference
+        window.innerWidth < 768; // Small screen
+      setIsLowEnd(isLowEndDevice);
+    };
+
+    checkDeviceCapabilities();
+    window.addEventListener('resize', checkDeviceCapabilities);
+    return () => window.removeEventListener('resize', checkDeviceCapabilities);
+  }, []);
 
   const weekDays = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'];
 

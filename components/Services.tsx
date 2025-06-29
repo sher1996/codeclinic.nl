@@ -2,6 +2,7 @@ import { Computer, Home, Zap, Shield, Wifi, Mail, Smartphone, Database, Lock, Vi
 import { useState, lazy, Suspense, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import React from 'react';
+import NextImage from 'next/image';
 const PricingSchema = lazy(() => import('./PricingSchema'));
 
 const categories = [
@@ -97,7 +98,7 @@ const services = [
     key: 'foto', 
     title: 'Foto\'s & documenten ordenen', 
     price: 'vanaf €45',
-    icon: <Image className="w-8 h-8 text-white" />,
+    icon: <Image className="w-8 h-8 text-white" aria-label="Foto icoon" />,
     description: 'Foto\'s en documenten netjes organiseren',
     category: 'productivity'
   },
@@ -256,7 +257,7 @@ function ServiceCard() {
                           {/* TeamViewer logo (generated at https://www.teamviewer.com) */}
                           <div style={{position: 'relative', width: '234px', height: '60px'}}>
                             <a href="https://www.teamviewer.com/link/?url=842558" style={{textDecoration: 'none'}}>
-                              <img src="https://static.teamviewer.com/resources/badges/teamviewer_badge_flat4.png" alt="Download TeamViewer Remote Control" title="Download TeamViewer Remote Control" width="234" height="60" />
+                              <NextImage src="https://static.teamviewer.com/resources/badges/teamviewer_badge_flat4.png" alt="Download TeamViewer Remote Control" title="Download TeamViewer Remote Control" width={234} height={60} />
                             </a>
                           </div>
                         </div>
@@ -461,7 +462,7 @@ export default function Services() {
           {/* Services Grid */}
           <div className="mx-auto grid max-w-2xl grid-cols-1 gap-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             <AnimatePresence mode="sync">
-              {filteredServices.map((service, index) => (
+              {filteredServices.map((service) => (
                 <motion.div
                   key={service.key}
                   layout={false}

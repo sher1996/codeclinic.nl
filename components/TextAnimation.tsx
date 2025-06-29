@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -17,10 +17,10 @@ export default function TextAnimation({ className = '', startWriting = false }: 
   const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
   const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
 
-  const texts = [
+  const texts = useMemo(() => [
     'Direct professionele hulp bij al uw computerproblemen.',
     '90% van de problemen opgelost in één keer.'
-  ];
+  ], []);
 
   // Start typing when startWriting becomes true
   useEffect(() => {
