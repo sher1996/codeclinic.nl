@@ -19,8 +19,8 @@ export default function FloatingTestimonials() {
   const maxTestimonials = 2; // Limit to 2 testimonials at once for phone-like feel
 
   useEffect(() => {
-    // Only show in development
-    if (process.env.NODE_ENV === "production" || testimonials.length === 0) {
+    // Show testimonials if we have any
+    if (testimonials.length === 0) {
       return;
     }
 
