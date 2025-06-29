@@ -287,9 +287,9 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
                           </div>
                           
                           <div className="flex items-center gap-4 text-sm text-gray-300">
-                            <span>📅 {formatDate(booking.date)}</span>
-                            <span>🕐 {formatTime(booking.time)}</span>
-                            <span>📝 {booking.notes || 'No notes'}</span>
+                            <span><span role="img" aria-label="Kalender icoon">📅</span> {formatDate(booking.date)}</span>
+                            <span><span role="img" aria-label="Klok icoon">🕐</span> {formatTime(booking.time)}</span>
+                            <span><span role="img" aria-label="Notitie icoon">📝</span> {booking.notes || 'No notes'}</span>
                           </div>
                         </div>
 

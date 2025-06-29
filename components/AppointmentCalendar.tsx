@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface AppointmentCalendarProps {
@@ -15,6 +15,9 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
   const [isLoadingBookings, setIsLoadingBookings] = useState(false);
+  const [focusedDayIndex, setFocusedDayIndex] = useState<number>(-1);
+  const [focusedTimeIndex, setFocusedTimeIndex] = useState<number>(-1);
+  const [announcement, setAnnouncement] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,6 +28,11 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
     city: '',
     notes: ''
   });
+
+  // Refs for focus management
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const timeGridRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   // Check if device is low-end
   const [isLowEnd, setIsLowEnd] = useState(false);
@@ -52,21 +60,39 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
     }
   }, [selectedDate]);
 
+  // Announce changes to screen readers
+  useEffect(() => {
+    if (announcement) {
+      const timer = setTimeout(() => setAnnouncement(''), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [announcement]);
+
   const fetchBookedTimes = async (date: Date) => {
     setIsLoadingBookings(true);
     try {
       const pad = (n: number) => n.toString().padStart(2, '0');
       const dateString = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+      console.log('[AppointmentCalendar] Fetching booked times for date:', dateString);
+      
       const response = await fetch('/api/calendar');
       if (response.ok) {
         const data = await response.json();
+        console.log('[AppointmentCalendar] All bookings from API:', data.bookings);
+        
         const bookedForDate = data.bookings
           .filter((booking: { date: string; time: string }) => booking.date === dateString)
           .map((booking: { date: string; time: string }) => booking.time);
+        
+        console.log('[AppointmentCalendar] Booked times for', dateString, ':', bookedForDate);
         setBookedTimes(bookedForDate);
+        setAnnouncement(`Beschikbare tijden geladen voor ${formatDateShort(date)}`);
+      } else {
+        console.error('[AppointmentCalendar] Failed to fetch bookings:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Failed to fetch booked times:', error);
+      setAnnouncement('Fout bij het laden van beschikbare tijden');
     } finally {
       setIsLoadingBookings(false);
     }
@@ -76,28 +102,36 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
 
   const handlePrevMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+    setFocusedDayIndex(-1);
+    setAnnouncement(`Vorige maand: ${formatMonthYear(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}`);
   };
 
   const handleNextMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+    setFocusedDayIndex(-1);
+    setAnnouncement(`Volgende maand: ${formatMonthYear(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}`);
   };
 
   const handleDateClick = (date: Date | null) => {
     if (date) {
       setSelectedDate(date);
       setSelectedTime(null); // Reset time selection when date changes
+      setFocusedTimeIndex(-1);
       if (onDateSelect) {
         onDateSelect(date);
       }
+      setAnnouncement(`Datum geselecteerd: ${formatDateShort(date)}`);
     }
   };
 
   const handleTimeSelect = (time: string) => {
     // Don't allow selection of booked times
     if (bookedTimes.includes(time)) {
+      setAnnouncement(`${time} is niet beschikbaar`);
       return;
     }
     setSelectedTime(time);
+    setAnnouncement(`Tijd geselecteerd: ${time}`);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -106,6 +140,115 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       ...prev,
       [name]: value
     }));
+  };
+
+  // Keyboard navigation for calendar
+  const handleCalendarKeyDown = (e: React.KeyboardEvent, dayIndex: number, day: Date | null) => {
+    if (!day) return;
+
+    const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+    const totalCells = firstDayOfMonth + daysInMonth;
+    
+    switch (e.key) {
+      case 'ArrowRight':
+        e.preventDefault();
+        if (dayIndex < totalCells - 1) {
+          setFocusedDayIndex(dayIndex + 1);
+        }
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        if (dayIndex > 0) {
+          setFocusedDayIndex(dayIndex - 1);
+        }
+        break;
+      case 'ArrowDown':
+        e.preventDefault();
+        const nextWeekIndex = dayIndex + 7;
+        if (nextWeekIndex < totalCells) {
+          setFocusedDayIndex(nextWeekIndex);
+        }
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        const prevWeekIndex = dayIndex - 7;
+        if (prevWeekIndex >= 0) {
+          setFocusedDayIndex(prevWeekIndex);
+        }
+        break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        handleDateClick(day);
+        break;
+      case 'Home':
+        e.preventDefault();
+        setFocusedDayIndex(firstDayOfMonth);
+        break;
+      case 'End':
+        e.preventDefault();
+        setFocusedDayIndex(totalCells - 1);
+        break;
+    }
+  };
+
+  // Keyboard navigation for time slots
+  const handleTimeKeyDown = (e: React.KeyboardEvent, timeIndex: number, time: string) => {
+    if (!selectedDate) return;
+    
+    const availableTimes = Array.from({ length: 8 }, (_, i) => i + 9).flatMap(hour => {
+      const times = [];
+      if (!isPastTime(selectedDate, `${hour.toString().padStart(2, '0')}:00`)) {
+        times.push(`${hour.toString().padStart(2, '0')}:00`);
+      }
+      if (!isPastTime(selectedDate, `${hour.toString().padStart(2, '0')}:30`)) {
+        times.push(`${hour.toString().padStart(2, '0')}:30`);
+      }
+      return times;
+    }).filter(time => !bookedTimes.includes(time));
+
+    switch (e.key) {
+      case 'ArrowRight':
+        e.preventDefault();
+        if (timeIndex < availableTimes.length - 1) {
+          setFocusedTimeIndex(timeIndex + 1);
+        }
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        if (timeIndex > 0) {
+          setFocusedTimeIndex(timeIndex - 1);
+        }
+        break;
+      case 'ArrowDown':
+        e.preventDefault();
+        const nextRowIndex = timeIndex + 4;
+        if (nextRowIndex < availableTimes.length) {
+          setFocusedTimeIndex(nextRowIndex);
+        }
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        const prevRowIndex = timeIndex - 4;
+        if (prevRowIndex >= 0) {
+          setFocusedTimeIndex(prevRowIndex);
+        }
+        break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        handleTimeSelect(time);
+        break;
+      case 'Home':
+        e.preventDefault();
+        setFocusedTimeIndex(0);
+        break;
+      case 'End':
+        e.preventDefault();
+        setFocusedTimeIndex(availableTimes.length - 1);
+        break;
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -185,9 +328,14 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       const emailResult = await emailRes.json();
       console.log('[AppointmentCalendar] Email sent:', emailResult);
       
+      setAnnouncement('Afspraak succesvol geboekt! U ontvangt een bevestiging per e-mail.');
+      
       // Refresh booked times to show the new booking
       if (selectedDate) {
-        await fetchBookedTimes(selectedDate);
+        // Add a small delay to ensure Redis has been updated
+        setTimeout(async () => {
+          await fetchBookedTimes(selectedDate);
+        }, 500);
       }
       
       // Reset form after success
@@ -207,7 +355,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       }, 2000);
     } catch (err: unknown) {
       console.error('[AppointmentCalendar] Error:', err);
-      // You could add a toast notification here if needed
+      setAnnouncement(`Fout bij boeken: ${err instanceof Error ? err.message : 'Onbekende fout'}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -272,8 +420,25 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
     return days;
   })();
 
+  // Generate available time slots
+  const availableTimes = selectedDate ? Array.from({ length: 8 }, (_, i) => i + 9).flatMap(hour => {
+    const times = [];
+    if (!isPastTime(selectedDate, `${hour.toString().padStart(2, '0')}:00`)) {
+      times.push(`${hour.toString().padStart(2, '0')}:00`);
+    }
+    if (!isPastTime(selectedDate, `${hour.toString().padStart(2, '0')}:30`)) {
+      times.push(`${hour.toString().padStart(2, '0')}:30`);
+    }
+    return times;
+  }).filter(time => !bookedTimes.includes(time)) : [];
+
   return (
     <div className="relative isolate">
+      {/* ARIA live region for announcements */}
+      <div className="aria-live" aria-live="polite" aria-atomic="true">
+        {announcement}
+      </div>
+
       {/* Background effects - only for high-end devices */}
       {!isLowEnd && (
         <>
@@ -296,39 +461,56 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
                     className="w-full"
+                    ref={calendarRef}
+                    role="application"
+                    aria-label="Kalender voor het selecteren van een datum"
                   >
-                    <div className="flex justify-between items-center mb-3 sm:mb-6">
+                    <div className="calendar-navigation">
                       <button
                         onClick={handlePrevMonth}
-                        className="p-2 sm:p-3 hover:bg-white/10 rounded-lg transition-colors text-lg sm:text-xl"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handlePrevMonth();
+                          }
+                        }}
+                        className="calendar-nav-button"
+                        aria-label="Vorige maand"
                       >
                         ←
                       </button>
-                      <h2 className="text-lg sm:text-xl font-semibold text-center">
+                      <h2 className="text-lg sm:text-xl font-semibold text-center" id="calendar-title">
                         {formatMonthYear(currentDate)}
                       </h2>
                       <button
                         onClick={handleNextMonth}
-                        className="p-2 sm:p-3 hover:bg-white/10 rounded-lg transition-colors text-lg sm:text-xl"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleNextMonth();
+                          }
+                        }}
+                        className="calendar-nav-button"
+                        aria-label="Volgende maand"
                       >
                         →
                       </button>
                     </div>
 
-                    <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-3 sm:mb-4">
+                    <div className="calendar-grid" role="grid" aria-labelledby="calendar-title">
                       {weekDays.map(day => (
-                        <div key={day} className="text-center text-xs sm:text-sm font-medium text-gray-400 p-1">
+                        <div key={day} className="text-center text-xs sm:text-sm font-medium text-gray-400 p-1" role="columnheader">
                           {day}
                         </div>
                       ))}
-                    </div>
-
-                    <div className="grid grid-cols-7 gap-2 sm:gap-3">
+                      
                       {days.map((day, index) => (
                         <button
                           key={index}
                           onClick={() => handleDateClick(day)}
+                          onKeyDown={(e) => handleCalendarKeyDown(e, index, day)}
                           disabled={day ? isPastDate(day) : false}
+                          tabIndex={day && !isPastDate(day) ? 0 : -1}
                           className={`
                             calendar-day
                             ${!day ? 'opacity-0' : ''}
@@ -336,12 +518,20 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                             ${day && !isPastDate(day) && isSelected(day) ? 'bg-[#00d4ff] text-white' : ''}
                             ${day && !isPastDate(day) && !isSelected(day) ? 'hover:bg-white/10' : ''}
                           `}
+                          aria-label={day ? `${day.getDate()} ${formatMonthYear(day)}${isPastDate(day) ? ' - Verstreken datum' : ''}` : 'Lege dag'}
+                          aria-selected={day ? isSelected(day) : undefined}
+                          aria-disabled={day ? isPastDate(day) : undefined}
+                          role="gridcell"
                         >
                           <div className="flex flex-col items-center justify-center h-full">
                             <span className="text-base sm:text-lg font-semibold">{day?.getDate()}</span>
                           </div>
                         </button>
                       ))}
+                    </div>
+
+                    <div className="mt-4 text-sm text-white/60 text-center">
+                      <p>Gebruik Tab om door de kalender te navigeren, pijltjestoetsen om dagen te selecteren, en Enter om een datum te kiezen.</p>
                     </div>
                   </motion.div>
                 ) : selectedTime ? (
@@ -357,6 +547,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                       <button
                         onClick={() => setSelectedTime(null)}
                         className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm"
+                        aria-label="Terug naar tijden selecteren"
                       >
                         ← Terug naar tijden
                       </button>
@@ -374,107 +565,130 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                         <p className="text-sm text-white/60">{formatDateShort(selectedDate)}</p>
                       </div>
 
-                      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6" ref={formRef}>
                         <div>
-                          <label className="form-label">Naam</label>
+                          <label htmlFor="name" className="form-label">Naam</label>
                           <input
+                            id="name"
                             type="text"
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
                             className="form-input"
                             required
+                            aria-required="true"
                           />
                         </div>
                         <div>
-                          <label className="form-label">Email</label>
+                          <label htmlFor="email" className="form-label">Email</label>
                           <input
+                            id="email"
                             type="email"
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
                             className="form-input"
                             required
+                            aria-required="true"
                           />
                         </div>
                         <div>
-                          <label className="form-label">Telefoon</label>
+                          <label htmlFor="phone" className="form-label">Telefoon</label>
                           <input
+                            id="phone"
                             type="tel"
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
                             className="form-input"
                             required
+                            aria-required="true"
                           />
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                           <div>
-                            <label className="form-label">Straat</label>
+                            <label htmlFor="street" className="form-label">Straat</label>
                             <input
+                              id="street"
                               type="text"
                               name="street"
                               value={formData.street}
                               onChange={handleInputChange}
                               className="form-input"
                               required
+                              aria-required="true"
                             />
                           </div>
                           <div>
-                            <label className="form-label">Huisnummer</label>
+                            <label htmlFor="houseNumber" className="form-label">Huisnummer</label>
                             <input
+                              id="houseNumber"
                               type="text"
                               name="houseNumber"
                               value={formData.houseNumber}
                               onChange={handleInputChange}
                               className="form-input"
                               required
+                              aria-required="true"
                             />
                           </div>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                           <div>
-                            <label className="form-label">Postcode</label>
+                            <label htmlFor="postalCode" className="form-label">Postcode</label>
                             <input
+                              id="postalCode"
                               type="text"
                               name="postalCode"
+                              placeholder="1234 AB"
                               value={formData.postalCode}
                               onChange={handleInputChange}
-                              placeholder="1234 AB"
                               className="form-input"
                               required
+                              aria-required="true"
                             />
                           </div>
                           <div>
-                            <label className="form-label">Plaats</label>
+                            <label htmlFor="city" className="form-label">Plaats</label>
                             <input
+                              id="city"
                               type="text"
                               name="city"
                               value={formData.city}
                               onChange={handleInputChange}
                               className="form-input"
                               required
+                              aria-required="true"
                             />
                           </div>
                         </div>
                         <div>
-                          <label className="form-label">Notities (optioneel)</label>
+                          <label htmlFor="notes" className="form-label">Notities (optioneel)</label>
                           <textarea
+                            id="notes"
                             name="notes"
                             value={formData.notes}
                             onChange={handleInputChange}
                             rows={4}
                             className="form-input"
                             placeholder="Beschrijf uw probleem of specifieke wensen..."
+                            aria-describedby="notes-help"
                           />
+                          <p id="notes-help" className="text-sm text-white/60 mt-1">
+                            Optioneel: Beschrijf uw probleem of specifieke wensen voor de afspraak.
+                          </p>
                         </div>
                         <button
                           type="submit"
                           disabled={isSubmitting}
                           className="btn-primary w-full text-xl py-5"
+                          aria-describedby="submit-status"
                         >
                           {isSubmitting ? 'Bezig met boeken...' : `${appointmentType === 'remote' ? 'Remote hulp' : 'Aan huis bezoek'} bevestigen`}
                         </button>
+                        <div id="submit-status" className="sr-only" aria-live="polite">
+                          {isSubmitting ? 'Bezig met het boeken van uw afspraak...' : ''}
+                        </div>
                       </form>
                     </div>
                   </motion.div>
@@ -491,6 +705,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                       <button
                         onClick={() => setSelectedDate(null)}
                         className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm"
+                        aria-label="Terug naar kalender"
                       >
                         ← Terug
                       </button>
@@ -508,8 +723,9 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
 
                       {/* Loading state */}
                       {isLoadingBookings && (
-                        <div className="flex justify-center mb-4">
+                        <div className="flex justify-center mb-4" role="status" aria-live="polite">
                           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00d4ff]"></div>
+                          <span className="sr-only">Laden van beschikbare tijden...</span>
                         </div>
                       )}
 
@@ -522,64 +738,46 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                       </div>
 
                       {/* Mobile-optimized time grid */}
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                        {Array.from({ length: 8 }, (_, i) => i + 9).map((hour) => (
-                          <React.Fragment key={hour}>
-                            {!isPastTime(selectedDate!, `${hour.toString().padStart(2, '0')}:00`) && (
-                              <motion.button
-                                onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:00`)}
-                                disabled={bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`)}
-                                whileHover={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) ? { scale: 1.05 } : {}}
-                                whileTap={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) ? { scale: 0.95 } : {}}
-                                className={`
-                                  time-slot
-                                  ${bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`)
-                                    ? 'bg-gray-900/40 border-gray-700/40 text-gray-500 cursor-not-allowed'
-                                    : 'bg-green-500/60 hover:bg-green-500/80 text-white border-green-500/40 cursor-pointer'}
-                                `}
-                              >
-                                <span className="text-base sm:text-lg font-semibold">
-                                  {hour}:00
-                                </span>
-                                {selectedTime === `${hour.toString().padStart(2, '0')}:00` && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:00`) && (
-                                  <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    className="absolute inset-0 bg-[#00d4ff]/20 animate-pulse pointer-events-none rounded-lg"
-                                  />
-                                )}
-                              </motion.button>
+                      <div 
+                        className="time-grid" 
+                        ref={timeGridRef}
+                        role="grid" 
+                        aria-label="Beschikbare tijden"
+                      >
+                        {availableTimes.map((time, index) => (
+                          <motion.button
+                            key={time}
+                            onClick={() => handleTimeSelect(time)}
+                            onKeyDown={(e) => handleTimeKeyDown(e, index, time)}
+                            tabIndex={0}
+                            whileHover={!isLowEnd ? { scale: 1.05 } : {}}
+                            whileTap={!isLowEnd ? { scale: 0.95 } : {}}
+                            className={`
+                              time-slot
+                              ${selectedTime === time
+                                ? 'bg-[#00d4ff] border-[#00d4ff] text-white'
+                                : 'bg-green-500/60 hover:bg-green-500/80 text-white border-green-500/40 cursor-pointer'}
+                            `}
+                            aria-label={`${time} - ${selectedTime === time ? 'Geselecteerd' : 'Beschikbaar'}`}
+                            aria-selected={selectedTime === time}
+                            role="gridcell"
+                          >
+                            <span className="text-base sm:text-lg font-semibold">
+                              {time}
+                            </span>
+                            {selectedTime === time && (
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                className="absolute inset-0 bg-[#00d4ff]/20 animate-pulse pointer-events-none rounded-lg"
+                              />
                             )}
-                            
-                            {!isPastTime(selectedDate!, `${hour.toString().padStart(2, '0')}:30`) && (
-                              <motion.button
-                                onClick={() => handleTimeSelect(`${hour.toString().padStart(2, '0')}:30`)}
-                                disabled={bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`)}
-                                whileHover={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) ? { scale: 1.05 } : {}}
-                                whileTap={!isLowEnd && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) ? { scale: 0.95 } : {}}
-                                className={`
-                                  time-slot
-                                  ${bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`)
-                                    ? 'bg-gray-900/40 border-gray-700/40 text-gray-500 cursor-not-allowed'
-                                    : selectedTime === `${hour.toString().padStart(2, '0')}:30`
-                                    ? 'bg-[#00d4ff] border-[#00d4ff] text-white'
-                                    : 'bg-green-500/60 hover:bg-green-500/80 text-white border-green-500/40'}
-                                `}
-                              >
-                                <span className="text-base sm:text-lg font-semibold">
-                                  {hour}:30
-                                </span>
-                                {selectedTime === `${hour.toString().padStart(2, '0')}:30` && !bookedTimes.includes(`${hour.toString().padStart(2, '0')}:30`) && (
-                                  <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    className="absolute inset-0 bg-[#00d4ff]/20 animate-pulse pointer-events-none rounded-lg"
-                                  />
-                                )}
-                              </motion.button>
-                            )}
-                          </React.Fragment>
+                          </motion.button>
                         ))}
+                      </div>
+
+                      <div className="mt-4 text-sm text-white/60 text-center">
+                        <p>Gebruik Tab om door de tijden te navigeren, pijltjestoetsen om tijden te selecteren, en Enter om een tijd te kiezen.</p>
                       </div>
                     </div>
                   </motion.div>

@@ -55,6 +55,9 @@ export default function Contact() {
                   <h3 className="text-2xl sm:text-3xl font-semibold text-white mb-4">
                     Kies uw type afspraak
                   </h3>
+                  <p className="text-lg text-white/80 senior-description">
+                    Of bel ons direct op <a href="tel:+31612345678" className="text-[#00d4ff] hover:text-[#00b8e6] underline">+31 6 12345678</a>
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -64,10 +67,11 @@ export default function Contact() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 text-left hover:bg-white/10 transition-all duration-300 group"
+                    aria-label="Kies aan huis bezoek - Wij komen bij u thuis langs voor persoonlijke computerhulp"
                   >
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-12 h-12 bg-[#00d4ff]/20 rounded-lg flex items-center justify-center text-2xl">
-                        🏠
+                        <span role="img" aria-label="Huis icoon voor aan huis bezoek">🏠</span>
                       </div>
                       <h4 className="text-xl font-semibold text-white">Aan huis bezoek</h4>
                     </div>
@@ -93,10 +97,11 @@ export default function Contact() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-8 text-left hover:bg-white/10 transition-all duration-300 group"
+                    aria-label="Kies remote hulp - Computerhulp op afstand via internet, veilig en snel"
                   >
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-12 h-12 bg-[#00d4ff]/20 rounded-lg flex items-center justify-center text-2xl">
-                        💻
+                        <span role="img" aria-label="Computer icoon voor remote hulp">💻</span>
                       </div>
                       <h4 className="text-xl font-semibold text-white">Remote hulp</h4>
                     </div>
@@ -127,12 +132,21 @@ export default function Contact() {
                   <button
                     onClick={handleBack}
                     className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm"
+                    aria-label="Terug naar opties"
                   >
                     ← Terug naar opties
                   </button>
                   <div className="text-center">
                     <h3 className="text-lg font-semibold text-white">
-                      {selectedType === 'onsite' ? '🏠 Aan huis bezoek' : '💻 Remote hulp'}
+                      {selectedType === 'onsite' ? (
+                        <>
+                          <span role="img" aria-label="Huis icoon">🏠</span> Aan huis bezoek
+                        </>
+                      ) : (
+                        <>
+                          <span role="img" aria-label="Computer icoon">💻</span> Remote hulp
+                        </>
+                      )}
                     </h3>
                   </div>
                 </div>

@@ -231,8 +231,13 @@ export default function RootLayout({
         
         {/* Main content */}
         <div className="relative z-[9999] min-h-screen">
+          {/* Skip to main content link for keyboard users */}
+          <a href="#main-content" className="skip-link">
+            Spring naar hoofdinhoud
+          </a>
+          
           <Header />
-          <main className="pt-20">
+          <main id="main-content" className="pt-20">
             {children}
           </main>
         </div>

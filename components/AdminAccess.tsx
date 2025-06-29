@@ -60,6 +60,8 @@ export default function AdminAccess() {
           fill="none" 
           stroke="currentColor" 
           viewBox="0 0 24 24"
+          role="img"
+          aria-label="Admin instellingen icoon"
         >
           <path 
             strokeLinecap="round" 

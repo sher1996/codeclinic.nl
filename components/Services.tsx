@@ -232,7 +232,7 @@ function ServiceCard() {
                             className="inline-flex items-center gap-2 bg-[#00d4ff] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#00b8e6] transition-colors"
                             style={{ minHeight: '48px' }}
                           >
-                            <span>📅</span>
+                            <span role="img" aria-label="Kalender icoon">📅</span>
                             Plan een Afspraak
                           </a>
                         </div>
@@ -245,7 +245,7 @@ function ServiceCard() {
                             className="inline-flex items-center gap-2 bg-[#00d4ff] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#00b8e6] transition-colors"
                             style={{ minHeight: '48px' }}
                           >
-                            <span>📅</span>
+                            <span role="img" aria-label="Kalender icoon">📅</span>
                             Plan een Afspraak
                           </a>
                         </div>
@@ -391,9 +391,9 @@ export default function Services() {
                 transition={{ duration: 0.6 }}
                 className="text-center space-y-8"
               >
-                <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-[#FFFFFF]">
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-[#FFFFFF]">
                   Hulp Die Bij U Past
-                </h3>
+                </h2>
                 <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto senior-description">
                   Kies de manier van hulp die het beste bij u past - op afstand of bij u thuis
                 </p>
@@ -427,9 +427,9 @@ export default function Services() {
                 transition={{ duration: 0.6 }}
                 className="text-center space-y-8"
               >
-                <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-[#FFFFFF]">
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-[#FFFFFF]">
                   Onze Diensten
-                </h3>
+                </h2>
                 <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto senior-description">
                   Wij helpen u met alle computerproblemen - van virussen tot wifi problemen
                 </p>
@@ -461,7 +461,7 @@ export default function Services() {
           {/* Services Grid */}
           <div className="mx-auto grid max-w-2xl grid-cols-1 gap-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             <AnimatePresence mode="sync">
-              {filteredServices.map((service) => (
+              {filteredServices.map((service, index) => (
                 <motion.div
                   key={service.key}
                   layout={false}
@@ -474,7 +474,19 @@ export default function Services() {
                   }}
                   role="button"
                   tabIndex={0}
-                  aria-label={`${service.title} - ${service.description}`}
+                  aria-label={`${service.title} - ${service.description}. Klik om meer informatie te zien.`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      // Trigger the same action as clicking
+                      const event = new MouseEvent('click', {
+                        bubbles: true,
+                        cancelable: true,
+                        view: window
+                      });
+                      e.currentTarget.dispatchEvent(event);
+                    }
+                  }}
                   className={`
                     w-full max-w-[320px] mx-auto
                     ${isLowEnd ? 'bg-white/10' : 'bg-white/10'}
@@ -553,9 +565,9 @@ export default function Services() {
                 transition={{ duration: 0.6 }}
                 className="text-center space-y-8"
               >
-                <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-[#FFFFFF]">
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-[#FFFFFF]">
                   Transparante Tarieven
-                </h3>
+                </h2>
                 <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto senior-description">
                   Duidelijke prijzen zonder verrassingen - u betaalt alleen voor wat we doen
                 </p>
@@ -598,15 +610,15 @@ export default function Services() {
                   <p className="text-sm text-[#FFFFFF]/80">Daarna afrekening per minuut, geen minimum.</p>
                   <ul className="space-y-6">
                     <li className="flex items-center gap-4">
-                      <span className="text-2xl text-[#FFFFFF]/80">⚡</span>
+                      <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Bliksem icoon voor direct start">⚡</span>
                       <span className="text-[#FFFFFF]/80">Direct start, betalen per minuut</span>
                     </li>
                     <li className="flex items-center gap-4">
-                      <span className="text-2xl text-[#FFFFFF]/80">💳</span>
+                      <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Creditcard icoon voor iDEAL betaling">💳</span>
                       <span className="text-[#FFFFFF]/80">iDEAL betaling</span>
                     </li>
                     <li className="flex items-center gap-4">
-                      <span className="text-2xl text-[#FFFFFF]/80">⏰</span>
+                      <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Klok icoon voor snelle verbinding">⏰</span>
                       <span className="text-[#FFFFFF]/80">Meestal binnen 5 min verbonden</span>
                     </li>
                   </ul>
@@ -651,11 +663,11 @@ export default function Services() {
                 <div className="space-y-8 flex-grow">
                   <ul className="space-y-6">
                     <li className="flex items-center gap-4">
-                      <span className="text-2xl text-[#FFFFFF]/80">✅</span>
+                      <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Vinkje icoon voor virus scan">✅</span>
                       <span className="text-[#FFFFFF]/80"><strong className="text-[#FFFFFF]">Virus & Malware Scan</strong> — €99</span>
                     </li>
                     <li className="flex items-center gap-4">
-                      <span className="text-2xl text-[#FFFFFF]/80">✅</span>
+                      <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Vinkje icoon voor computer tune-up">✅</span>
                       <span className="text-[#FFFFFF]/80"><strong className="text-[#FFFFFF]">Computer Tune-up</strong> — €79</span>
                     </li>
                   </ul>
@@ -702,7 +714,7 @@ export default function Services() {
                   <p className="text-[#FFFFFF]/80">≤ 10 km vanaf Rotterdam-centrum, daarna €0,25/km</p>
                   <ul className="space-y-6">
                     <li className="flex items-center gap-4">
-                      <span className="text-2xl text-[#FFFFFF]/80">💳</span>
+                      <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Creditcard icoon voor betalingsmethoden">💳</span>
                       <span className="text-[#FFFFFF]/80">iDEAL, contant of pin</span>
                     </li>
                   </ul>

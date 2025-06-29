@@ -10,8 +10,14 @@ export default function Footer() {
                 Professionele computerhulp voor senioren. Hulp op afstand en bij u thuis.
               </p>
               <div className="space-y-3 text-lg">
-                <p className="text-white/90">📞 <a href="tel:+31612345678" className="footer-link">+31 6 12345678</a></p>
-                <p className="text-white/90">📧 <a href="mailto:info@codeclinic.nl" className="footer-link">info@codeclinic.nl</a></p>
+                <p className="text-white/90">
+                  <span role="img" aria-label="Telefoon icoon">📞</span> 
+                  <a href="tel:+31612345678" className="footer-link">+31 6 12345678</a>
+                </p>
+                <p className="text-white/90">
+                  <span role="img" aria-label="E-mail icoon">📧</span> 
+                  <a href="mailto:info@codeclinic.nl" className="footer-link">info@codeclinic.nl</a>
+                </p>
               </div>
             </div>
 
