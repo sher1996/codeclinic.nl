@@ -10,9 +10,9 @@ import HiddenAdminAccess from '@/components/HiddenAdminAccess';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'CodeClinic.nl - Expert Computerhulp voor Senioren | Remote & Aan Huis',
-  description: 'Professionele computerhulp voor senioren. Virus verwijdering, computer opschonen, wifi optimalisatie en meer. Remote hulp of aan huis service. Vanaf €35. KvK 86438948.',
-  keywords: 'computerhulp, computer reparatie, virus verwijdering, wifi optimalisatie, computer opschonen, senioren computerhulp, remote hulp, aan huis service, computer ondersteuning, IT support',
+  title: 'CodeClinic – Computerhulp aan huis en op afstand in Rotterdam',
+  description: 'CodeClinic: snelle en betrouwbare computerhulp voor thuis en via internet. Geen voorrijkosten in Rotterdam, niet opgelost = geen kosten. Plan direct uw afspraak!',
+  keywords: 'computerhulp, computer reparatie, virus verwijdering, wifi optimalisatie, computer opschonen, senioren computerhulp, remote hulp, aan huis service, computer ondersteuning, IT support, Rotterdam, computerhulp Rotterdam, computer reparatie Rotterdam',
   authors: [{ name: 'CodeClinic.nl' }],
   creator: 'CodeClinic.nl',
   publisher: 'CodeClinic.nl',
@@ -26,8 +26,8 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'CodeClinic.nl - Expert Computerhulp voor Senioren',
-    description: 'Professionele computerhulp voor senioren. Virus verwijdering, computer opschonen, wifi optimalisatie en meer. Remote hulp of aan huis service.',
+    title: 'CodeClinic – Computerhulp aan huis en op afstand in Rotterdam',
+    description: 'CodeClinic: snelle en betrouwbare computerhulp voor thuis en via internet. Geen voorrijkosten in Rotterdam, niet opgelost = geen kosten. Plan direct uw afspraak!',
     url: 'https://codeclinic.nl',
     siteName: 'CodeClinic.nl',
     images: [
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
         url: '/logo-cc.png',
         width: 1200,
         height: 630,
-        alt: 'CodeClinic.nl - Expert Computerhulp',
+        alt: 'CodeClinic.nl - Expert Computerhulp Rotterdam',
       },
     ],
     locale: 'nl_NL',
@@ -43,8 +43,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'CodeClinic.nl - Expert Computerhulp voor Senioren',
-    description: 'Professionele computerhulp voor senioren. Remote hulp of aan huis service.',
+    title: 'CodeClinic – Computerhulp aan huis en op afstand in Rotterdam',
+    description: 'CodeClinic: snelle en betrouwbare computerhulp voor thuis en via internet. Geen voorrijkosten in Rotterdam, niet opgelost = geen kosten.',
     images: ['/logo-cc.png'],
   },
   robots: {
@@ -75,6 +75,20 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
         
+        {/* Additional SEO meta tags */}
+        <meta name="author" content="CodeClinic.nl" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="theme-color" content="#1F2C90" />
+        <meta name="msapplication-TileColor" content="#1F2C90" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="CodeClinic" />
+        
+        {/* Language alternates */}
+        <link rel="alternate" hrefLang="nl" href="https://codeclinic.nl" />
+        <link rel="alternate" hrefLang="x-default" href="https://codeclinic.nl" />
+        
         {/* Preload critical resources */}
         <link
           rel="preconnect"
@@ -90,7 +104,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "LocalBusiness",
               "name": "CodeClinic.nl",
-              "description": "Professionele computerhulp voor senioren. Virus verwijdering, computer opschonen, wifi optimalisatie en meer.",
+              "description": "CodeClinic: snelle en betrouwbare computerhulp voor thuis en via internet. Geen voorrijkosten in Rotterdam, niet opgelost = geen kosten.",
               "url": "https://codeclinic.nl",
               "logo": "https://codeclinic.nl/logo-cc.png",
               "image": "https://codeclinic.nl/logo-cc.png",
@@ -99,12 +113,13 @@ export default function RootLayout({
               "address": {
                 "@type": "PostalAddress",
                 "addressCountry": "NL",
-                "addressLocality": "Nederland"
+                "addressLocality": "Rotterdam",
+                "addressRegion": "Zuid-Holland"
               },
               "geo": {
                 "@type": "GeoCoordinates",
-                "latitude": "52.3676",
-                "longitude": "4.9041"
+                "latitude": "51.9225",
+                "longitude": "4.4792"
               },
               "openingHours": "Mo-Fr 09:00-17:00",
               "priceRange": "€€",
@@ -115,9 +130,11 @@ export default function RootLayout({
                 "Virus Removal",
                 "WiFi Optimization",
                 "Computer Maintenance",
-                "Senior Computer Support"
+                "Senior Computer Support",
+                "Remote Computer Help",
+                "Home Computer Service"
               ],
-              "areaServed": "Nederland",
+              "areaServed": "Rotterdam, Zuid-Holland, Nederland",
               "hasOfferCatalog": {
                 "@type": "OfferCatalog",
                 "name": "Computer Services",
@@ -205,6 +222,37 @@ export default function RootLayout({
                     "text": "Als wij uw computerprobleem niet kunnen oplossen, betaalt u niets. Deze garantie geldt voor alle onze diensten. Uitzonderingen zijn hardware vervanging, software licenties, en problemen veroorzaakt door externe factoren."
                   }
                 }
+              ]
+            })
+          }}
+        />
+        
+        {/* Structured Data for Organization */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "CodeClinic.nl",
+              "url": "https://codeclinic.nl",
+              "logo": "https://codeclinic.nl/logo-cc.png",
+              "description": "CodeClinic: snelle en betrouwbare computerhulp voor thuis en via internet. Geen voorrijkosten in Rotterdam, niet opgelost = geen kosten.",
+              "address": {
+                "@type": "PostalAddress",
+                "addressCountry": "NL",
+                "addressLocality": "Rotterdam",
+                "addressRegion": "Zuid-Holland"
+              },
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+31-6-24837889",
+                "contactType": "customer service",
+                "availableLanguage": "Dutch",
+                "areaServed": "NL"
+              },
+              "sameAs": [
+                "https://codeclinic.nl"
               ]
             })
           }}

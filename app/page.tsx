@@ -75,10 +75,40 @@ export default function Home() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
+  // Test function for debugging
+  const testScrollToServices = () => {
+    const element = document.querySelector('#diensten');
+    if (element) {
+      console.log('Testing scroll to services...');
+      console.log('Element found:', element);
+      console.log('Element rect:', element.getBoundingClientRect());
+      
+      // Force the animation to trigger
+      element.scrollIntoView({ behavior: 'instant', block: 'start' });
+      
+      setTimeout(() => {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        console.log('Scroll completed');
+      }, 100);
+    } else {
+      console.log('Services element not found');
+    }
+  };
+
   return (
     <main className="flex-grow">
       <Hero />
       
+      {/* Debug button - remove after testing */}
+      <div className="fixed top-20 right-4 z-50">
+        <button 
+          onClick={testScrollToServices}
+          className="bg-red-500 text-white px-4 py-2 rounded text-sm"
+        >
+          Test Scroll
+        </button>
+      </div>
+
       {/* <TrustBar /> */}
       <Services forceVisible={forceServicesVisible} />
       {/* <HowItWorks /> */}

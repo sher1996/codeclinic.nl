@@ -839,11 +839,15 @@ export default function Services({ forceVisible = false }: ServicesProps) {
             </motion.div>
 
             {/* VAT Notice */}
-            <div className="col-span-1 md:col-span-12 mt-6 text-center">
-              <p className="text-xs opacity-70">
-                Alle bedragen incl. 21% btw.
-                <a href="/terms" className="ml-1 text-[#00d4ff] hover:underline">Zie voorwaarden voor details</a>
-              </p>
+            <div className="col-span-1 md:col-span-12 mt-6 flex justify-center items-center">
+              <div className="text-center">
+                <p className="text-sm opacity-80">
+                  Alle bedragen incl. 21% btw.
+                </p>
+                <p className="text-sm opacity-80 mt-1">
+                  <a href="/terms" className="text-[#00d4ff] hover:underline">Zie voorwaarden voor details</a>
+                </p>
+              </div>
             </div>
           </div>
         </div>

@@ -1388,6 +1388,7 @@ select:focus-visible {
 
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
+  .animate-testimonial-scroll,
   .animate-float-gentle,
   .animate-float-upward,
   .animate-phone-message,
