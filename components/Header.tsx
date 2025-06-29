@@ -98,7 +98,7 @@ export default function Header() {
         >
           <Image
             src="/logo-cc.png"
-            alt="CodeClinic.nl logo"
+            alt="CodeClinic.nl - Expert computerhulp en computer reparatie Rotterdam"
             width={48}
             height={48}
             className="w-10 h-10 sm:w-14 sm:h-14 object-contain"

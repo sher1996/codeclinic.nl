@@ -12,8 +12,7 @@ export default function TextAnimation({ className = '', startWriting = false }: 
   const [isTyping, setIsTyping] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [opacity, setOpacity] = useState(1);
-  const frameRef = useRef<number | undefined>(undefined);
-  const lastTimeRef = useRef<number>(0);
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
   const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
 
@@ -41,38 +40,35 @@ export default function TextAnimation({ className = '', startWriting = false }: 
 
     if (!isTyping) return; // Don't start animation if not typing
 
-    // Original smooth typing animation for high-end devices
-    const animate = (timestamp: number) => {
-      if (!lastTimeRef.current) lastTimeRef.current = timestamp;
-      const elapsed = timestamp - lastTimeRef.current;
-
+    // Simplified animation using setTimeout instead of requestAnimationFrame
+    const animate = () => {
       if (displayText === texts[currentIndex]) {
-        if (elapsed >= 3000) { // Wait 3 seconds before fade out
+        // Wait 3 seconds before fade out
+        timeoutRef.current = setTimeout(() => {
           setOpacity(0);
-          if (elapsed >= 3800) { // After 800ms fade out
+          // After 800ms fade out, move to next text
+          timeoutRef.current = setTimeout(() => {
             setDisplayText('');
             setCurrentIndex((prev) => (prev + 1) % texts.length);
             setOpacity(1);
-            lastTimeRef.current = timestamp;
-          }
-        }
+            animate(); // Continue animation
+          }, 800);
+        }, 3000);
       } else {
-        // Smoother typing with consistent timing
-        const typingSpeed = 50; // Slightly slower for better readability
-        if (elapsed >= typingSpeed) {
+        // Type one character at a time
+        const typingSpeed = 50;
+        timeoutRef.current = setTimeout(() => {
           setDisplayText((prev) => texts[currentIndex].slice(0, prev.length + 1));
-          lastTimeRef.current = timestamp;
-        }
+          animate(); // Continue animation
+        }, typingSpeed);
       }
-
-      frameRef.current = requestAnimationFrame(animate);
     };
 
-    frameRef.current = requestAnimationFrame(animate);
+    animate();
 
     return () => {
-      if (frameRef.current) {
-        cancelAnimationFrame(frameRef.current);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
     };
   }, [displayText, currentIndex, texts, isLowEnd, prefersReducedMotion, isTyping]);

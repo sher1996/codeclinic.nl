@@ -17,6 +17,7 @@ export default function FloatingTestimonials() {
   const [isVisible, setIsVisible] = useState(false);
   const nextIdRef = useRef(0);
   const maxTestimonials = 1; // Only one testimonial at a time
+  const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
 
   useEffect(() => {
     // Show testimonials if we have any
@@ -99,7 +100,7 @@ export default function FloatingTestimonials() {
 
   // Start creating testimonials
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible || isLowEnd) return;
 
     // Create first testimonial immediately
     createNewTestimonial();
@@ -110,9 +111,9 @@ export default function FloatingTestimonials() {
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [isVisible, createNewTestimonial]);
+  }, [isVisible, createNewTestimonial, isLowEnd]);
 
-  if (!isVisible || testimonials.length === 0) {
+  if (!isVisible || testimonials.length === 0 || isLowEnd) {
     return null;
   }
 

@@ -1,16 +1,17 @@
 "use client";
 
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import TextAnimation from './TextAnimation';
+import LazyLoad from './LazyLoad';
 import FloatingTestimonials from './FloatingTestimonials';
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
   const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
 
-  // Intersection Observer for fade-in effect
+  // Simplified intersection observer for fade-in effect
   useEffect(() => {
-    if (isLowEnd) {
+    if (isLowEnd || !heroRef.current) {
       return;
     }
 
@@ -23,18 +24,8 @@ export default function Hero() {
       { threshold: 0.1 }
     );
 
-    if (heroRef.current) {
-      observer.observe(heroRef.current);
-    }
-
+    observer.observe(heroRef.current);
     return () => observer.disconnect();
-  }, [isLowEnd]);
-
-  const handleMouseMove = useCallback(() => {
-    if (isLowEnd) return;
-    requestAnimationFrame(() => {
-      // Mouse move handling for future use
-    });
   }, [isLowEnd]);
 
   return (
@@ -43,14 +34,15 @@ export default function Hero() {
       id="hero"
       className={`relative overflow-hidden ${isLowEnd ? 'bg-[#1F2C90]/20' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20'} min-h-screen flex items-center`}
       aria-label="Hero section"
-      onMouseMove={handleMouseMove}
       style={{ willChange: isLowEnd ? 'auto' : 'transform', transform: isLowEnd ? 'none' : 'translateZ(0)' }}
     >
       {/* Subtle dark overlay for better readability */}
       <div className="absolute inset-0 bg-black/10 mix-blend-overlay pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }}></div>
       
-      {/* Floating Testimonials - using portal approach */}
-      <FloatingTestimonials />
+      {/* Floating Testimonials - lazy loaded for better performance */}
+      <LazyLoad delay={2000}>
+        <FloatingTestimonials />
+      </LazyLoad>
       
       {/* Content */}
       <div

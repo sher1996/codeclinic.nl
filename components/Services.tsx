@@ -1,4 +1,6 @@
-import { Computer, Home, Zap, Shield, Wifi, Mail, Smartphone, Database, Lock, Video, CreditCard, Play, Image, Printer, RefreshCw, Accessibility, ChevronRight, ChevronDown, CheckCircle, Info } from 'lucide-react';
+'use client';
+
+import { Computer, Home, Zap, Shield, Wifi, Mail, Smartphone, Database, Lock, Video, CreditCard, Play, Image as ImageIcon, Printer, RefreshCw, Accessibility, ChevronRight, ChevronDown, CheckCircle, Info } from 'lucide-react';
 import { useState, lazy, Suspense, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import React from 'react';
@@ -98,7 +100,7 @@ const services = [
     key: 'foto', 
     title: 'Foto\'s & documenten ordenen', 
     price: 'vanaf €45',
-    icon: <Image className="w-8 h-8 text-white" aria-label="Foto icoon" />,
+    icon: <ImageIcon className="w-8 h-8 text-white" aria-label="Foto icoon" />,
     description: 'Foto\'s en documenten netjes organiseren',
     category: 'productivity'
   },
@@ -259,8 +261,8 @@ function ServiceCard() {
                             <a href="https://www.teamviewer.com/link/?url=842558" style={{textDecoration: 'none'}}>
                               <NextImage 
                                 src="https://static.teamviewer.com/resources/badges/teamviewer_badge_flat4.png" 
-                                alt="Download TeamViewer Remote Control" 
-                                title="Download TeamViewer Remote Control" 
+                                alt="Computerhulp op afstand via TeamViewer - Veilige remote desktop software voor computer ondersteuning" 
+                                title="Download TeamViewer voor computerhulp op afstand" 
                                 width={234} 
                                 height={60}
                                 style={{ width: 'auto', height: 'auto' }}
@@ -415,7 +417,31 @@ interface ServicesProps {
   forceVisible?: boolean;
 }
 
+type ForceServicesWindow = Window & { __forceServicesVisible?: boolean };
+
 export default function Services({ forceVisible = false }: ServicesProps) {
+  const [forceServicesVisible, setForceServicesVisible] = useState(forceVisible);
+
+  // Check for force visible from HashNavigation component
+  useEffect(() => {
+    const checkForceVisible = () => {
+      if (typeof window !== 'undefined' && (window as ForceServicesWindow).__forceServicesVisible) {
+        setForceServicesVisible(true);
+        // Reset after a delay
+        setTimeout(() => {
+          setForceServicesVisible(false);
+          (window as ForceServicesWindow).__forceServicesVisible = false;
+        }, 1000);
+      }
+    };
+
+    // Check immediately and also set up an interval to check periodically
+    checkForceVisible();
+    const interval = setInterval(checkForceVisible, 100);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
   const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
 
@@ -484,8 +510,8 @@ export default function Services({ forceVisible = false }: ServicesProps) {
       <motion.section
         id="diensten"
         initial={{ opacity: 0 }}
-        animate={forceVisible ? { opacity: 1 } : {}}
-        whileInView={forceVisible ? {} : { opacity: 1 }}
+        animate={forceServicesVisible ? { opacity: 1 } : {}}
+        whileInView={forceServicesVisible ? {} : { opacity: 1 }}
         exit={{ opacity: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
