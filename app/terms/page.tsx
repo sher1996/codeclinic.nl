@@ -57,11 +57,11 @@ export default function TermsPage() {
 
             <section>
               <h2 className="text-2xl font-semibold mb-4 text-blue-200">
-                "No Cure No Pay" - Onze Belofte
+                &ldquo;No Cure No Pay&rdquo; - Onze Belofte
               </h2>
               <div className="bg-blue-600/20 border-l-4 border-blue-400 p-6 rounded-lg">
                 <p className="text-white font-semibold mb-3">
-                  <strong>Wat betekent "No Cure No Pay"?</strong>
+                  <strong>Wat betekent &ldquo;No Cure No Pay&rdquo;?</strong>
                 </p>
                 <p className="text-white/90 mb-4">
                   Als wij uw computerprobleem niet kunnen oplossen, betaalt u niets. Dit is onze garantie aan u.
