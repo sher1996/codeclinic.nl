@@ -77,12 +77,6 @@ export default function RootLayout({
         
         {/* Preload critical resources */}
         <link
-          rel="preload"
-          href="/logo-cc.png"
-          as="image"
-          type="image/png"
-        />
-        <link
           rel="preconnect"
           href="https://assets.calendly.com"
           crossOrigin="anonymous"

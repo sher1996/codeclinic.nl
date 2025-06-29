@@ -257,7 +257,14 @@ function ServiceCard() {
                           {/* TeamViewer logo (generated at https://www.teamviewer.com) */}
                           <div style={{position: 'relative', width: '234px', height: '60px'}}>
                             <a href="https://www.teamviewer.com/link/?url=842558" style={{textDecoration: 'none'}}>
-                              <NextImage src="https://static.teamviewer.com/resources/badges/teamviewer_badge_flat4.png" alt="Download TeamViewer Remote Control" title="Download TeamViewer Remote Control" width={234} height={60} />
+                              <NextImage 
+                                src="https://static.teamviewer.com/resources/badges/teamviewer_badge_flat4.png" 
+                                alt="Download TeamViewer Remote Control" 
+                                title="Download TeamViewer Remote Control" 
+                                width={234} 
+                                height={60}
+                                style={{ width: 'auto', height: 'auto' }}
+                              />
                             </a>
                           </div>
                         </div>

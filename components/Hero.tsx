@@ -2,6 +2,7 @@
 
 import { useEffect, useCallback, useRef } from 'react';
 import TextAnimation from './TextAnimation';
+import FloatingTestimonials from './FloatingTestimonials';
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -40,13 +41,16 @@ export default function Hero() {
     <section
       ref={heroRef}
       id="hero"
-      className={`relative isolate overflow-hidden ${isLowEnd ? 'bg-[#1F2C90]/20' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20'} min-h-screen flex items-center`}
+      className={`relative overflow-hidden ${isLowEnd ? 'bg-[#1F2C90]/20' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/30 via-[#2B3CA0]/20 to-[#4F4F00]/20'} min-h-screen flex items-center`}
       aria-label="Hero section"
       onMouseMove={handleMouseMove}
       style={{ willChange: isLowEnd ? 'auto' : 'transform', transform: isLowEnd ? 'none' : 'translateZ(0)' }}
     >
       {/* Subtle dark overlay for better readability */}
       <div className="absolute inset-0 bg-black/10 mix-blend-overlay pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }}></div>
+      
+      {/* Floating Testimonials - using portal approach */}
+      <FloatingTestimonials />
       
       {/* Content */}
       <div
