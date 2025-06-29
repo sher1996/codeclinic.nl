@@ -98,5 +98,5 @@ export const dummyTestimonials = [
   },
 ];
 
-// Environment check to prevent accidental deployment
-export const testimonials = process.env.NODE_ENV === "production" ? [] : dummyTestimonials; 
+// Export testimonials for both development and production
+export const testimonials = dummyTestimonials; 

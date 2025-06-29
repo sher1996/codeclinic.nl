@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from 'react';
-import { testimonials } from '@/data/testimonials.dev';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from "framer-motion";
+import { testimonials } from '@/data/testimonials';
 
 interface FloatingTestimonial {
   id: number;
