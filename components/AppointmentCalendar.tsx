@@ -15,8 +15,6 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
   const [isLoadingBookings, setIsLoadingBookings] = useState(false);
-  const [focusedDayIndex, setFocusedDayIndex] = useState<number>(-1);
-  const [focusedTimeIndex, setFocusedTimeIndex] = useState<number>(-1);
   const [announcement, setAnnouncement] = useState('');
   const [formData, setFormData] = useState({
     name: '',
@@ -102,13 +100,11 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
 
   const handlePrevMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-    setFocusedDayIndex(-1);
     setAnnouncement(`Vorige maand: ${formatMonthYear(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}`);
   };
 
   const handleNextMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
-    setFocusedDayIndex(-1);
     setAnnouncement(`Volgende maand: ${formatMonthYear(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}`);
   };
 
@@ -116,7 +112,6 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
     if (date) {
       setSelectedDate(date);
       setSelectedTime(null); // Reset time selection when date changes
-      setFocusedTimeIndex(-1);
       if (onDateSelect) {
         onDateSelect(date);
       }
@@ -143,52 +138,14 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   };
 
   // Keyboard navigation for calendar
-  const handleCalendarKeyDown = (e: React.KeyboardEvent, dayIndex: number, day: Date | null) => {
+  const handleCalendarKeyDown = (e: React.KeyboardEvent, day: Date | null) => {
     if (!day) return;
-
-    const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
-    const totalCells = firstDayOfMonth + daysInMonth;
     
     switch (e.key) {
-      case 'ArrowRight':
-        e.preventDefault();
-        if (dayIndex < totalCells - 1) {
-          setFocusedDayIndex(dayIndex + 1);
-        }
-        break;
-      case 'ArrowLeft':
-        e.preventDefault();
-        if (dayIndex > 0) {
-          setFocusedDayIndex(dayIndex - 1);
-        }
-        break;
-      case 'ArrowDown':
-        e.preventDefault();
-        const nextWeekIndex = dayIndex + 7;
-        if (nextWeekIndex < totalCells) {
-          setFocusedDayIndex(nextWeekIndex);
-        }
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        const prevWeekIndex = dayIndex - 7;
-        if (prevWeekIndex >= 0) {
-          setFocusedDayIndex(prevWeekIndex);
-        }
-        break;
       case 'Enter':
       case ' ':
         e.preventDefault();
         handleDateClick(day);
-        break;
-      case 'Home':
-        e.preventDefault();
-        setFocusedDayIndex(firstDayOfMonth);
-        break;
-      case 'End':
-        e.preventDefault();
-        setFocusedDayIndex(totalCells - 1);
         break;
     }
   };
@@ -212,27 +169,27 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       case 'ArrowRight':
         e.preventDefault();
         if (timeIndex < availableTimes.length - 1) {
-          setFocusedTimeIndex(timeIndex + 1);
+          // Focus management would go here if needed
         }
         break;
       case 'ArrowLeft':
         e.preventDefault();
         if (timeIndex > 0) {
-          setFocusedTimeIndex(timeIndex - 1);
+          // Focus management would go here if needed
         }
         break;
       case 'ArrowDown':
         e.preventDefault();
         const nextRowIndex = timeIndex + 4;
         if (nextRowIndex < availableTimes.length) {
-          setFocusedTimeIndex(nextRowIndex);
+          // Focus management would go here if needed
         }
         break;
       case 'ArrowUp':
         e.preventDefault();
         const prevRowIndex = timeIndex - 4;
         if (prevRowIndex >= 0) {
-          setFocusedTimeIndex(prevRowIndex);
+          // Focus management would go here if needed
         }
         break;
       case 'Enter':
@@ -242,11 +199,11 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
         break;
       case 'Home':
         e.preventDefault();
-        setFocusedTimeIndex(0);
+        // Focus management would go here if needed
         break;
       case 'End':
         e.preventDefault();
-        setFocusedTimeIndex(availableTimes.length - 1);
+        // Focus management would go here if needed
         break;
     }
   };
@@ -504,11 +461,11 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                         </div>
                       ))}
                       
-                      {days.map((day, index) => (
+                      {days.map((day) => (
                         <button
-                          key={index}
+                          key={day?.toString()}
                           onClick={() => handleDateClick(day)}
-                          onKeyDown={(e) => handleCalendarKeyDown(e, index, day)}
+                          onKeyDown={(e) => handleCalendarKeyDown(e, day)}
                           disabled={day ? isPastDate(day) : false}
                           tabIndex={day && !isPastDate(day) ? 0 : -1}
                           className={`

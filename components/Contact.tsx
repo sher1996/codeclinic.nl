@@ -55,9 +55,18 @@ export default function Contact() {
                   <h3 className="text-2xl sm:text-3xl font-semibold text-white mb-4">
                     Kies uw type afspraak
                   </h3>
-                  <p className="text-lg text-white/80 senior-description">
-                    Of bel ons direct op <a href="tel:+31612345678" className="text-[#00d4ff] hover:text-[#00b8e6] underline">+31 6 12345678</a>
-                  </p>
+                  <div className="flex flex-col items-center space-y-2">
+                    <p className="text-lg text-white/80 senior-description text-center">
+                      Of bel ons direct op
+                    </p>
+                    <a 
+                      href="tel:+31624837889" 
+                      className="text-[#00d4ff] hover:text-[#00b8e6] underline text-xl font-semibold text-center"
+                      aria-label="Bel ons op 0624837889"
+                    >
+                      0624837889
+                    </a>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
