@@ -28,6 +28,10 @@ export default function PricingSchema() {
           "priceCurrency": "EUR",
           "unitCode": "MIN",
           "unitText": "per 15 minuten"
+        },
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "description": "Niet opgelost = geen kosten. Als wij uw computerprobleem niet kunnen oplossen, betaalt u niets."
         }
       },
       {
@@ -35,14 +39,22 @@ export default function PricingSchema() {
         "name": "Virus & Malware Scan Bundle",
         "description": "Complete virus- en malwareverwijdering",
         "price": "99.00",
-        "priceCurrency": "EUR"
+        "priceCurrency": "EUR",
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "description": "Niet opgelost = geen kosten. Als wij uw computerprobleem niet kunnen oplossen, betaalt u niets."
+        }
       },
       {
         "@type": "Offer",
         "name": "Computer Tune-up Bundle",
         "description": "Complete computer optimalisatie",
         "price": "79.00",
-        "priceCurrency": "EUR"
+        "priceCurrency": "EUR",
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "description": "Niet opgelost = geen kosten. Als wij uw computerprobleem niet kunnen oplossen, betaalt u niets."
+        }
       },
       {
         "@type": "Offer",
@@ -56,6 +68,10 @@ export default function PricingSchema() {
           "priceCurrency": "EUR",
           "unitCode": "HUR",
           "unitText": "per uur"
+        },
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "description": "Niet opgelost = geen kosten. Als wij uw computerprobleem niet kunnen oplossen, betaalt u niets."
         }
       }
     ],

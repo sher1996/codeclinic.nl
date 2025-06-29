@@ -3,6 +3,17 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { DynamicAppointmentCalendar } from './dynamic-imports';
+import { CheckCircle } from 'lucide-react';
+
+// Add guarantee badge component
+function GuaranteeBadge() {
+  return (
+    <div className="inline-flex items-center gap-2 bg-[#00d4ff]/10 border border-[#00d4ff]/30 rounded-full px-3 py-1 text-sm font-medium text-[#00d4ff]">
+      <CheckCircle className="w-4 h-4" />
+      <span>Niet opgelost = geen kosten</span>
+    </div>
+  );
+}
 
 export default function Contact() {
   const [selectedType, setSelectedType] = useState<'onsite' | 'remote' | null>(null);
@@ -36,6 +47,11 @@ export default function Contact() {
             <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto senior-description">
               Heeft u een computerprobleem? Maak eenvoudig een afspraak met ons.
             </p>
+            
+            {/* Guarantee Badge */}
+            <div className="flex justify-center">
+              <GuaranteeBadge />
+            </div>
           </motion.div>
 
           <motion.div

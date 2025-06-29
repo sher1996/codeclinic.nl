@@ -111,16 +111,16 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex gap-4 text-xl items-center" role="navigation" aria-label="Hoofdnavigatie">
-          <Link href="#diensten" className="nav-link" aria-label="Ga naar diensten sectie">
+          <Link href="/#diensten" className="nav-link" aria-label="Ga naar diensten sectie">
             Diensten
           </Link>
-          <Link href="#services" className="nav-link" aria-label="Ga naar hulp die bij u past sectie">
+          <Link href="/#services" className="nav-link" aria-label="Ga naar hulp die bij u past sectie">
             Hulp Die Bij U Past
           </Link>
-          <Link href="#tarieven" className="nav-link" aria-label="Ga naar tarieven sectie">
+          <Link href="/#tarieven" className="nav-link" aria-label="Ga naar tarieven sectie">
             Tarieven
           </Link>
-          <Link href="#contact" className="nav-link" aria-label="Ga naar contact sectie">
+          <Link href="/#contact" className="nav-link" aria-label="Ga naar contact sectie">
             Contact
           </Link>
           
@@ -171,7 +171,7 @@ export default function Header() {
           >
             <nav className="flex flex-col py-6" role="navigation" aria-label="Mobiele navigatie">
               <Link 
-                href="#diensten" 
+                href="/#diensten" 
                 className="px-8 py-6 text-white hover:text-primary-300 transition-colors border-b-2 border-white/10 text-xl font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B]"
                 onClick={closeMobileMenu}
                 style={{ minHeight: '48px' }}
@@ -180,7 +180,7 @@ export default function Header() {
                 Diensten
               </Link>
               <Link 
-                href="#services" 
+                href="/#services" 
                 className="px-8 py-6 text-white hover:text-primary-300 transition-colors border-b-2 border-white/10 text-xl font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B]"
                 onClick={closeMobileMenu}
                 style={{ minHeight: '48px' }}
@@ -189,7 +189,7 @@ export default function Header() {
                 Hulp Die Bij U Past
               </Link>
               <Link 
-                href="#tarieven" 
+                href="/#tarieven" 
                 className="px-8 py-6 text-white hover:text-primary-300 transition-colors border-b-2 border-white/10 text-xl font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B]"
                 onClick={closeMobileMenu}
                 style={{ minHeight: '48px' }}
@@ -198,7 +198,7 @@ export default function Header() {
                 Tarieven
               </Link>
               <Link 
-                href="#contact" 
+                href="/#contact" 
                 className="px-8 py-6 text-white hover:text-primary-300 transition-colors border-b-2 border-white/10 text-xl font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B]"
                 onClick={closeMobileMenu}
                 style={{ minHeight: '48px' }}

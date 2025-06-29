@@ -202,6 +202,14 @@ export default function RootLayout({
                     "@type": "Answer",
                     "text": "Ja, we bieden zowel remote hulp als aan huis service. Voor aan huis service maken we een afspraak en komen we bij u langs."
                   }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Wat betekent 'Niet opgelost = geen kosten'?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Als wij uw computerprobleem niet kunnen oplossen, betaalt u niets. Deze garantie geldt voor alle onze diensten. Uitzonderingen zijn hardware vervanging, software licenties, en problemen veroorzaakt door externe factoren."
+                  }
                 }
               ]
             })

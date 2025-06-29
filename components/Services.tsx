@@ -1,5 +1,5 @@
-import { Computer, Home, Zap, Shield, Wifi, Mail, Smartphone, Database, Lock, Video, CreditCard, Play, Image, Printer, RefreshCw, Accessibility, ChevronRight, ChevronDown } from 'lucide-react';
-import { useState, lazy, Suspense, useMemo, useCallback, useEffect } from 'react';
+import { Computer, Home, Zap, Shield, Wifi, Mail, Smartphone, Database, Lock, Video, CreditCard, Play, Image, Printer, RefreshCw, Accessibility, ChevronRight, ChevronDown, CheckCircle, Info } from 'lucide-react';
+import { useState, lazy, Suspense, useMemo, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import React from 'react';
 import NextImage from 'next/image';
@@ -352,7 +352,63 @@ function AccessibilityMenu() {
   );
 }
 
-export default function Services() {
+// Add guarantee tooltip component
+function GuaranteeTooltip() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  return (
+    <div className="relative inline-block">
+      <button
+        onMouseEnter={() => setIsVisible(true)}
+        onMouseLeave={() => setIsVisible(false)}
+        onFocus={() => setIsVisible(true)}
+        onBlur={() => setIsVisible(false)}
+        className="inline-flex items-center gap-1 text-[#00d4ff] hover:text-[#00b8e6] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:ring-offset-2 focus:ring-offset-[#0A1A4B] rounded"
+        aria-label="Meer informatie over onze garantie"
+      >
+        <Info className="w-4 h-4" />
+      </button>
+      
+      {isVisible && (
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-80 bg-[#0A1A4B] border border-[#00d4ff]/30 rounded-lg p-4 shadow-xl z-50">
+          <div className="text-sm text-white space-y-2">
+            <h4 className="font-semibold text-[#00d4ff] flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              Niet opgelost = geen kosten
+            </h4>
+            <p className="text-white/90">
+              Als wij uw computerprobleem niet kunnen oplossen, betaalt u niets. 
+              Deze garantie geldt voor alle onze diensten.
+            </p>
+            <div className="text-xs text-white/70 mt-2">
+              <strong>Uitzonderingen:</strong> Hardware vervanging, software licenties, 
+              en problemen veroorzaakt door externe factoren vallen buiten deze garantie.
+            </div>
+          </div>
+          {/* Arrow pointing down */}
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-[#0A1A4B]"></div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Add guarantee badge component
+function GuaranteeBadge() {
+  return (
+    <div className="inline-flex items-center gap-2 bg-[#00d4ff]/10 border border-[#00d4ff]/30 rounded-full px-3 py-1 text-sm font-medium text-[#00d4ff]">
+      <CheckCircle className="w-4 h-4" />
+      <span>Niet opgelost = geen kosten</span>
+      <GuaranteeTooltip />
+    </div>
+  );
+}
+
+interface ServicesProps {
+  forceVisible?: boolean;
+}
+
+export default function Services({ forceVisible = false }: ServicesProps) {
   const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
   const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
 
@@ -412,7 +468,8 @@ export default function Services() {
       <motion.section
         id="diensten"
         initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
+        animate={forceVisible ? { opacity: 1 } : {}}
+        whileInView={forceVisible ? {} : { opacity: 1 }}
         exit={{ opacity: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
@@ -525,6 +582,12 @@ export default function Services() {
                       <h4 className="text-lg font-semibold text-white">{service.title}</h4>
                     </div>
                     <p className="text-sm text-[#E6EFFF] leading-relaxed senior-description">{service.description}</p>
+                    
+                    {/* Small guarantee indicator */}
+                    <div className="flex items-center gap-1 text-xs text-[#00d4ff]/80">
+                      <CheckCircle className="w-3 h-3" />
+                      <span>Garantie inbegrepen</span>
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -575,6 +638,32 @@ export default function Services() {
               </motion.div>
             </div>
             
+            {/* Prominent Guarantee Section */}
+            <div className="col-span-1 md:col-span-12 mb-16">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="bg-gradient-to-r from-[#00d4ff]/10 to-[#00b8e6]/10 border border-[#00d4ff]/30 rounded-2xl p-8 text-center"
+              >
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="flex items-center gap-3 text-[#00d4ff]">
+                    <CheckCircle className="w-8 h-8" />
+                    <h3 className="text-2xl font-bold">Onze Garantie</h3>
+                  </div>
+                  <p className="text-xl text-white font-semibold">
+                    Niet opgelost = geen kosten
+                  </p>
+                  <p className="text-[#D8E0FF] max-w-2xl">
+                    Heeft u een computerprobleem dat wij niet kunnen oplossen? Dan betaalt u niets. 
+                    Deze garantie geldt voor alle onze diensten en geeft u volledige gemoedsrust.
+                  </p>
+                  <GuaranteeTooltip />
+                </div>
+              </motion.div>
+            </div>
+
             {/* Remote Support Pricing */}
             <motion.div 
               className="col-span-1 md:col-span-4 mb-8 md:mb-0"
@@ -594,7 +683,7 @@ export default function Services() {
             >
               <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-10 h-full flex flex-col justify-between w-full
                 hover:shadow-[0_0_30px_rgba(0,212,255,0.15)] transition-all duration-300">
-                <div className="flex items-center gap-6 mb-10">
+                <div className="flex items-center gap-6 mb-6">
                   <motion.span 
                     className="text-4xl w-6 text-[#FFFFFF]" 
                     role="img" 
@@ -604,6 +693,12 @@ export default function Services() {
                   >💻</motion.span>
                   <h4 className="text-2xl font-bold text-[#FFFFFF]">Remote Hulp</h4>
                 </div>
+                
+                {/* Guarantee Badge - Prominent placement */}
+                <div className="mb-6 flex justify-center">
+                  <GuaranteeBadge />
+                </div>
+                
                 <p className="text-[#FFFFFF]/80 mb-8">Klaar terwijl u kijkt</p>
                 <div className="space-y-8 flex-grow">
                   <p className="text-3xl font-semibold text-[#FFFFFF]">€44 <span className="text-base">/uur</span></p>
@@ -624,7 +719,6 @@ export default function Services() {
                     </li>
                   </ul>
                 </div>
-                <div className="mt-6 text-sm text-[#FFFFFF]/80">Niet opgelost = geen kosten</div>
                 <a href="#boek" className="mt-10 bg-[#00d4ff] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4ff] hover:bg-[#00b8e6]" data-analytics="pricing_button_remote">
                   Start direct <ChevronRight className="w-4 h-4" />
                 </a>
@@ -650,7 +744,7 @@ export default function Services() {
             >
               <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-10 h-full flex flex-col justify-between w-full
                 hover:shadow-[0_0_30px_rgba(0,212,255,0.15)] transition-all duration-300">
-                <div className="flex items-center gap-6 mb-10">
+                <div className="flex items-center gap-6 mb-6">
                   <motion.span 
                     className="text-4xl w-6 text-[#FFFFFF]" 
                     role="img" 
@@ -660,6 +754,12 @@ export default function Services() {
                   >🛠️</motion.span>
                   <h4 className="text-2xl font-bold text-[#FFFFFF]">Service Bundles</h4>
                 </div>
+                
+                {/* Guarantee Badge - Prominent placement */}
+                <div className="mb-6 flex justify-center">
+                  <GuaranteeBadge />
+                </div>
+                
                 <p className="text-[#FFFFFF]/80 mb-8">Vaste prijs, geen verrassingen</p>
                 <div className="space-y-8 flex-grow">
                   <ul className="space-y-6">
@@ -672,7 +772,6 @@ export default function Services() {
                       <span className="text-[#FFFFFF]/80"><strong className="text-[#FFFFFF]">Computer Tune-up</strong> — €79</span>
                     </li>
                   </ul>
-                  <div className="mt-6 text-sm text-[#FFFFFF]/80">Probleem niet opgelost? Dan betaalt u niets</div>
                 </div>
                 <a href="#boek" className="mt-10 bg-[#00d4ff] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4ff] hover:bg-[#00b8e6]" data-analytics="pricing_button_bundle">
                   Boek bundle <ChevronRight className="w-4 h-4" />
@@ -699,7 +798,7 @@ export default function Services() {
             >
               <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-10 h-full flex flex-col justify-between w-full
                 hover:shadow-[0_0_30px_rgba(0,212,255,0.15)] transition-all duration-300">
-                <div className="flex items-center gap-6 mb-10">
+                <div className="flex items-center gap-6 mb-6">
                   <motion.span 
                     className="text-4xl w-6 text-[#FFFFFF]" 
                     role="img" 
@@ -709,6 +808,12 @@ export default function Services() {
                   >🏠</motion.span>
                   <h4 className="text-2xl font-bold text-[#FFFFFF]">Computerhulp aan huis</h4>
                 </div>
+                
+                {/* Guarantee Badge - Prominent placement */}
+                <div className="mb-6 flex justify-center">
+                  <GuaranteeBadge />
+                </div>
+                
                 <p className="text-[#FFFFFF]/80 mb-8">Geen voorrijkosten in Rotterdam</p>
                 <div className="space-y-8 flex-grow">
                   <p className="text-3xl font-semibold text-[#FFFFFF]">€50 <span className="text-base">/uur</span></p>
@@ -719,25 +824,12 @@ export default function Services() {
                       <span className="text-[#FFFFFF]/80">iDEAL, contant of pin</span>
                     </li>
                   </ul>
-                  <div className="mt-6 text-sm text-[#FFFFFF]/80">Probleem niet opgelost? Dan betaalt u niets</div>
                 </div>
                 <a href="#boek" className="mt-10 bg-[#00d4ff] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4ff] hover:bg-[#00b8e6]" data-analytics="pricing_button_onsite">
                   Plan bezoek <ChevronRight className="w-4 h-4" />
                 </a>
               </div>
             </motion.div>
-
-            {/* FAQ Link */}
-            <div className="col-span-1 md:col-span-12 mt-16 text-center">
-              <a 
-                href="#faq" 
-                className="inline-flex items-center gap-3 text-[#FFFFFF] hover:text-[#00d4ff] transition-colors"
-                data-analytics="faq_link"
-              >
-                <span>Veelgestelde vragen</span>
-                <ChevronRight className="w-4 h-4" />
-              </a>
-            </div>
 
             {/* VAT Notice */}
             <div className="col-span-1 md:col-span-12 mt-6 text-center">

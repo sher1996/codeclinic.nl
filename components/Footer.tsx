@@ -39,6 +39,7 @@ export default function Footer() {
               <ul className="space-y-3 text-lg">
                 <li><a href="#contact" className="footer-link">Afspraak maken</a></li>
                 <li><a href="#tarieven" className="footer-link">Prijzen</a></li>
+                <li><a href="/faq" className="footer-link">Veelgestelde vragen</a></li>
                 <li><a href="/privacy" className="footer-link">Privacy & Cookies</a></li>
                 <li><a href="/terms" className="footer-link">Algemene voorwaarden</a></li>
               </ul>
