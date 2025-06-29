@@ -445,13 +445,13 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
     if (!formData.email.trim()) {
       errors.email = 'Uw e-mailadres is verplicht';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.email = 'Voer een geldig e-mailadres in (bijvoorbeeld: naam@voorbeeld.nl)';
+      errors.email = 'Voer een geldig e-mailadres in (bijvoorbeeld: naam@gmail.com)';
     }
 
     if (!formData.phone.trim()) {
       errors.phone = 'Uw telefoonnummer is verplicht';
     } else if (!/^[\d\s\-\+\(\)]+$/.test(formData.phone)) {
-      errors.phone = 'Voer een geldig telefoonnummer in (bijvoorbeeld: 0624837889)';
+      errors.phone = 'Voer een geldig telefoonnummer in (bijvoorbeeld: 0612345678)';
     }
 
     if (!formData.street.trim()) {
@@ -687,7 +687,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                             aria-required="true"
                             aria-invalid={!!formErrors.email}
                             aria-describedby={formErrors.email ? 'email-error' : undefined}
-                            placeholder="naam@voorbeeld.nl"
+                            placeholder="naam@gmail.com"
                           />
                           {formErrors.email && (
                             <div id="email-error" className="form-error" role="alert">
@@ -711,7 +711,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                             aria-required="true"
                             aria-invalid={!!formErrors.phone}
                             aria-describedby={formErrors.phone ? 'phone-error' : undefined}
-                            placeholder="0624837889"
+                            placeholder="0612345678"
                           />
                           {formErrors.phone && (
                             <div id="phone-error" className="form-error" role="alert">
@@ -808,7 +808,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                               aria-required="true"
                               aria-invalid={!!formErrors.city}
                               aria-describedby={formErrors.city ? 'city-error' : undefined}
-                              placeholder="Amsterdam"
+                              placeholder="Rotterdam"
                             />
                             {formErrors.city && (
                               <div id="city-error" className="form-error" role="alert">

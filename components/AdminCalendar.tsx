@@ -409,7 +409,7 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
                       className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                       required
                       aria-required="true"
-                      placeholder="naam@voorbeeld.nl"
+                      placeholder="naam@gmail.com"
                     />
                   </div>
 
@@ -425,7 +425,7 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
                       className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                       required
                       aria-required="true"
-                      placeholder="0624837889"
+                      placeholder="0612345678"
                     />
                   </div>
 
