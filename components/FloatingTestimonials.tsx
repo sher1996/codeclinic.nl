@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from "framer-motion";
 import { testimonials } from '@/data/testimonials';
 
 interface FloatingTestimonial {
