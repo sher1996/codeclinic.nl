@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import FAQ from '@/components/FAQ';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
+import StructuredData from '@/components/StructuredData';
 
 export const metadata: Metadata = {
   title: 'Veelgestelde Vragen - CodeClinic Computerhulp Rotterdam',
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
 export default function FAQPage() {
   return (
     <>
+      <StructuredData pageType="faq" />
       <Header />
       <main className="flex-grow pt-20">
         <FAQ />

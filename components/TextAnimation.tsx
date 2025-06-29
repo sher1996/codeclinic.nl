@@ -18,8 +18,8 @@ export default function TextAnimation({ className = '', startWriting = false }: 
   const prefersReducedMotion = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
 
   const texts = useMemo(() => [
-    'Direct professionele hulp bij al uw computerproblemen.',
-    '90% van de problemen opgelost in één keer.'
+    'Direct professionele hulp bij al uw computerproblemen in Rotterdam.',
+    '90% van de problemen opgelost in één keer - geen voorrijkosten in Rotterdam.'
   ], []);
 
   // Start typing when startWriting becomes true

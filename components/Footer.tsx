@@ -7,7 +7,7 @@ export default function Footer() {
             <div className="space-y-6">
               <h3 className="text-xl font-bold text-white mb-6">CodeClinic.nl</h3>
               <p className="text-lg text-white/80 leading-relaxed senior-description">
-                Professionele computerhulp voor senioren. Hulp op afstand en bij u thuis.
+                Professionele computerhulp in Rotterdam en omstreken. Hulp op afstand en bij u thuis.
               </p>
               <div className="space-y-3 text-lg">
                 <p className="text-white/90">
@@ -51,8 +51,11 @@ export default function Footer() {
             <p className="text-lg text-white/70">
               © {new Date().getFullYear()} CodeClinic.nl · KvK 86438948 · BTW NL004247935B44
             </p>
-            <p className="text-base text-white/60 mt-3 senior-description">
-              Professionele computerhulp voor senioren in heel Nederland
+            <p className="text-base text-white/60 mt-3 senior-description sr-only">
+              Professionele computerhulp in Rotterdam en omstreken
+            </p>
+            <p className="text-sm text-white/50 mt-2 sr-only">
+              Geen voorrijkosten in Rotterdam - directe hulp bij u thuis
             </p>
           </div>
         </div>

@@ -1356,6 +1356,52 @@ select:focus-visible {
   }
 }
 
+@keyframes phone-message-fast {
+  0% { 
+    transform: translate(-50%, -50%) scale(0.8) translateY(15px); 
+    opacity: 0;
+  }
+  15% { 
+    transform: translate(-50%, -50%) scale(1.05) translateY(-3px); 
+    opacity: 1;
+  }
+  25% { 
+    transform: translate(-50%, -50%) scale(1) translateY(0px); 
+    opacity: 1;
+  }
+  85% { 
+    transform: translate(-50%, -50%) scale(1) translateY(0px); 
+    opacity: 1;
+  }
+  100% { 
+    transform: translate(-50%, -50%) scale(0.9) translateY(-8px); 
+    opacity: 0;
+  }
+}
+
+@keyframes phone-message-ultra-fast {
+  0% { 
+    transform: translate(-50%, -50%) scale(0.8) translateY(10px); 
+    opacity: 0;
+  }
+  10% { 
+    transform: translate(-50%, -50%) scale(1.05) translateY(-2px); 
+    opacity: 1;
+  }
+  20% { 
+    transform: translate(-50%, -50%) scale(1) translateY(0px); 
+    opacity: 1;
+  }
+  70% { 
+    transform: translate(-50%, -50%) scale(1) translateY(0px); 
+    opacity: 1;
+  }
+  100% { 
+    transform: translate(-50%, -50%) scale(0.9) translateY(-5px); 
+    opacity: 0;
+  }
+}
+
 @keyframes balloon-bounce {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
@@ -1378,6 +1424,14 @@ select:focus-visible {
   animation: phone-message 15s ease-out forwards;
 }
 
+.animate-phone-message-fast {
+  animation: phone-message-fast 8s ease-out forwards;
+}
+
+.animate-phone-message-ultra-fast {
+  animation: phone-message-ultra-fast 4s ease-out forwards;
+}
+
 .animate-balloon-bounce {
   animation: balloon-bounce 3s ease-in-out infinite;
 }
@@ -1392,6 +1446,8 @@ select:focus-visible {
   .animate-float-gentle,
   .animate-float-upward,
   .animate-phone-message,
+  .animate-phone-message-fast,
+  .animate-phone-message-ultra-fast,
   .animate-balloon-bounce,
   .animate-sparkle {
     animation: none;

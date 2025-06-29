@@ -16,7 +16,7 @@ export default function FloatingTestimonials() {
   const [floatingTestimonials, setFloatingTestimonials] = useState<FloatingTestimonial[]>([]);
   const [isVisible, setIsVisible] = useState(false);
   const nextIdRef = useRef(0);
-  const maxTestimonials = 2; // Limit to 2 testimonials at once for phone-like feel
+  const maxTestimonials = 1; // Only one testimonial at a time
 
   useEffect(() => {
     // Show testimonials if we have any
@@ -27,7 +27,7 @@ export default function FloatingTestimonials() {
     // Show testimonials after a shorter delay
     const timer = setTimeout(() => {
       setIsVisible(true);
-    }, 2000); // 2 seconds delay
+    }, 1000); // Reduced from 2 seconds to 1 second
 
     return () => clearTimeout(timer);
   }, []);
@@ -38,7 +38,7 @@ export default function FloatingTestimonials() {
       const distance = Math.sqrt(
         Math.pow(testimonial.x - x, 2) + Math.pow(testimonial.y - y, 2)
       );
-      return distance < 25; // Minimum distance between testimonials
+      return distance < 20; // Reduced minimum distance for more testimonials
     });
   }, [floatingTestimonials]);
 
@@ -58,6 +58,9 @@ export default function FloatingTestimonials() {
       { x: 75, y: 70 }, // Slightly below main position
       { x: 80, y: 55 }, // Upper area
       { x: 77, y: 75 }, // Lower area
+      { x: 85, y: 65 }, // More to the right
+      { x: 73, y: 60 }, // More to the left
+      { x: 79, y: 80 }, // Lower area
     ];
     
     // Try to find a non-overlapping position within the focused area
@@ -66,13 +69,13 @@ export default function FloatingTestimonials() {
     
     do {
       const zone = zones[Math.floor(Math.random() * zones.length)];
-      x = zone.x + (Math.random() - 0.5) * 4; // Very small randomness to keep them close
-      y = zone.y + (Math.random() - 0.5) * 4;
+      x = zone.x + (Math.random() - 0.5) * 6; // Slightly more randomness for variety
+      y = zone.y + (Math.random() - 0.5) * 6;
       attempts++;
-    } while (isPositionOccupied(x, y) && attempts < 20);
+    } while (isPositionOccupied(x, y) && attempts < 15);
     
     // If we can't find a good position, don't create the testimonial
-    if (attempts >= 20) {
+    if (attempts >= 15) {
       return;
     }
     
@@ -88,23 +91,23 @@ export default function FloatingTestimonials() {
     setFloatingTestimonials(prev => [...prev, newTestimonial]);
     nextIdRef.current += 1;
 
-    // Remove this testimonial after 15 seconds (longer for phone-like feel)
+    // Remove this testimonial after 8 seconds (much shorter for faster cycling)
     setTimeout(() => {
       setFloatingTestimonials(prev => prev.filter(t => t.id !== newTestimonial.id));
-    }, 15000);
+    }, 8000);
   }, [floatingTestimonials, isPositionOccupied]);
 
   // Start creating testimonials
   useEffect(() => {
     if (!isVisible) return;
 
-    // Create first testimonial
+    // Create first testimonial immediately
     createNewTestimonial();
 
-    // Create new testimonials every 12 seconds (slower for phone-like feel)
+    // Create new testimonials every 4 seconds (faster cycling)
     const interval = setInterval(() => {
       createNewTestimonial();
-    }, 12000);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [isVisible, createNewTestimonial]);
@@ -122,7 +125,7 @@ export default function FloatingTestimonials() {
       {floatingTestimonials.map((testimonial) => (
         <div
           key={testimonial.id}
-          className="absolute animate-phone-message"
+          className="absolute animate-phone-message-ultra-fast"
           style={{
             left: `${testimonial.x}%`,
             top: `${testimonial.y}%`,

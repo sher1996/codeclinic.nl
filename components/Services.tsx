@@ -158,7 +158,7 @@ function ServiceCard() {
     },
     {
       key: 'aan-huis',
-      title: 'Aan Huis Service',
+      title: 'Computerhulp aan huis',
       tagline: 'Persoonlijke hulp bij u thuis – geen gedoe met slepen',
       icon: <Home className="service-card-icon" />,
       steps: [
@@ -461,6 +461,15 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                 <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto senior-description">
                   Kies de manier van hulp die het beste bij u past - op afstand of bij u thuis
                 </p>
+                {/* Location context for local SEO */}
+                <div className="mt-6 sr-only">
+                  <p className="text-lg text-[#00d4ff] font-semibold">
+                    Wij bieden computerhulp in Rotterdam en omstreken
+                  </p>
+                  <p className="text-base text-[#D8E0FF]/80 mt-2">
+                    Geen voorrijkosten in Rotterdam - directe hulp bij u thuis
+                  </p>
+                </div>
               </motion.div>
             </div>
           </div>
@@ -855,6 +864,90 @@ export default function Services({ forceVisible = false }: ServicesProps) {
 
       {/* Seamless transition to Contact section */}
       <div className="h-8 sm:h-12 lg:h-16 bg-gradient-to-b from-transparent to-transparent"></div>
+
+      {/* Location Services Section - Local SEO */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8 }}
+        className="relative py-16 sm:py-20 lg:py-24"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="text-center space-y-8 mb-16">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.1] text-[#FFFFFF] mb-6">
+                Computerhulp in Rotterdam
+              </h2>
+              <p className="text-lg sm:text-xl text-[#D8E0FF] max-w-3xl mx-auto senior-description">
+                Professionele computerhulp in Rotterdam en omstreken - snel, betrouwbaar en persoonlijk
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="bg-white/10 backdrop-blur-md rounded-xl p-8 border border-white/20"
+            >
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 bg-[#00d4ff]/20 rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-2xl" role="img" aria-label="Locatie icoon">📍</span>
+                </div>
+                <h3 className="text-xl font-semibold text-white">Rotterdam Centrum</h3>
+                <p className="text-[#D8E0FF]/80">
+                  Geen voorrijkosten binnen 10 km van Rotterdam-centrum
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="bg-white/10 backdrop-blur-md rounded-xl p-8 border border-white/20"
+            >
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 bg-[#00d4ff]/20 rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-2xl" role="img" aria-label="Klok icoon">⏰</span>
+                </div>
+                <h3 className="text-xl font-semibold text-white">Snelle Service</h3>
+                <p className="text-[#D8E0FF]/80">
+                  Meestal binnen 24 uur beschikbaar voor spoedgevallen
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="bg-white/10 backdrop-blur-md rounded-xl p-8 border border-white/20 md:col-span-2 lg:col-span-1"
+            >
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 bg-[#00d4ff]/20 rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-2xl" role="img" aria-label="Telefoon icoon">📞</span>
+                </div>
+                <h3 className="text-xl font-semibold text-white">Direct Contact</h3>
+                <p className="text-[#D8E0FF]/80">
+                  Bel direct: 0624837889 voor computerhulp in Rotterdam
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </motion.section>
 
       <AccessibilityMenu />
     </div>
