@@ -1,6 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Add any Next.js config options here
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'static.teamviewer.com',
+        port: '',
+        pathname: '/resources/badges/**',
+      },
+    ],
+  },
 };
 
 export default nextConfig; 

@@ -8,6 +8,19 @@ interface AppointmentCalendarProps {
   appointmentType?: 'onsite' | 'remote';
 }
 
+interface FormErrors {
+  name?: string;
+  email?: string;
+  phone?: string;
+  street?: string;
+  houseNumber?: string;
+  postalCode?: string;
+  city?: string;
+  date?: string;
+  time?: string;
+  general?: string;
+}
+
 export default function AppointmentCalendar({ onDateSelect, appointmentType = 'onsite' }: AppointmentCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -16,6 +29,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
   const [isLoadingBookings, setIsLoadingBookings] = useState(false);
   const [announcement, setAnnouncement] = useState('');
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -31,6 +45,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   const calendarRef = useRef<HTMLDivElement>(null);
   const timeGridRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const errorSummaryRef = useRef<HTMLDivElement>(null);
 
   // Check if device is low-end
   const [isLowEnd, setIsLowEnd] = useState(false);
@@ -108,9 +123,10 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   };
 
   const handleDateClick = (date: Date | null) => {
-    if (date) {
+    if (date && !isPastDate(date)) {
       setSelectedDate(date);
-      setSelectedTime(null); // Reset time selection when date changes
+      setSelectedTime(null);
+      setFormErrors({}); // Clear errors when selecting new date
       if (onDateSelect) {
         onDateSelect(date);
       }
@@ -119,13 +135,11 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   };
 
   const handleTimeSelect = (time: string) => {
-    // Don't allow selection of booked times
-    if (bookedTimes.includes(time)) {
-      setAnnouncement(`${time} is niet beschikbaar`);
-      return;
+    if (!bookedTimes.includes(time)) {
+      setSelectedTime(time);
+      setFormErrors({}); // Clear errors when selecting new time
+      setAnnouncement(`Tijd geselecteerd: ${time}`);
     }
-    setSelectedTime(time);
-    setAnnouncement(`Tijd geselecteerd: ${time}`);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -134,6 +148,11 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       ...prev,
       [name]: value
     }));
+    
+    // Clear error for this field when user starts typing
+    if (formErrors[name as keyof FormErrors]) {
+      setFormErrors(prev => ({ ...prev, [name]: undefined }));
+    }
   };
 
   // Keyboard navigation for calendar
@@ -209,7 +228,31 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form before submission
+    if (!validateForm()) {
+      // Focus on first error field
+      const firstErrorField = Object.keys(formErrors)[0];
+      if (firstErrorField && firstErrorField !== 'general') {
+        const errorElement = document.getElementById(firstErrorField);
+        if (errorElement) {
+          errorElement.focus();
+        }
+      }
+      
+      // Announce errors to screen readers
+      setAnnouncement('Er zijn fouten in het formulier. Controleer de rode velden en probeer opnieuw.');
+      
+      // Scroll to error summary
+      if (errorSummaryRef.current) {
+        errorSummaryRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      
+      return;
+    }
+
     setIsSubmitting(true);
+    setFormErrors({}); // Clear any existing errors
 
     try {
       // Debug: Check if we have a selected date
@@ -311,7 +354,9 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       }, 2000);
     } catch (err: unknown) {
       console.error('[AppointmentCalendar] Error:', err);
-      setAnnouncement(`Fout bij boeken: ${err instanceof Error ? err.message : 'Onbekende fout'}`);
+      const errorMessage = err instanceof Error ? err.message : 'Onbekende fout';
+      setFormErrors({ general: errorMessage });
+      setAnnouncement(`Fout bij boeken: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -387,6 +432,57 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
     }
     return times;
   }).filter(time => !bookedTimes.includes(time)) : [];
+
+  // Form validation
+  const validateForm = (): boolean => {
+    const errors: FormErrors = {};
+
+    // Required field validation
+    if (!formData.name.trim()) {
+      errors.name = 'Uw naam is verplicht';
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = 'Uw e-mailadres is verplicht';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Voer een geldig e-mailadres in (bijvoorbeeld: naam@voorbeeld.nl)';
+    }
+
+    if (!formData.phone.trim()) {
+      errors.phone = 'Uw telefoonnummer is verplicht';
+    } else if (!/^[\d\s\-\+\(\)]+$/.test(formData.phone)) {
+      errors.phone = 'Voer een geldig telefoonnummer in (bijvoorbeeld: 0624837889)';
+    }
+
+    if (!formData.street.trim()) {
+      errors.street = 'Uw straatnaam is verplicht';
+    }
+
+    if (!formData.houseNumber.trim()) {
+      errors.houseNumber = 'Uw huisnummer is verplicht';
+    }
+
+    if (!formData.postalCode.trim()) {
+      errors.postalCode = 'Uw postcode is verplicht';
+    } else if (!/^[1-9][0-9]{3}\s?[A-Z]{2}$/i.test(formData.postalCode)) {
+      errors.postalCode = 'Voer een geldige postcode in (bijvoorbeeld: 1234 AB)';
+    }
+
+    if (!formData.city.trim()) {
+      errors.city = 'Uw plaats is verplicht';
+    }
+
+    if (!selectedDate) {
+      errors.date = 'Selecteer een datum voor uw afspraak';
+    }
+
+    if (!selectedTime) {
+      errors.time = 'Selecteer een tijd voor uw afspraak';
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   return (
     <div className="relative isolate">
@@ -522,76 +618,162 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                       </div>
 
                       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6" ref={formRef}>
+                        {/* Error Summary */}
+                        {Object.keys(formErrors).length > 0 && (
+                          <div 
+                            ref={errorSummaryRef}
+                            className="error-summary" 
+                            role="alert" 
+                            aria-live="assertive"
+                            tabIndex={-1}
+                          >
+                            <h3>Er zijn fouten in het formulier:</h3>
+                            <ul>
+                              {Object.entries(formErrors).map(([field, error]) => (
+                                <li key={field}>
+                                  {field === 'name' && 'Naam: '}
+                                  {field === 'email' && 'E-mail: '}
+                                  {field === 'phone' && 'Telefoon: '}
+                                  {field === 'street' && 'Straat: '}
+                                  {field === 'houseNumber' && 'Huisnummer: '}
+                                  {field === 'postalCode' && 'Postcode: '}
+                                  {field === 'city' && 'Plaats: '}
+                                  {field === 'date' && 'Datum: '}
+                                  {field === 'time' && 'Tijd: '}
+                                  {field === 'general' && ''}
+                                  {error}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
                         <div>
-                          <label htmlFor="name" className="form-label">Naam</label>
+                          <label htmlFor="name" className="form-label">
+                            Naam <span className="text-red-400" aria-label="verplicht veld">*</span>
+                          </label>
                           <input
                             id="name"
                             type="text"
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
-                            className="form-input"
+                            className={`form-input ${formErrors.name ? 'form-input-error' : ''}`}
                             required
                             aria-required="true"
+                            aria-invalid={!!formErrors.name}
+                            aria-describedby={formErrors.name ? 'name-error' : undefined}
+                            placeholder="Uw voor- en achternaam"
                           />
+                          {formErrors.name && (
+                            <div id="name-error" className="form-error" role="alert">
+                              {formErrors.name}
+                            </div>
+                          )}
                         </div>
+
                         <div>
-                          <label htmlFor="email" className="form-label">Email</label>
+                          <label htmlFor="email" className="form-label">
+                            E-mailadres <span className="text-red-400" aria-label="verplicht veld">*</span>
+                          </label>
                           <input
                             id="email"
                             type="email"
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className="form-input"
+                            className={`form-input ${formErrors.email ? 'form-input-error' : ''}`}
                             required
                             aria-required="true"
+                            aria-invalid={!!formErrors.email}
+                            aria-describedby={formErrors.email ? 'email-error' : undefined}
+                            placeholder="naam@voorbeeld.nl"
                           />
+                          {formErrors.email && (
+                            <div id="email-error" className="form-error" role="alert">
+                              {formErrors.email}
+                            </div>
+                          )}
                         </div>
+
                         <div>
-                          <label htmlFor="phone" className="form-label">Telefoon</label>
+                          <label htmlFor="phone" className="form-label">
+                            Telefoonnummer <span className="text-red-400" aria-label="verplicht veld">*</span>
+                          </label>
                           <input
                             id="phone"
                             type="tel"
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            className="form-input"
+                            className={`form-input ${formErrors.phone ? 'form-input-error' : ''}`}
                             required
                             aria-required="true"
+                            aria-invalid={!!formErrors.phone}
+                            aria-describedby={formErrors.phone ? 'phone-error' : undefined}
+                            placeholder="0624837889"
                           />
+                          {formErrors.phone && (
+                            <div id="phone-error" className="form-error" role="alert">
+                              {formErrors.phone}
+                            </div>
+                          )}
                         </div>
+
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                           <div>
-                            <label htmlFor="street" className="form-label">Straat</label>
+                            <label htmlFor="street" className="form-label">
+                              Straatnaam <span className="text-red-400" aria-label="verplicht veld">*</span>
+                            </label>
                             <input
                               id="street"
                               type="text"
                               name="street"
                               value={formData.street}
                               onChange={handleInputChange}
-                              className="form-input"
+                              className={`form-input ${formErrors.street ? 'form-input-error' : ''}`}
                               required
                               aria-required="true"
+                              aria-invalid={!!formErrors.street}
+                              aria-describedby={formErrors.street ? 'street-error' : undefined}
+                              placeholder="Hoofdstraat"
                             />
+                            {formErrors.street && (
+                              <div id="street-error" className="form-error" role="alert">
+                                {formErrors.street}
+                              </div>
+                            )}
                           </div>
                           <div>
-                            <label htmlFor="houseNumber" className="form-label">Huisnummer</label>
+                            <label htmlFor="houseNumber" className="form-label">
+                              Huisnummer <span className="text-red-400" aria-label="verplicht veld">*</span>
+                            </label>
                             <input
                               id="houseNumber"
                               type="text"
                               name="houseNumber"
                               value={formData.houseNumber}
                               onChange={handleInputChange}
-                              className="form-input"
+                              className={`form-input ${formErrors.houseNumber ? 'form-input-error' : ''}`}
                               required
                               aria-required="true"
+                              aria-invalid={!!formErrors.houseNumber}
+                              aria-describedby={formErrors.houseNumber ? 'houseNumber-error' : undefined}
+                              placeholder="123"
                             />
+                            {formErrors.houseNumber && (
+                              <div id="houseNumber-error" className="form-error" role="alert">
+                                {formErrors.houseNumber}
+                              </div>
+                            )}
                           </div>
                         </div>
+
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                           <div>
-                            <label htmlFor="postalCode" className="form-label">Postcode</label>
+                            <label htmlFor="postalCode" className="form-label">
+                              Postcode <span className="text-red-400" aria-label="verplicht veld">*</span>
+                            </label>
                             <input
                               id="postalCode"
                               type="text"
@@ -599,27 +781,47 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                               placeholder="1234 AB"
                               value={formData.postalCode}
                               onChange={handleInputChange}
-                              className="form-input"
+                              className={`form-input ${formErrors.postalCode ? 'form-input-error' : ''}`}
                               required
                               aria-required="true"
+                              aria-invalid={!!formErrors.postalCode}
+                              aria-describedby={formErrors.postalCode ? 'postalCode-error' : undefined}
                             />
+                            {formErrors.postalCode && (
+                              <div id="postalCode-error" className="form-error" role="alert">
+                                {formErrors.postalCode}
+                              </div>
+                            )}
                           </div>
                           <div>
-                            <label htmlFor="city" className="form-label">Plaats</label>
+                            <label htmlFor="city" className="form-label">
+                              Plaats <span className="text-red-400" aria-label="verplicht veld">*</span>
+                            </label>
                             <input
                               id="city"
                               type="text"
                               name="city"
                               value={formData.city}
                               onChange={handleInputChange}
-                              className="form-input"
+                              className={`form-input ${formErrors.city ? 'form-input-error' : ''}`}
                               required
                               aria-required="true"
+                              aria-invalid={!!formErrors.city}
+                              aria-describedby={formErrors.city ? 'city-error' : undefined}
+                              placeholder="Amsterdam"
                             />
+                            {formErrors.city && (
+                              <div id="city-error" className="form-error" role="alert">
+                                {formErrors.city}
+                              </div>
+                            )}
                           </div>
                         </div>
+
                         <div>
-                          <label htmlFor="notes" className="form-label">Notities (optioneel)</label>
+                          <label htmlFor="notes" className="form-label">
+                            Notities <span className="text-sm text-white/60 font-normal">(optioneel)</span>
+                          </label>
                           <textarea
                             id="notes"
                             name="notes"
@@ -627,13 +829,14 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                             onChange={handleInputChange}
                             rows={4}
                             className="form-input"
-                            placeholder="Beschrijf uw probleem of specifieke wensen..."
+                            placeholder="Beschrijf uw probleem of specifieke wensen voor de afspraak..."
                             aria-describedby="notes-help"
                           />
-                          <p id="notes-help" className="text-sm text-white/60 mt-1">
-                            Optioneel: Beschrijf uw probleem of specifieke wensen voor de afspraak.
+                          <p id="notes-help" className="form-help">
+                            Optioneel: Beschrijf uw probleem of specifieke wensen voor de afspraak. Dit helpt ons om u beter te kunnen helpen.
                           </p>
                         </div>
+
                         <button
                           type="submit"
                           disabled={isSubmitting}

@@ -180,10 +180,11 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">Admin Calendar Dashboard</h2>
+            <h2 className="text-2xl font-bold">Admin Kalender Dashboard</h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/20 rounded-lg transition-colors focus:ring-2 focus:ring-white/50 focus:outline-none"
+              aria-label="Sluit admin dashboard"
             >
               ✕
             </button>
@@ -195,23 +196,25 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
           <div className="flex">
             <button
               onClick={() => setActiveTab('bookings')}
-              className={`px-6 py-3 font-medium transition-colors ${
-                activeTab === 'bookings'
-                  ? 'text-blue-400 border-b-2 border-blue-400'
-                  : 'text-gray-400 hover:text-white'
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                activeTab === 'bookings' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
+              aria-label="Bekijk alle boekingen"
             >
-              Bookings
+              Boekingen
             </button>
             <button
               onClick={() => setActiveTab('stats')}
-              className={`px-6 py-3 font-medium transition-colors ${
-                activeTab === 'stats'
-                  ? 'text-blue-400 border-b-2 border-blue-400'
-                  : 'text-gray-400 hover:text-white'
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                activeTab === 'stats' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
+              aria-label="Bekijk statistieken"
             >
-              Statistics
+              Statistieken
             </button>
           </div>
         </div>
@@ -225,24 +228,34 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
               {/* Controls */}
               <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
                 <div className="flex flex-wrap gap-4">
-                  <select
-                    value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value as 'all' | 'today' | 'upcoming' | 'past')}
-                    className="px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white"
-                  >
-                    <option value="all">All Bookings</option>
-                    <option value="today">Today</option>
-                    <option value="upcoming">Upcoming</option>
-                    <option value="past">Past</option>
-                  </select>
-
-                  <input
-                    type="date"
-                    value={filterDate}
-                    onChange={(e) => setFilterDate(e.target.value)}
-                    className="px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white"
-                    placeholder="Filter by date"
-                  />
+                  <div>
+                    <label htmlFor="filter-date" className="block text-sm font-medium text-gray-300 mb-1">
+                      Filter op datum
+                    </label>
+                    <input
+                      id="filter-date"
+                      type="date"
+                      value={filterDate}
+                      onChange={(e) => setFilterDate(e.target.value)}
+                      className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="filter-status" className="block text-sm font-medium text-gray-300 mb-1">
+                      Filter op status
+                    </label>
+                    <select
+                      id="filter-status"
+                      value={filterStatus}
+                      onChange={(e) => setFilterStatus(e.target.value as any)}
+                      className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    >
+                      <option value="all">Alle afspraken</option>
+                      <option value="today">Vandaag</option>
+                      <option value="upcoming">Aankomend</option>
+                      <option value="past">Verstreken</option>
+                    </select>
+                  </div>
 
                   <button
                     onClick={fetchBookings}
@@ -254,20 +267,23 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
 
                 <button
                   onClick={clearAllBookings}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white transition-colors"
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white transition-colors focus:ring-2 focus:ring-red-500 focus:outline-none"
+                  aria-label="Verwijder alle boekingen - deze actie kan niet ongedaan worden gemaakt"
                 >
-                  Clear All Bookings
+                  Alle boekingen verwijderen
                 </button>
               </div>
 
               {/* Bookings List */}
               {isLoading ? (
-                <div className="flex justify-center items-center h-32">
+                <div className="flex justify-center items-center h-32" role="status" aria-live="polite">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                  <span className="sr-only">Laden van boekingen...</span>
                 </div>
               ) : filteredBookings.length === 0 ? (
                 <div className="text-center text-gray-400 py-8">
-                  <p className="text-lg">No bookings found</p>
+                  <p className="text-lg">Geen boekingen gevonden</p>
+                  <p className="text-sm mt-2">Er zijn momenteel geen afspraken geboekt.</p>
                 </div>
               ) : (
                 <div className="grid gap-4">
@@ -296,15 +312,17 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
                         <div className="flex gap-2">
                           <button
                             onClick={() => startEdit(booking)}
-                            className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-white text-sm transition-colors"
+                            className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-white text-sm transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            aria-label={`Bewerk afspraak van ${booking.name} op ${formatDate(booking.date)} om ${formatTime(booking.time)}`}
                           >
-                            Edit
+                            Bewerken
                           </button>
                           <button
                             onClick={() => setShowDeleteConfirm(booking.id)}
-                            className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-white text-sm transition-colors"
+                            className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-white text-sm transition-colors focus:ring-2 focus:ring-red-500 focus:outline-none"
+                            aria-label={`Verwijder afspraak van ${booking.name} op ${formatDate(booking.date)} om ${formatTime(booking.time)}`}
                           >
-                            Delete
+                            Verwijderen
                           </button>
                         </div>
                       </div>
@@ -315,20 +333,24 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
                           className="mt-4 p-3 bg-red-900/20 border border-red-700 rounded-lg"
+                          role="alert"
+                          aria-live="assertive"
                         >
-                          <p className="text-red-300 mb-2">Are you sure you want to delete this booking?</p>
+                          <p className="text-red-300 mb-2">Weet u zeker dat u deze afspraak wilt verwijderen?</p>
                           <div className="flex gap-2">
                             <button
                               onClick={() => deleteBooking(booking.id)}
-                              className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-white text-sm"
+                              className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-white text-sm focus:ring-2 focus:ring-red-500 focus:outline-none"
+                              aria-label="Bevestig verwijdering van deze afspraak"
                             >
-                              Confirm Delete
+                              Verwijderen bevestigen
                             </button>
                             <button
                               onClick={() => setShowDeleteConfirm(null)}
-                              className="px-3 py-1 bg-gray-600 hover:bg-gray-700 rounded text-white text-sm"
+                              className="px-3 py-1 bg-gray-600 hover:bg-gray-700 rounded text-white text-sm focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                              aria-label="Annuleer verwijdering van deze afspraak"
                             >
-                              Cancel
+                              Annuleren
                             </button>
                           </div>
                         </motion.div>
@@ -358,54 +380,87 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
               >
                 <h3 className="text-xl font-bold text-white mb-4">Edit Booking</h3>
                 
-                <div className="space-y-4">
+                <form onSubmit={(e) => { e.preventDefault(); updateBooking(); }} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Name</label>
+                    <label htmlFor="edit-name" className="block text-sm font-medium text-gray-300 mb-1">
+                      Naam <span className="text-red-400" aria-label="verplicht veld">*</span>
+                    </label>
                     <input
+                      id="edit-name"
                       type="text"
                       value={editForm.name}
                       onChange={(e) => setEditForm({...editForm, name: e.target.value})}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white"
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      required
+                      aria-required="true"
+                      placeholder="Voor- en achternaam"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                    <label htmlFor="edit-email" className="block text-sm font-medium text-gray-300 mb-1">
+                      E-mailadres <span className="text-red-400" aria-label="verplicht veld">*</span>
+                    </label>
                     <input
+                      id="edit-email"
                       type="email"
                       value={editForm.email}
                       onChange={(e) => setEditForm({...editForm, email: e.target.value})}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white"
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      required
+                      aria-required="true"
+                      placeholder="naam@voorbeeld.nl"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Phone</label>
+                    <label htmlFor="edit-phone" className="block text-sm font-medium text-gray-300 mb-1">
+                      Telefoonnummer <span className="text-red-400" aria-label="verplicht veld">*</span>
+                    </label>
                     <input
-                      type="text"
+                      id="edit-phone"
+                      type="tel"
                       value={editForm.phone}
                       onChange={(e) => setEditForm({...editForm, phone: e.target.value})}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white"
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      required
+                      aria-required="true"
+                      placeholder="0624837889"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Date</label>
+                    <label htmlFor="edit-date" className="block text-sm font-medium text-gray-300 mb-1">
+                      Datum <span className="text-red-400" aria-label="verplicht veld">*</span>
+                    </label>
                     <input
+                      id="edit-date"
                       type="date"
                       value={editForm.date}
                       onChange={(e) => setEditForm({...editForm, date: e.target.value})}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white"
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      required
+                      aria-required="true"
+                      aria-describedby="date-help"
                     />
+                    <p id="date-help" className="text-xs text-gray-400 mt-1">
+                      Kies een datum in het formaat DD-MM-YYYY
+                    </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Time</label>
+                    <label htmlFor="edit-time" className="block text-sm font-medium text-gray-300 mb-1">
+                      Tijd <span className="text-red-400" aria-label="verplicht veld">*</span>
+                    </label>
                     <select
+                      id="edit-time"
                       value={editForm.time}
                       onChange={(e) => setEditForm({...editForm, time: e.target.value})}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white"
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      required
+                      aria-required="true"
                     >
+                      <option value="">Selecteer een tijd</option>
                       {Array.from({ length: 8 }, (_, i) => i + 9).map((hour) => (
                         <React.Fragment key={hour}>
                           <option value={`${hour.toString().padStart(2, '0')}:00`}>
@@ -420,31 +475,41 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Notes</label>
+                    <label htmlFor="edit-notes" className="block text-sm font-medium text-gray-300 mb-1">
+                      Notities <span className="text-sm text-gray-400 font-normal">(optioneel)</span>
+                    </label>
                     <textarea
+                      id="edit-notes"
                       value={editForm.notes}
                       onChange={(e) => setEditForm({...editForm, notes: e.target.value})}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white"
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                       rows={3}
+                      placeholder="Optionele notities over de afspraak..."
+                      aria-describedby="notes-help"
                     />
+                    <p id="notes-help" className="text-xs text-gray-400 mt-1">
+                      Optioneel: Beschrijf het probleem of specifieke wensen
+                    </p>
                   </div>
-                </div>
+                </form>
 
                 <div className="flex gap-3 mt-6">
                   <button
                     onClick={updateBooking}
-                    className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white transition-colors"
+                    className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    aria-label="Boeking bijwerken"
                   >
-                    Update Booking
+                    Boeking bijwerken
                   </button>
                   <button
                     onClick={() => {
                       setIsEditing(false);
                       setSelectedBooking(null);
                     }}
-                    className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg text-white transition-colors"
+                    className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg text-white transition-colors focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                    aria-label="Annuleren"
                   >
-                    Cancel
+                    Annuleren
                   </button>
                 </div>
               </motion.div>
