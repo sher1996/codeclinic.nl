@@ -1,5 +1,5 @@
 import { Computer, Home, Zap, Shield, Wifi, Mail, Smartphone, Database, Lock, Video, CreditCard, Play, Image, Printer, RefreshCw, Accessibility, ChevronRight, ChevronDown, CheckCircle, Info } from 'lucide-react';
-import { useState, lazy, Suspense, useMemo, useCallback, useEffect, useRef } from 'react';
+import { useState, lazy, Suspense, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import React from 'react';
 import NextImage from 'next/image';

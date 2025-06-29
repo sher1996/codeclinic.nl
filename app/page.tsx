@@ -3,12 +3,8 @@
 import { useEffect, useState } from 'react';
 import Hero from '@/components/Hero';
 import Services from '@/components/Services';
-import PricingSchema from '@/components/PricingSchema';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
-import Header from '@/components/Header';
-import GradientBackground from '@/components/GradientBackground';
-import DustParticles from '@/components/DustParticles';
 
 export default function Home() {
   const [forceServicesVisible, setForceServicesVisible] = useState(false);
