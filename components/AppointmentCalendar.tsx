@@ -556,9 +556,9 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                         </div>
                       ))}
                       
-                      {days.map((day) => (
+                      {days.map((day, index) => (
                         <button
-                          key={day?.toString()}
+                          key={day ? day.toISOString() : `empty-${index}`}
                           onClick={() => handleDateClick(day)}
                           onKeyDown={(e) => handleCalendarKeyDown(e, day)}
                           disabled={day ? isPastDate(day) : false}
