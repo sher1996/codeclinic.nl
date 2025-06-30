@@ -10,7 +10,8 @@ const nextConfig = {
   
   // Performance optimizations
   experimental: {
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
+    optimizePackageImports: ['lucide-react', 'framer-motion', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
+    esmExternals: true,
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
@@ -34,18 +35,54 @@ const nextConfig = {
       '@': path.resolve(__dirname),
     };
 
-    if (!dev && !isServer) {
+    // Better tree shaking for production
+    if (!dev) {
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = false;
+      
+      // More aggressive code splitting
       config.optimization.splitChunks = {
         chunks: 'all',
         cacheGroups: {
+          // Separate vendor chunks for better caching
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
+            priority: 10,
+          },
+          // Separate Framer Motion chunk (large library)
+          framerMotion: {
+            test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
+            name: 'framer-motion',
+            chunks: 'all',
+            priority: 30,
+          },
+          // Separate Lucide React chunk
+          lucide: {
+            test: /[\\/]node_modules[\\/]lucide-react[\\/]/,
+            name: 'lucide-icons',
+            chunks: 'all',
+            priority: 25,
+          },
+          // Separate FullCalendar chunks (only loaded when needed)
+          fullcalendar: {
+            test: /[\\/]node_modules[\\/]@fullcalendar[\\/]/,
+            name: 'fullcalendar',
+            chunks: 'async', // Only load when imported
+            priority: 20,
+          },
+          // Common React chunk
+          react: {
+            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+            name: 'react',
+            chunks: 'all',
+            priority: 15,
           },
         },
       };
     }
+    
     return config;
   },
 };

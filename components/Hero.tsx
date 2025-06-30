@@ -1,15 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
-import TextAnimation from './TextAnimation';
-import dynamic from 'next/dynamic';
+import { DynamicTextAnimation, DynamicFloatingTestimonials } from './dynamic-imports';
 import ErrorBoundary from './ErrorBoundary';
-
-// Use dynamic import for FloatingTestimonials to prevent SSR issues
-const FloatingTestimonials = dynamic(() => import('./FloatingTestimonials'), {
-  ssr: false,
-  loading: () => null
-});
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -47,7 +40,7 @@ export default function Hero() {
       
       {/* Floating Testimonials - dynamically loaded for better performance */}
       <ErrorBoundary fallback={null}>
-        <FloatingTestimonials />
+        <DynamicFloatingTestimonials />
       </ErrorBoundary>
       
       {/* Content */}
@@ -56,7 +49,7 @@ export default function Hero() {
       >
         {/* Left column — copy */}
         <div className="text-white lg:col-span-12 py-20 sm:py-24 lg:py-32">
-          <TextAnimation startWriting={true} />
+          <DynamicTextAnimation startWriting={true} />
         </div>
       </div>
 
