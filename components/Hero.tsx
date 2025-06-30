@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, Suspense } from 'react';
+import { useEffect, useRef } from 'react';
 import TextAnimation from './TextAnimation';
 import dynamic from 'next/dynamic';
 import ErrorBoundary from './ErrorBoundary';

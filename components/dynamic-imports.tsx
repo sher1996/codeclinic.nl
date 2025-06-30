@@ -1,6 +1,5 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
-import DynamicImportFallback from './DynamicImportFallback';
 
 // AppointmentCalendar with simplified dynamic import
 export const DynamicAppointmentCalendar = dynamic(
