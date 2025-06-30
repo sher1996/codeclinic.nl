@@ -25,7 +25,17 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   // Initialize calendar to current month (never show past months)
   const [currentDate, setCurrentDate] = useState(() => {
     const today = new Date();
-    return new Date(today.getFullYear(), today.getMonth(), 1);
+    const currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    
+    // If we're in the current month and it's late in the month, start with next month
+    const daysInCurrentMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+    const isLateInMonth = today.getDate() >= daysInCurrentMonth - 2; // If we're in the last 2 days of the month
+    
+    if (isLateInMonth) {
+      return new Date(today.getFullYear(), today.getMonth() + 1, 1);
+    }
+    
+    return currentMonth;
   });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -91,6 +101,24 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       setBookedTimes([]);
     }
   }, [selectedDate, fetchBookedTimes]);
+
+  // Auto-advance to next month if current month has no available dates
+  useEffect(() => {
+    const today = new Date();
+    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const currentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    
+    // Check if we're in the current month and if there are any future dates
+    if (currentMonth.getMonth() === today.getMonth() && currentMonth.getFullYear() === today.getFullYear()) {
+      const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      const hasFutureDates = lastDayOfMonth.getDate() > today.getDate();
+      
+      // If no future dates in current month, advance to next month
+      if (!hasFutureDates) {
+        setCurrentDate(new Date(today.getFullYear(), today.getMonth() + 1, 1));
+      }
+    }
+  }, [currentDate]);
 
   // Announce changes to screen readers
   useEffect(() => {
@@ -430,16 +458,16 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       days.push(null);
     }
 
-    // Add days of the month, but only show future dates (hide past dates completely)
+    // Add days of the month, but only show future dates (hide today and past dates completely)
     for (let i = 1; i <= lastDay.getDate(); i++) {
       const currentDay = new Date(year, month, i);
       const currentDayMidnight = new Date(currentDay.getFullYear(), currentDay.getMonth(), currentDay.getDate());
       
-      // Only add the day if it's today or in the future
-      if (currentDayMidnight >= todayDate) {
+      // Only add the day if it's in the future (exclude today)
+      if (currentDayMidnight > todayDate) {
         days.push(currentDay);
       } else {
-        // Add null for past dates to maintain calendar structure
+        // Add null for today and past dates to maintain calendar structure
         days.push(null);
       }
     }
