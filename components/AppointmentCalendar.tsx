@@ -22,7 +22,11 @@ interface FormErrors {
 }
 
 export default function AppointmentCalendar({ onDateSelect, appointmentType = 'onsite' }: AppointmentCalendarProps) {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  // Initialize calendar to current month (never show past months)
+  const [currentDate, setCurrentDate] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -112,9 +116,20 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
 
   const weekDays = ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'];
 
+  // Check if we can navigate to previous month (prevent showing past months)
+  const canNavigateToPrevMonth = () => {
+    const today = new Date();
+    const currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const calendarMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    return calendarMonth > currentMonth;
+  };
+
   const handlePrevMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-    setAnnouncement(`Vorige maand: ${formatMonthYear(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}`);
+    if (canNavigateToPrevMonth()) {
+      const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+      setCurrentDate(newDate);
+      setAnnouncement(`Vorige maand: ${formatMonthYear(newDate)}`);
+    }
   };
 
   const handleNextMonth = () => {
@@ -123,7 +138,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   };
 
   const handleDateClick = (date: Date | null) => {
-    if (date && !isPastDate(date)) {
+    if (date) {
       setSelectedDate(date);
       setSelectedTime(null);
       setFormErrors({}); // Clear errors when selecting new date
@@ -389,8 +404,8 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
     // Set input date to midnight for proper comparison
     const inputDateMidnight = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     
-    // A date is past if it's before or equal to today (including today)
-    return inputDateMidnight <= todayDate;
+    // A date is past if it's before today (allow today)
+    return inputDateMidnight < todayDate;
   };
 
   const isPastTime = (date: Date, time: string) => {
@@ -400,12 +415,14 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
     return slotTime <= today;
   };
 
-  // Generate days for the current month
+  // Generate days for the current month (only show available dates)
   const days = (() => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
+    const today = new Date();
+    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const days: (Date | null)[] = [];
 
     // Add empty cells for days before the first day of the month
@@ -413,9 +430,18 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       days.push(null);
     }
 
-    // Add days of the month
+    // Add days of the month, but only show future dates (hide past dates completely)
     for (let i = 1; i <= lastDay.getDate(); i++) {
-      days.push(new Date(year, month, i));
+      const currentDay = new Date(year, month, i);
+      const currentDayMidnight = new Date(currentDay.getFullYear(), currentDay.getMonth(), currentDay.getDate());
+      
+      // Only add the day if it's today or in the future
+      if (currentDayMidnight >= todayDate) {
+        days.push(currentDay);
+      } else {
+        // Add null for past dates to maintain calendar structure
+        days.push(null);
+      }
     }
 
     return days;
@@ -526,7 +552,8 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                             handlePrevMonth();
                           }
                         }}
-                        className="calendar-nav-button"
+                        disabled={!canNavigateToPrevMonth()}
+                        className={`calendar-nav-button ${!canNavigateToPrevMonth() ? 'opacity-30 cursor-not-allowed' : ''}`}
                         aria-label="Vorige maand"
                       >
                         ←
@@ -561,18 +588,16 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                           key={day ? day.toISOString() : `empty-${index}`}
                           onClick={() => handleDateClick(day)}
                           onKeyDown={(e) => handleCalendarKeyDown(e, day)}
-                          disabled={day ? isPastDate(day) : false}
-                          tabIndex={day && !isPastDate(day) ? 0 : -1}
+                          disabled={!day}
+                          tabIndex={day ? 0 : -1}
                           className={`
                             calendar-day
-                            ${!day ? 'opacity-0' : ''}
-                            ${day && isPastDate(day) ? 'opacity-30 cursor-not-allowed bg-gray-600/20' : ''}
-                            ${day && !isPastDate(day) && isSelected(day) ? 'bg-[#0066cc] border-[#0066cc] text-white' : ''}
-                            ${day && !isPastDate(day) && !isSelected(day) ? 'hover:bg-white/10' : ''}
+                            ${!day ? 'opacity-0 cursor-default' : ''}
+                            ${day && isSelected(day) ? 'bg-[#0066cc] border-[#0066cc] text-white' : ''}
+                            ${day && !isSelected(day) ? 'hover:bg-white/10' : ''}
                           `}
-                          aria-label={day ? `${day.getDate()} ${formatMonthYear(day)}${isPastDate(day) ? ' - Verstreken datum' : ''}` : 'Lege dag'}
+                          aria-label={day ? `${day.getDate()} ${formatMonthYear(day)} - Beschikbaar` : 'Lege dag'}
                           aria-selected={day ? isSelected(day) : undefined}
-                          aria-disabled={day ? isPastDate(day) : undefined}
                           role="gridcell"
                         >
                           <div className="flex flex-col items-center justify-center h-full">
