@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const nextConfig = {
   // Performance optimizations
   experimental: {
@@ -19,6 +24,13 @@ const nextConfig = {
   },
   // Reduce bundle size
   webpack: (config, { dev, isServer }) => {
+    // Ensure the alias map exists and add our project-root alias
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      '@': path.resolve(__dirname),
+    };
+
     if (!dev && !isServer) {
       config.optimization.splitChunks = {
         chunks: 'all',

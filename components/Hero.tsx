@@ -1,9 +1,15 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
 import TextAnimation from './TextAnimation';
-import LazyLoad from './LazyLoad';
-import FloatingTestimonials from './FloatingTestimonials';
+import dynamic from 'next/dynamic';
+import ErrorBoundary from './ErrorBoundary';
+
+// Use dynamic import for FloatingTestimonials to prevent SSR issues
+const FloatingTestimonials = dynamic(() => import('./FloatingTestimonials'), {
+  ssr: false,
+  loading: () => null
+});
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -39,10 +45,10 @@ export default function Hero() {
       {/* Subtle dark overlay for better readability */}
       <div className="absolute inset-0 bg-black/10 mix-blend-overlay pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }}></div>
       
-      {/* Floating Testimonials - lazy loaded for better performance */}
-      <LazyLoad delay={2000}>
+      {/* Floating Testimonials - dynamically loaded for better performance */}
+      <ErrorBoundary fallback={null}>
         <FloatingTestimonials />
-      </LazyLoad>
+      </ErrorBoundary>
       
       {/* Content */}
       <div

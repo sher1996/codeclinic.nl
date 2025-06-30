@@ -1,7 +1,8 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
+import DynamicImportFallback from './DynamicImportFallback';
 
-// AppointmentCalendar with loading fallback
+// AppointmentCalendar with simplified dynamic import
 export const DynamicAppointmentCalendar = dynamic(
   () => import('./AppointmentCalendar'),
   {
@@ -16,11 +17,12 @@ export const DynamicAppointmentCalendar = dynamic(
           </div>
         </div>
       </div>
-    )
+    ),
+    ssr: false
   }
 ) as React.ComponentType<{ appointmentType?: 'onsite' | 'remote' }>;
 
-// Services component with loading fallback
+// Services component with simplified dynamic import
 export const DynamicServices = dynamic(
   () => import('./Services'),
   {
@@ -33,11 +35,12 @@ export const DynamicServices = dynamic(
           </div>
         ))}
       </div>
-    )
+    ),
+    ssr: false
   }
 );
 
-// Hero component with loading fallback
+// Hero component with simplified dynamic import
 export const DynamicHero = dynamic(
   () => import('./Hero'),
   {
@@ -45,6 +48,7 @@ export const DynamicHero = dynamic(
       <div className="w-full h-[80vh] animate-pulse">
         <div className="h-full bg-gray-200/10 rounded-lg" />
       </div>
-    )
+    ),
+    ssr: false
   }
 ); 

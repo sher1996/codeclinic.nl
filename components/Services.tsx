@@ -1,11 +1,17 @@
 'use client';
 
 import { Computer, Home, Zap, Shield, Wifi, Mail, Smartphone, Database, Lock, Video, CreditCard, Play, Image as ImageIcon, Printer, RefreshCw, Accessibility, ChevronRight, ChevronDown, CheckCircle, Info } from 'lucide-react';
-import { useState, lazy, Suspense, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import React from 'react';
 import NextImage from 'next/image';
-const PricingSchema = lazy(() => import('./PricingSchema'));
+import dynamic from 'next/dynamic';
+
+// Use Next.js dynamic import instead of React.lazy to avoid webpack factory errors
+const PricingSchema = dynamic(() => import('./PricingSchema'), {
+  ssr: false,
+  loading: () => null
+});
 
 const categories = [
   { id: 'all', label: 'Alle diensten', shortLabel: 'Alle' },
@@ -456,10 +462,8 @@ export default function Services({ forceVisible = false }: ServicesProps) {
       {/* Subtle dark overlay for better readability - extended beyond boundaries */}
       <div className="absolute inset-0 -bottom-16 bg-black/10 mix-blend-overlay pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }}></div>
       
-      {/* Lazy load PricingSchema */}
-      <Suspense fallback={<div className="h-96 flex items-center justify-center">Loading...</div>}>
-        <PricingSchema />
-      </Suspense>
+      {/* Load PricingSchema */}
+      <PricingSchema />
 
       {/* Hulp Die Bij U Past Section */}
       <motion.section
