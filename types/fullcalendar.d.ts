@@ -1,8 +1,20 @@
 declare module '@fullcalendar/react' {
   import { ComponentType } from 'react';
   
+  export interface SelectInfo {
+    start: Date;
+    end: Date;
+    startStr: string;
+    endStr: string;
+    allDay: boolean;
+    view: {
+      type: string;
+      title: string;
+    };
+  }
+  
   export interface FullCalendarProps {
-    plugins?: any[];
+    plugins?: unknown[];
     initialView?: string;
     headerToolbar?: {
       left?: string;
@@ -14,7 +26,7 @@ declare module '@fullcalendar/react' {
     selectMirror?: boolean;
     dayMaxEvents?: boolean;
     weekends?: boolean;
-    select?: (selectInfo: any) => void;
+    select?: (selectInfo: SelectInfo) => void;
     height?: string | number;
     className?: string;
   }
@@ -24,16 +36,16 @@ declare module '@fullcalendar/react' {
 }
 
 declare module '@fullcalendar/daygrid' {
-  const dayGridPlugin: any;
+  const dayGridPlugin: unknown;
   export default dayGridPlugin;
 }
 
 declare module '@fullcalendar/timegrid' {
-  const timeGridPlugin: any;
+  const timeGridPlugin: unknown;
   export default timeGridPlugin;
 }
 
 declare module '@fullcalendar/interaction' {
-  const interactionPlugin: any;
+  const interactionPlugin: unknown;
   export default interactionPlugin;
 } 

@@ -96,18 +96,15 @@ export function createLazyComponent<P extends object>(
   importFn: () => Promise<{ default: React.ComponentType<P> }>,
   fallback?: React.ReactNode
 ) {
-  const LazyComponent = dynamic(importFn, {
+  const DynamicComponent = dynamic(importFn, {
     ssr: false,
     loading: () => <>{fallback}</>,
   });
 
   return function OptimizedComponent(props: P) {
     return (
-      <LazyComponent 
-        fallback={fallback}
-        loadOnInteraction
-      >
-        <LazyComponent {...props} />
+      <LazyComponent fallback={fallback} loadOnInteraction>
+        <DynamicComponent {...props} />
       </LazyComponent>
     );
   };

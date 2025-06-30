@@ -105,7 +105,6 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   // Auto-advance to next month if current month has no available dates
   useEffect(() => {
     const today = new Date();
-    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const currentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     
     // Check if we're in the current month and if there are any future dates
@@ -422,18 +421,6 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
     return date.getDate() === selectedDate.getDate() &&
       date.getMonth() === selectedDate.getMonth() &&
       date.getFullYear() === selectedDate.getFullYear();
-  };
-
-  const isPastDate = (date: Date) => {
-    // Get today's date at midnight (start of day)
-    const today = new Date();
-    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    
-    // Set input date to midnight for proper comparison
-    const inputDateMidnight = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    
-    // A date is past if it's before today (allow today)
-    return inputDateMidnight < todayDate;
   };
 
   const isPastTime = (date: Date, time: string) => {
