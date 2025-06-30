@@ -238,7 +238,7 @@ function ServiceCard() {
                         <div className="mt-4">
                           <a 
                             href="#contact" 
-                            className="inline-flex items-center gap-2 bg-[#00d4ff] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#00b8e6] transition-colors"
+                            className="inline-flex items-center gap-2 bg-[#0066cc] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#0052a3] transition-colors"
                             style={{ minHeight: '48px' }}
                           >
                             <span role="img" aria-label="Kalender icoon">📅</span>
@@ -251,7 +251,7 @@ function ServiceCard() {
                         <div className="mt-4">
                           <a 
                             href="#contact" 
-                            className="inline-flex items-center gap-2 bg-[#00d4ff] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#00b8e6] transition-colors"
+                            className="inline-flex items-center gap-2 bg-[#0066cc] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#0052a3] transition-colors"
                             style={{ minHeight: '48px' }}
                           >
                             <span role="img" aria-label="Kalender icoon">📅</span>
@@ -332,7 +332,7 @@ function AccessibilityMenu() {
                 </button>
                 <button
                   onClick={resetFontSize}
-                  className="bg-[#00d4ff] text-white px-3 py-2 rounded-lg hover:bg-[#00b8e6] transition-colors text-sm"
+                  className="bg-[#0066cc] text-white px-3 py-2 rounded-lg hover:bg-[#0052a3] transition-colors text-sm"
                   aria-label="Tekstgrootte resetten"
                 >
                   Normaal
@@ -378,16 +378,16 @@ function GuaranteeTooltip() {
         onMouseLeave={() => setIsVisible(false)}
         onFocus={() => setIsVisible(true)}
         onBlur={() => setIsVisible(false)}
-        className="inline-flex items-center gap-1 text-[#00d4ff] hover:text-[#00b8e6] transition-colors focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:ring-offset-2 focus:ring-offset-[#0A1A4B] rounded"
+        className="inline-flex items-center gap-1 text-[#0066cc] hover:text-[#0052a3] transition-colors focus:outline-none focus:ring-2 focus:ring-[#0066cc] focus:ring-offset-2 focus:ring-offset-[#0A1A4B] rounded"
         aria-label="Meer informatie over onze garantie"
       >
         <Info className="w-4 h-4" />
       </button>
       
       {isVisible && (
-        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-80 bg-[#0A1A4B] border border-[#00d4ff]/30 rounded-lg p-4 shadow-xl z-50">
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-80 bg-[#0A1A4B] border border-[#0066cc]/30 rounded-lg p-4 shadow-xl z-50">
           <div className="text-sm text-white space-y-2">
-            <h4 className="font-semibold text-[#00d4ff] flex items-center gap-2">
+            <h4 className="font-semibold text-[#0066cc] flex items-center gap-2">
               <CheckCircle className="w-4 h-4" />
               Niet opgelost = geen kosten
             </h4>
@@ -411,7 +411,7 @@ function GuaranteeTooltip() {
 // Add guarantee badge component
 function GuaranteeBadge() {
   return (
-    <div className="inline-flex items-center gap-2 bg-[#00d4ff]/10 border border-[#00d4ff]/30 rounded-full px-3 py-1 text-sm font-medium text-[#00d4ff]">
+    <div className="inline-flex items-center gap-2 bg-[#0066cc]/10 border border-[#0066cc]/30 rounded-full px-3 py-1 text-sm font-medium text-[#0066cc]">
       <CheckCircle className="w-4 h-4" />
       <span>Niet opgelost = geen kosten</span>
       <GuaranteeTooltip />
@@ -493,7 +493,7 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                 </p>
                 {/* Location context for local SEO */}
                 <div className="mt-6 sr-only">
-                  <p className="text-lg text-[#00d4ff] font-semibold">
+                  <p className="text-lg text-[#0066cc] font-semibold">
                     Wij bieden computerhulp in Rotterdam en omstreken
                   </p>
                   <p className="text-base text-[#D8E0FF]/80 mt-2">
@@ -617,20 +617,20 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                         aria-hidden="true"
                         style={{ willChange: 'transform', transform: 'translateZ(0)' }}
                       >
-                        <div className={`absolute inset-0 ${isLowEnd ? 'bg-[#00b8e6]/10' : 'bg-[#00b8e6]/10 blur-sm'} rounded-full group-hover:bg-[#00b8e6]/20 transition-colors duration-300`}></div>
-                        <div className="relative w-full h-full flex items-center justify-center text-[#00b8e6] transition-colors duration-300">
+                        <div className={`absolute inset-0 ${isLowEnd ? 'bg-[#0066cc]/10' : 'bg-[#0066cc]/10 blur-sm'} rounded-full group-hover:bg-[#0066cc]/20 transition-colors duration-300`}></div>
+                        <div className="relative w-full h-full flex items-center justify-center text-[#0066cc] transition-colors duration-300">
                           {React.cloneElement(service.icon, { 
                             className: "w-10 h-10 stroke-[1.5]",
                             strokeWidth: 1.5
                           })}
                         </div>
                       </motion.div>
-                      <h4 className="text-lg font-semibold text-white">{service.title}</h4>
+                      <h3 className="text-lg font-semibold text-white">{service.title}</h3>
                     </div>
                     <p className="text-sm text-[#E6EFFF] leading-relaxed senior-description">{service.description}</p>
                     
                     {/* Small guarantee indicator */}
-                    <div className="flex items-center gap-1 text-xs text-[#00d4ff]/80">
+                    <div className="flex items-center gap-1 text-xs text-[#0066cc]/80">
                       <CheckCircle className="w-3 h-3" />
                       <span>Garantie inbegrepen</span>
                     </div>
@@ -645,14 +645,14 @@ export default function Services({ forceVisible = false }: ServicesProps) {
             <div className={`relative ${isLowEnd ? 'bg-white/10' : 'bg-white/10'} rounded-xl border border-white/20 p-10 flex flex-col sm:flex-row items-center justify-between gap-8 sm:gap-10`} style={{ minHeight: '120px' }}>
               <div className="flex items-center gap-8 sm:gap-10 w-full sm:w-auto">
                 <div className="w-16 h-16 flex items-center justify-center">
-                  <Zap className="w-12 h-12 text-[#00b8e6]" />
+                  <Zap className="w-12 h-12 text-[#0066cc]" />
                 </div>
                 <div className="text-center sm:text-left space-y-3">
                   <h3 className="text-xl font-semibold text-white">En nog veel meer</h3>
                   <p className="text-base text-white/80 senior-description">Persoonlijke hulp voor álles waar u problemen mee heeft!</p>
                 </div>
               </div>
-              <button className="bg-[#00b8e6] text-white font-medium px-6 py-3 rounded-full flex items-center gap-2 mt-4 sm:mt-0">
+              <button className="bg-[#0066cc] text-white font-medium px-6 py-3 rounded-full flex items-center gap-2 mt-4 sm:mt-0">
                 Vraag maatwerk aan <ChevronRight className="w-4 h-4 inline" />
               </button>
             </div>
@@ -691,10 +691,10 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="bg-gradient-to-r from-[#00d4ff]/10 to-[#00b8e6]/10 border border-[#00d4ff]/30 rounded-2xl p-8 text-center"
+                className="bg-gradient-to-r from-[#0066cc]/10 to-[#0066cc]/10 border border-[#0066cc]/30 rounded-2xl p-8 text-center"
               >
                 <div className="flex flex-col items-center space-y-4">
-                  <div className="flex items-center gap-3 text-[#00d4ff]">
+                  <div className="flex items-center gap-3 text-[#0066cc]">
                     <CheckCircle className="w-8 h-8" />
                     <h3 className="text-2xl font-bold">Onze Garantie</h3>
                   </div>
@@ -737,7 +737,7 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                     whileHover={{ rotate: 15 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >💻</motion.span>
-                  <h4 className="text-2xl font-bold text-[#FFFFFF]">Remote Hulp</h4>
+                  <h3 className="text-2xl font-bold text-[#FFFFFF]">Remote Hulp</h3>
                 </div>
                 
                 {/* Guarantee Badge - Prominent placement */}
@@ -765,7 +765,7 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                     </li>
                   </ul>
                 </div>
-                <a href="#boek" className="mt-10 bg-[#00d4ff] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4ff] hover:bg-[#00b8e6]" data-analytics="pricing_button_remote">
+                <a href="#boek" className="mt-10 bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3]" data-analytics="pricing_button_remote">
                   Start direct <ChevronRight className="w-4 h-4" />
                 </a>
               </div>
@@ -798,7 +798,7 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                     whileHover={{ rotate: 15 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >🛠️</motion.span>
-                  <h4 className="text-2xl font-bold text-[#FFFFFF]">Service Bundles</h4>
+                  <h3 className="text-2xl font-bold text-[#FFFFFF]">Service Bundles</h3>
                 </div>
                 
                 {/* Guarantee Badge - Prominent placement */}
@@ -819,7 +819,7 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                     </li>
                   </ul>
                 </div>
-                <a href="#boek" className="mt-10 bg-[#00d4ff] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4ff] hover:bg-[#00b8e6]" data-analytics="pricing_button_bundle">
+                <a href="#boek" className="mt-10 bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3]" data-analytics="pricing_button_bundle">
                   Boek bundle <ChevronRight className="w-4 h-4" />
                 </a>
               </div>
@@ -852,7 +852,7 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                     whileHover={{ rotate: 15 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >🏠</motion.span>
-                  <h4 className="text-2xl font-bold text-[#FFFFFF]">Computerhulp aan huis</h4>
+                  <h3 className="text-2xl font-bold text-[#FFFFFF]">Computerhulp aan huis</h3>
                 </div>
                 
                 {/* Guarantee Badge - Prominent placement */}
@@ -871,7 +871,7 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                     </li>
                   </ul>
                 </div>
-                <a href="#boek" className="mt-10 bg-[#00d4ff] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00d4ff] hover:bg-[#00b8e6]" data-analytics="pricing_button_onsite">
+                <a href="#boek" className="mt-10 bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3]" data-analytics="pricing_button_onsite">
                   Plan bezoek <ChevronRight className="w-4 h-4" />
                 </a>
               </div>
@@ -884,7 +884,7 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                   Alle bedragen incl. 21% btw.
                 </p>
                 <p className="text-sm opacity-80 mt-1">
-                  <a href="/terms" className="text-[#00d4ff] hover:underline">Zie voorwaarden voor details</a>
+                  <a href="/terms" className="text-[#0066cc] hover:underline">Zie voorwaarden voor details</a>
                 </p>
               </div>
             </div>
@@ -930,7 +930,7 @@ export default function Services({ forceVisible = false }: ServicesProps) {
               className="bg-white/10 backdrop-blur-md rounded-xl p-8 border border-white/20"
             >
               <div className="text-center space-y-4">
-                <div className="w-16 h-16 bg-[#00d4ff]/20 rounded-full flex items-center justify-center mx-auto">
+                <div className="w-16 h-16 bg-[#0066cc]/20 rounded-full flex items-center justify-center mx-auto">
                   <span className="text-2xl" role="img" aria-label="Locatie icoon">📍</span>
                 </div>
                 <h3 className="text-xl font-semibold text-white">Rotterdam Centrum</h3>
@@ -948,7 +948,7 @@ export default function Services({ forceVisible = false }: ServicesProps) {
               className="bg-white/10 backdrop-blur-md rounded-xl p-8 border border-white/20"
             >
               <div className="text-center space-y-4">
-                <div className="w-16 h-16 bg-[#00d4ff]/20 rounded-full flex items-center justify-center mx-auto">
+                <div className="w-16 h-16 bg-[#0066cc]/20 rounded-full flex items-center justify-center mx-auto">
                   <span className="text-2xl" role="img" aria-label="Klok icoon">⏰</span>
                 </div>
                 <h3 className="text-xl font-semibold text-white">Snelle Service</h3>
@@ -966,7 +966,7 @@ export default function Services({ forceVisible = false }: ServicesProps) {
               className="bg-white/10 backdrop-blur-md rounded-xl p-8 border border-white/20 md:col-span-2 lg:col-span-1"
             >
               <div className="text-center space-y-4">
-                <div className="w-16 h-16 bg-[#00d4ff]/20 rounded-full flex items-center justify-center mx-auto">
+                <div className="w-16 h-16 bg-[#0066cc]/20 rounded-full flex items-center justify-center mx-auto">
                   <span className="text-2xl" role="img" aria-label="Telefoon icoon">📞</span>
                 </div>
                 <h3 className="text-xl font-semibold text-white">Direct Contact</h3>

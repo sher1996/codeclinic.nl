@@ -171,7 +171,7 @@ body {
 
 /* Button styles */
 .btn-primary {
-  background: #00d4ff;
+  background: #0066cc;
   color: white;
   font-weight: 600;
   padding: var(--elderly-button-padding);
@@ -186,15 +186,15 @@ body {
 }
 
 .btn-primary:hover {
-  background: #00b8e6;
+  background: #0052a3;
   transform: translateY(-2px);
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  box-shadow: 0 0 20px rgba(0, 102, 204, 0.3);
 }
 
 .btn-primary:focus-visible {
   outline: var(--focus-ring-width) solid var(--focus-ring-color);
   outline-offset: var(--focus-ring-offset);
-  background: #00b8e6;
+  background: #0052a3;
 }
 
 /* Responsive design */
@@ -240,4 +240,27 @@ body {
   .btn-primary:hover {
     transform: none;
   }
+}
+
+/* Footer link styles with high contrast */
+.footer-link {
+  color: white;
+  text-decoration: underline;
+  text-decoration-color: #0066cc;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  font-size: var(--elderly-link-text-size);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #0066cc;
+  text-decoration-color: white;
+}
+
+.footer-link:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 2px;
+  border-radius: 4px;
 } 

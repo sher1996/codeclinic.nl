@@ -127,7 +127,7 @@ export default function Header() {
           {/* Prominent Phone Number for Seniors */}
           <a 
             href="tel:+31624837889" 
-            className="flex items-center gap-2 bg-[#00d4ff] text-white px-4 py-2 rounded-lg font-semibold text-lg hover:bg-[#00b8e6] transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B] focus-visible:rounded-md"
+            className="flex items-center gap-2 bg-[#0066cc] text-white px-4 py-2 rounded-lg font-semibold text-lg hover:bg-[#0052a3] transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B] focus-visible:rounded-md"
             style={{ minHeight: '48px', minWidth: '48px' }}
             aria-label="Bel ons direct: +31 6 24837889"
           >
@@ -210,7 +210,7 @@ export default function Header() {
               {/* Mobile Phone Number */}
               <a 
                 href="tel:+31624837889" 
-                className="px-8 py-6 bg-[#00d4ff] text-white font-semibold text-xl flex items-center gap-3 hover:bg-[#00b8e6] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B]"
+                className="px-8 py-6 bg-[#0066cc] text-white font-semibold text-xl flex items-center gap-3 hover:bg-[#0052a3] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B]"
                 onClick={closeMobileMenu}
                 style={{ minHeight: '48px' }}
                 aria-label="Bel ons direct: +31 6 24837889"

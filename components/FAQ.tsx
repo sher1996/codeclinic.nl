@@ -66,25 +66,25 @@ export default function FAQ() {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className={`bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl overflow-hidden ${
-                faq.highlight ? 'border-[#00d4ff]/40 bg-[#00d4ff]/5' : ''
+                faq.highlight ? 'border-[#0066cc]/40 bg-[#0066cc]/5' : ''
               }`}
             >
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full px-6 py-6 text-left flex items-center justify-between hover:bg-white/5 transition-colors focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:ring-inset"
+                className="w-full px-6 py-6 text-left flex items-center justify-between hover:bg-white/5 transition-colors focus:outline-none focus:ring-2 focus:ring-[#0066cc] focus:ring-inset"
                 aria-expanded={openIndex === index}
                 aria-controls={`faq-answer-${index}`}
               >
                 <div className="flex items-center gap-3">
                   {faq.highlight && (
-                    <CheckCircle className="w-5 h-5 text-[#00d4ff] flex-shrink-0" />
+                    <CheckCircle className="w-5 h-5 text-[#0066cc] flex-shrink-0" />
                   )}
-                  <h3 className={`text-lg font-semibold ${faq.highlight ? 'text-[#00d4ff]' : 'text-white'}`}>
+                  <h3 className={`text-lg font-semibold ${faq.highlight ? 'text-[#0066cc]' : 'text-white'}`}>
                     {faq.question}
                   </h3>
                 </div>
                 <ChevronDown 
-                  className={`w-5 h-5 text-white transition-transform duration-200 ${
+                  className={`w-6 h-6 text-white/80 transition-transform duration-300 group-hover:text-[#0066cc] group-focus:text-[#0066cc] focus:outline-none focus:ring-2 focus:ring-[#0066cc] focus:ring-inset ${
                     openIndex === index ? 'rotate-180' : ''
                   }`}
                 />
@@ -124,7 +124,7 @@ export default function FAQ() {
           </p>
           <a 
             href="tel:+31624837889" 
-            className="inline-flex items-center gap-2 bg-[#00d4ff] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#00b8e6] transition-colors"
+            className="inline-flex items-center gap-2 bg-[#0066cc] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#0052a3] transition-colors"
           >
             Bel ons direct: 0624837889
           </a>

@@ -92,7 +92,7 @@ export default function TextAnimation({ className = '', startWriting = false }: 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.5 }}
-        className="group relative inline-flex items-center gap-3 bg-[#00d4ff] text-white font-medium px-8 py-4 rounded-lg transition-all duration-300 hover:bg-[#00b8e6] hover:shadow-[0_0_20px_rgba(0,212,255,0.3)]"
+        className="group relative inline-flex items-center gap-3 bg-[#0066cc] text-white font-medium px-8 py-4 rounded-lg transition-all duration-300 hover:bg-[#0052a3] hover:shadow-[0_0_20px_rgba(0,102,204,0.3)]"
       >
         <span className="relative z-10">Plan een afspraak</span>
         <ChevronRight className="w-4 h-4 relative z-10 transition-transform duration-300 group-hover:translate-x-0.5" />

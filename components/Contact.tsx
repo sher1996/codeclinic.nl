@@ -8,7 +8,7 @@ import { CheckCircle } from 'lucide-react';
 // Add guarantee badge component
 function GuaranteeBadge() {
   return (
-    <div className="inline-flex items-center gap-2 bg-[#00d4ff]/10 border border-[#00d4ff]/30 rounded-full px-3 py-1 text-sm font-medium text-[#00d4ff]">
+    <div className="inline-flex items-center gap-2 bg-[#0066cc]/10 border border-[#0066cc]/30 rounded-full px-3 py-1 text-sm font-medium text-[#0066cc]">
       <CheckCircle className="w-4 h-4" />
       <span>Niet opgelost = geen kosten</span>
     </div>
@@ -77,7 +77,7 @@ export default function Contact() {
                     </p>
                     <a 
                       href="tel:+31624837889" 
-                      className="text-[#00d4ff] hover:text-[#00b8e6] underline text-xl font-semibold text-center"
+                      className="text-[#0066cc] hover:text-[#0052a3] underline text-xl font-semibold text-center"
                       aria-label="Bel ons op 0624837889"
                     >
                       0624837889
@@ -95,7 +95,7 @@ export default function Contact() {
                     aria-label="Kies aan huis bezoek - Wij komen bij u thuis langs voor persoonlijke computerhulp"
                   >
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="w-12 h-12 bg-[#00d4ff]/20 rounded-lg flex items-center justify-center text-2xl">
+                      <div className="w-12 h-12 bg-[#0066cc]/20 rounded-lg flex items-center justify-center text-2xl">
                         <span role="img" aria-label="Huis icoon voor aan huis bezoek">🏠</span>
                       </div>
                       <h4 className="text-xl font-semibold text-white">Aan huis bezoek</h4>
@@ -109,7 +109,7 @@ export default function Contact() {
                       <li>• €50/uur + reiskosten</li>
                     </ul>
                     <div className="mt-6 flex items-center justify-between">
-                      <span className="text-[#00d4ff] font-semibold">€50/uur</span>
+                      <span className="text-[#0066cc] font-semibold">€50/uur</span>
                       <span className="text-white/60 group-hover:text-white transition-colors">
                         Kies deze optie →
                       </span>
@@ -125,7 +125,7 @@ export default function Contact() {
                     aria-label="Kies remote hulp - Computerhulp op afstand via internet, veilig en snel"
                   >
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="w-12 h-12 bg-[#00d4ff]/20 rounded-lg flex items-center justify-center text-2xl">
+                      <div className="w-12 h-12 bg-[#0066cc]/20 rounded-lg flex items-center justify-center text-2xl">
                         <span role="img" aria-label="Computer icoon voor remote hulp">💻</span>
                       </div>
                       <h4 className="text-xl font-semibold text-white">Remote hulp</h4>
@@ -139,7 +139,7 @@ export default function Contact() {
                       <li>• €44/uur</li>
                     </ul>
                     <div className="mt-6 flex items-center justify-between">
-                      <span className="text-[#00d4ff] font-semibold">€44/uur</span>
+                      <span className="text-[#0066cc] font-semibold">€44/uur</span>
                       <span className="text-white/60 group-hover:text-white transition-colors">
                         Kies deze optie →
                       </span>

@@ -548,6 +548,23 @@ select:focus-visible {
     @apply bg-surface-dark text-gray-300;
   }
 
+  /* Footer link styles with high contrast */
+  .footer-link {
+    @apply text-white hover:text-[#0066cc] transition-colors underline decoration-[#0066cc] decoration-2 underline-offset-4;
+    font-size: var(--elderly-font-size-large);
+    font-weight: 500;
+  }
+  
+  .footer-link:hover {
+    @apply text-[#0066cc] decoration-white;
+  }
+  
+  .footer-link:focus-visible {
+    outline: 3px solid var(--elderly-high-contrast);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
   /* Expert Typography Spacing */
   .text-spacing-tight {
     line-height: 1.2;
@@ -695,7 +712,7 @@ select:focus-visible {
   }
 
   .cta-button {
-    @apply mt-6 w-full bg-[#00d4ff] text-white font-bold py-4 px-6 rounded-lg transition-all duration-300 hover:bg-[#00b8e6] hover:shadow-[0_0_20px_rgba(0,212,255,0.4)] text-lg;
+    @apply mt-6 w-full bg-[#0066cc] text-white font-bold py-4 px-6 rounded-lg transition-all duration-300 hover:bg-[#0052a3] hover:shadow-[0_0_20px_rgba(0,102,204,0.4)] text-lg;
     min-height: var(--elderly-min-touch-target);
     border: 2px solid transparent;
   }
@@ -1126,7 +1143,7 @@ select:focus-visible {
   }
 
   a {
-    @apply text-[#1F2C90] underline-offset-2 hover:text-[#2B3CA0] transition-colors;
+    @apply text-[#0066cc] underline-offset-2 hover:text-[#0052a3] transition-colors;
     text-decoration-thickness: var(--elderly-link-underline);
     font-size: var(--elderly-font-size-large);
   }
@@ -1147,6 +1164,26 @@ select:focus-visible {
   
   .text-white\/90 {
     color: var(--elderly-text-contrast) !important;
+  }
+  
+  /* Additional high contrast text utilities */
+  .text-high-contrast {
+    color: #FFFFFF !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  }
+  
+  .text-medium-contrast {
+    color: #E8F0FF !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6) !important;
+  }
+  
+  /* Ensure all text has sufficient contrast */
+  .text-white\/70 {
+    color: #E8F0FF !important;
+  }
+  
+  .text-white\/50 {
+    color: #D8E0FF !important;
   }
   
   /* Enhanced focus states for better accessibility */

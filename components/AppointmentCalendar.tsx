@@ -567,7 +567,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                             calendar-day
                             ${!day ? 'opacity-0' : ''}
                             ${day && isPastDate(day) ? 'opacity-30 cursor-not-allowed bg-gray-600/20' : ''}
-                            ${day && !isPastDate(day) && isSelected(day) ? 'bg-[#00d4ff] text-white' : ''}
+                            ${day && !isPastDate(day) && isSelected(day) ? 'bg-[#0066cc] border-[#0066cc] text-white' : ''}
                             ${day && !isPastDate(day) && !isSelected(day) ? 'hover:bg-white/10' : ''}
                           `}
                           aria-label={day ? `${day.getDate()} ${formatMonthYear(day)}${isPastDate(day) ? ' - Verstreken datum' : ''}` : 'Lege dag'}
@@ -876,14 +876,14 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                     </div>
 
                     <div className={`${isLowEnd ? 'bg-transparent' : 'bg-white/5 backdrop-blur-sm'} rounded-xl p-3 sm:p-6 border border-white/10`}>
-                      <h3 className="text-base font-medium mb-3 sm:mb-4 text-[#00d4ff]">
+                      <h3 className="text-base font-medium mb-3 sm:mb-4 text-[#0066cc]">
                         Beschikbare tijden
                       </h3>
 
                       {/* Loading state */}
                       {isLoadingBookings && (
                         <div className="flex justify-center mb-4" role="status" aria-live="polite">
-                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00d4ff]"></div>
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#0066cc]"></div>
                           <span className="sr-only">Laden van beschikbare tijden...</span>
                         </div>
                       )}
@@ -914,7 +914,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                             className={`
                               time-slot
                               ${selectedTime === time
-                                ? 'bg-[#00d4ff] border-[#00d4ff] text-white'
+                                ? 'bg-[#0066cc] border-[#0066cc] text-white'
                                 : 'bg-green-500/60 hover:bg-green-500/80 text-white border-green-500/40 cursor-pointer'}
                             `}
                             aria-label={`${time} - ${selectedTime === time ? 'Geselecteerd' : 'Beschikbaar'}`}
@@ -928,7 +928,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
                               <motion.div
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                className="absolute inset-0 bg-[#00d4ff]/20 animate-pulse pointer-events-none rounded-lg"
+                                className="absolute inset-0 bg-[#0066cc]/20 animate-pulse pointer-events-none rounded-lg"
                               />
                             )}
                           </motion.button>

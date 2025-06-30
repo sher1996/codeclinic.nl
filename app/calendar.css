@@ -1,13 +1,13 @@
 /* FullCalendar Custom Styles */
 :root {
-  --fc-button-bg-color: #00d4ff;
-  --fc-button-border-color: #00d4ff;
-  --fc-button-hover-bg-color: #00b8e6;
-  --fc-button-hover-border-color: #00b8e6;
-  --fc-button-active-bg-color: #00b8e6;
-  --fc-button-active-border-color: #00b8e6;
-  --fc-event-bg-color: #00d4ff;
-  --fc-event-border-color: #00d4ff;
+  --fc-button-bg-color: #0066cc;
+  --fc-button-border-color: #0066cc;
+  --fc-button-hover-bg-color: #0052a3;
+  --fc-button-hover-border-color: #0052a3;
+  --fc-button-active-bg-color: #0052a3;
+  --fc-button-active-border-color: #0052a3;
+  --fc-event-bg-color: #0066cc;
+  --fc-event-border-color: #0066cc;
   --fc-today-bg-color: rgba(0, 212, 255, 0.1);
   --fc-neutral-bg-color: rgba(255, 255, 255, 0.05);
   --fc-border-color: rgba(255, 255, 255, 0.1);
