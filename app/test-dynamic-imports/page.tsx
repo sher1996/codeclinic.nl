@@ -1,6 +1,6 @@
 'use client';
 
-import { DynamicAppointmentCalendar } from '@/components/dynamic-imports';
+import AppointmentCalendar from '@/components/AppointmentCalendar';
 import { useState, Suspense } from 'react';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import DynamicImportFallback from '@/components/DynamicImportFallback';
@@ -24,7 +24,7 @@ export default function TestDynamicImports() {
           <h2 className="text-xl font-semibold mb-4">Appointment Calendar</h2>
           <ErrorBoundary fallback={<DynamicImportFallback componentName="AppointmentCalendar" />}>
             <Suspense fallback={<DynamicImportFallback componentName="AppointmentCalendar" />}>
-              <DynamicAppointmentCalendar appointmentType="remote" />
+              <AppointmentCalendar />
             </Suspense>
           </ErrorBoundary>
         </div>

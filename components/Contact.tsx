@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { DynamicAppointmentCalendar } from './dynamic-imports';
+import AppointmentCalendar from './AppointmentCalendar';
 import { CheckCircle } from 'lucide-react';
 
 // Add guarantee badge component
@@ -175,7 +175,7 @@ export default function Contact() {
                     </h3>
                   </div>
                 </div>
-                <DynamicAppointmentCalendar appointmentType={selectedType} />
+                <AppointmentCalendar appointmentType={selectedType} />
               </motion.div>
             )}
           </motion.div>

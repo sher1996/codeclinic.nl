@@ -138,10 +138,63 @@ body {
 /* Hero section critical styles */
 .hero {
   min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   position: relative;
   overflow: hidden;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.hero-content {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  z-index: 50;
+}
+
+.text-animation-container {
+  min-height: 400px;
+  width: 100%;
+  position: relative;
+}
+
+.text-animation-paragraph {
+  min-height: 3em !important;
+  height: 3em !important;
+  display: flex !important;
+  align-items: center !important;
+  transition: none !important;
+}
+
+.cta-button {
+  min-height: 56px !important;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.scroll-indicator {
+  position: absolute !important;
+  bottom: 24px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  opacity: 1 !important;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.floating-testimonials {
+  position: absolute !important;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: -1;
 }
 
 /* Senior-friendly text styles */

@@ -5,13 +5,7 @@ import { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import React from 'react';
 import NextImage from 'next/image';
-import dynamic from 'next/dynamic';
-
-// Use Next.js dynamic import instead of React.lazy to avoid webpack factory errors
-const PricingSchema = dynamic(() => import('./PricingSchema'), {
-  ssr: false,
-  loading: () => null
-});
+import PricingSchema from './PricingSchema';
 
 const categories = [
   { id: 'all', label: 'Alle diensten', shortLabel: 'Alle' },
