@@ -5,7 +5,6 @@ import { testimonials } from '@/data/testimonials';
 
 interface TextAnimationProps {
   className?: string;
-  startWriting?: boolean;
 }
 
 interface ContentItem {
@@ -14,7 +13,7 @@ interface ContentItem {
   author?: string;
 }
 
-export default function TextAnimation({ className = '', startWriting = false }: TextAnimationProps) {
+export default function TextAnimation({ className = '' }: TextAnimationProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
@@ -72,7 +71,7 @@ export default function TextAnimation({ className = '', startWriting = false }: 
           transition: isLowEnd ? 'none' : 'opacity 0.3s ease-in-out'
         }}
       >
-        <p className="text-white/95 mb-2 italic">"{currentItem.content}"</p>
+        <p className="text-white/95 mb-2 italic">&ldquo;{currentItem.content}&rdquo;</p>
         <p className="text-white/70 text-sm font-medium">{currentItem.author}</p>
       </div>
       
