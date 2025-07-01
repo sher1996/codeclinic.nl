@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
+<<<<<<< HEAD
 import SimpleSentenceSwitcher from './SimpleSentenceSwitcher';
+=======
+import TextAnimation from './TextAnimation';
+import ErrorBoundary from './ErrorBoundary';
+>>>>>>> 8d4ecf1 (Clean up: remove unused files, components, assets, and dependencies)
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -31,11 +36,17 @@ export default function Hero() {
       {/* Subtle dark overlay for better readability - extended beyond boundaries */}
       <div className="absolute inset-0 -bottom-16 bg-black/10 mix-blend-overlay pointer-events-none" style={{ willChange: 'transform', transform: 'translateZ(0)' }}></div>
       
+<<<<<<< HEAD
       <section
         ref={heroRef}
         id="hero"
         className="relative py-28 sm:py-36 lg:py-44"
         aria-label="Hero section"
+=======
+      {/* Content */}
+      <div
+        className="transition-all duration-700 relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full opacity-100 scale-100 z-50"
+>>>>>>> 8d4ecf1 (Clean up: remove unused files, components, assets, and dependencies)
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
