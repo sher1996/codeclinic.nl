@@ -1,18 +1,124 @@
 'use client';
 
-import { useEffect } from 'react';
-import { measurePerformance, measureBundleSize } from '@/utils/performance';
+import { useEffect, useState } from 'react';
 
 export default function PerformanceMonitor() {
-  useEffect(() => {
-    // Measure performance after page load
-    const timer = setTimeout(() => {
-      measurePerformance();
-      measureBundleSize();
-    }, 1000);
+  const [metrics, setMetrics] = useState<{
+    fcp: number | null;
+    lcp: number | null;
+    fid: number | null;
+    cls: number | null;
+    ttfb: number | null;
+  }>({
+    fcp: null,
+    lcp: null,
+    fid: null,
+    cls: null,
+    ttfb: null,
+  });
 
-    return () => clearTimeout(timer);
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'PerformanceObserver' in window) {
+      // First Contentful Paint
+      const fcpObserver = new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        const fcpEntry = entries.find(entry => entry.name === 'first-contentful-paint');
+        if (fcpEntry) {
+          setMetrics(prev => ({ ...prev, fcp: fcpEntry.startTime }));
+        }
+      });
+      fcpObserver.observe({ entryTypes: ['paint'] });
+
+      // Largest Contentful Paint
+      const lcpObserver = new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        const lastEntry = entries[entries.length - 1];
+        if (lastEntry) {
+          setMetrics(prev => ({ ...prev, lcp: lastEntry.startTime }));
+        }
+      });
+      lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+
+      // First Input Delay
+      const fidObserver = new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        entries.forEach((entry) => {
+          if (entry.processingStart && entry.startTime) {
+            const fid = entry.processingStart - entry.startTime;
+            setMetrics(prev => ({ ...prev, fid }));
+          }
+        });
+      });
+      fidObserver.observe({ entryTypes: ['first-input'] });
+
+      // Cumulative Layout Shift
+      const clsObserver = new PerformanceObserver((list) => {
+        let clsValue = 0;
+        list.getEntries().forEach((entry: any) => {
+          if (!entry.hadRecentInput) {
+            clsValue += entry.value;
+          }
+        });
+        setMetrics(prev => ({ ...prev, cls: clsValue }));
+      });
+      clsObserver.observe({ entryTypes: ['layout-shift'] });
+
+      // Time to First Byte
+      const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      if (navigationEntry) {
+        setMetrics(prev => ({ ...prev, ttfb: navigationEntry.responseStart - navigationEntry.requestStart }));
+      }
+
+      // CSS Loading Performance
+      const cssStartTime = performance.now();
+      const checkCSSLoaded = () => {
+        const styles = document.styleSheets;
+        let allLoaded = true;
+        for (let i = 0; i < styles.length; i++) {
+          try {
+            const rules = styles[i].cssRules || styles[i].rules;
+            if (rules.length === 0) {
+              allLoaded = false;
+              break;
+            }
+          } catch (e) {
+            allLoaded = false;
+            break;
+          }
+        }
+        
+        if (allLoaded) {
+          const cssLoadTime = performance.now() - cssStartTime;
+          console.log(`CSS loaded in ${cssLoadTime.toFixed(2)}ms`);
+        } else {
+          setTimeout(checkCSSLoaded, 100);
+        }
+      };
+      
+      setTimeout(checkCSSLoaded, 100);
+
+      return () => {
+        fcpObserver.disconnect();
+        lcpObserver.disconnect();
+        fidObserver.disconnect();
+        clsObserver.disconnect();
+      };
+    }
   }, []);
 
-  return null; // This component doesn't render anything
+  // Only show in development
+  if (process.env.NODE_ENV !== 'development') {
+    return null;
+  }
+
+  return (
+    <div className="fixed bottom-4 right-4 bg-black/80 text-white p-4 rounded-lg text-xs font-mono z-50">
+      <div className="mb-2 font-bold">Performance Metrics:</div>
+      <div>FCP: {metrics.fcp ? `${metrics.fcp.toFixed(0)}ms` : 'Loading...'}</div>
+      <div>LCP: {metrics.lcp ? `${metrics.lcp.toFixed(0)}ms` : 'Loading...'}</div>
+      <div>FID: {metrics.fid ? `${metrics.fid.toFixed(0)}ms` : 'Loading...'}</div>
+      <div>CLS: {metrics.cls ? metrics.cls.toFixed(3) : 'Loading...'}</div>
+      <div>TTFB: {metrics.ttfb ? `${metrics.ttfb.toFixed(0)}ms` : 'Loading...'}</div>
+    </div>
+  );
 } 
