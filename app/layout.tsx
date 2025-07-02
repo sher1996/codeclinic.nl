@@ -1,6 +1,4 @@
-import './critical.css';
 import './globals.css';
-import './calendar.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
@@ -8,6 +6,7 @@ import ContrastTest from '@/components/ContrastTest';
 import ErrorOverlay from '@/components/ErrorOverlay';
 import HiddenAdminAccess from '@/components/HiddenAdminAccess';
 import StructuredData from '@/components/StructuredData';
+import { CalendarCSSLoader } from '@/components/CSSLoader';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -98,86 +97,223 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         
+        {/* Preload critical CSS */}
+        <link
+          rel="preload"
+          href="/_next/static/css/app/globals.css"
+          as="style"
+        />
+        <noscript>
+          <link rel="stylesheet" href="/_next/static/css/app/globals.css" />
+        </noscript>
+        
+        {/* Non-critical CSS will be loaded dynamically */}
+        
         {/* Inline critical CSS for immediate rendering */}
         <style dangerouslySetInnerHTML={{
           __html: `
             /* Critical CSS for above-the-fold content */
             :root {
-              --c-primary-600: #2563eb;
               --c-primary-700: #1d4ed8;
+              --c-secondary-700: #047857;
               --elderly-font-size-base: 20px;
+              --elderly-font-size-large: 22px;
               --elderly-line-height: 1.8;
+              --elderly-min-touch-target: 48px;
+              --elderly-high-contrast: #FFFFFF;
+              --elderly-text-contrast: #FFFFFF;
+              --elderly-text-contrast-secondary: #E8F0FF;
               --focus-ring-color: #FFFFFF;
               --focus-ring-offset: 3px;
               --focus-ring-width: 3px;
             }
             
             html {
-              scroll-behavior: smooth;
-              font-size: 16px;
-              line-height: 1.6;
+              font-size: var(--elderly-font-size-base);
+              background: #0f172a;
+              overflow-y: scroll;
             }
             
             body {
-              font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;
-              font-size: var(--elderly-font-size-base);
+              -webkit-font-smoothing: antialiased;
+              -moz-osx-font-smoothing: grayscale;
+              color: #FFFFFF;
+              font-family: system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Open Sans, Helvetica Neue, sans-serif;
+              position: relative;
+              z-index: 0;
+              text-shadow: 0 2px 4px rgba(0,0,0,.8);
+              min-height: 100vh;
               line-height: var(--elderly-line-height);
-              color: #ffffff;
-              background: #0f172a;
-              overflow-x: hidden;
               margin: 0;
             }
             
             .hero {
-              height: 100vh;
-              overflow: hidden;
-              will-change: transform;
-              transform: translateZ(0);
-              backface-visibility: hidden;
-              min-height: 100vh;
-              display: flex;
-              align-items: center;
               position: relative;
+              background: linear-gradient(135deg, var(--c-primary-700), var(--c-secondary-700));
+              min-height: 100vh !important;
+              height: 100vh !important;
+            }
+            
+            .hero::before {
+              content: "";
+              position: absolute;
+              inset: 0;
+              background: rgba(0,0,0,.2);
+              mix-blend-mode: overlay;
+              pointer-events: none;
+              z-index: 1;
+            }
+            
+            .hero > * {
+              position: relative;
+              z-index: 2;
             }
             
             .hero-content {
-              width: 100%;
-              z-index: 50;
               min-height: 100vh;
               display: flex;
               align-items: center;
-              position: relative;
+              width: 100%;
             }
             
-            .text-4xl {
-              font-size: 2.25rem;
-              line-height: 2.5rem;
+            h1, h2, h3, h4, h5, h6 {
+              font-weight: 700;
+              letter-spacing: -.025em;
+              color: rgb(255 255 255);
+              text-shadow: 0 2px 4px rgba(0,0,0,.8);
+              line-height: var(--elderly-line-height);
+              margin: 0;
             }
             
-            .text-5xl {
-              font-size: 3rem;
-              line-height: 1;
+            h1 {
+              font-size: clamp(2.5rem, 5vw, 4rem);
             }
             
-            .text-6xl {
-              font-size: 3.75rem;
-              line-height: 1;
+            h2 {
+              font-size: clamp(2rem, 4vw, 3.5rem);
             }
             
-            .font-extrabold {
-              font-weight: 800;
+            h3 {
+              font-size: clamp(1.75rem, 3.5vw, 3rem);
             }
             
-            .leading-\\[1\\.1\\] {
-              line-height: 1.1;
+            p {
+              font-size: 1rem;
+              line-height: 1.5rem;
+              color: rgb(255 255 255);
+              text-shadow: 0 2px 4px rgba(0,0,0,.8);
+              line-height: var(--elderly-line-height);
+              max-width: 45ch;
+              margin: 0;
             }
             
-            .tracking-tight {
-              letter-spacing: -0.025em;
+            .btn-primary {
+              font-size: var(--elderly-font-size-large);
+              border-radius: .5rem;
+              background-color: rgb(31 44 144);
+              padding: 1rem 1.5rem;
+              font-size: 1.125rem;
+              line-height: 1.75rem;
+              font-weight: 600;
+              color: rgb(255 255 255);
+              transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+              transition-timing-function: cubic-bezier(.4,0,.2,1);
+              transition-duration: .15s;
+              min-height: var(--elderly-min-touch-target);
+              box-shadow: 0 4px 8px rgba(0,0,0,.2);
+              border: 2px solid transparent;
+              text-decoration: none;
+              display: inline-block;
+              cursor: pointer;
+            }
+            
+            .btn-primary:hover {
+              background-color: rgb(43 60 160);
+              box-shadow: 0 6px 12px rgba(0,0,0,.3);
+              transform: scale(1.05);
+            }
+            
+            .btn-primary:focus-visible {
+              outline: 3px solid var(--elderly-high-contrast);
+              outline-offset: 2px;
+              border-color: var(--elderly-high-contrast);
+            }
+            
+            .nav-link {
+              font-size: var(--elderly-font-size-large);
+              border-radius: .5rem;
+              padding: .75rem 1rem;
+              font-size: 1.125rem;
+              line-height: 1.75rem;
+              font-weight: 600;
+              color: rgb(255 255 255);
+              transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+              transition-timing-function: cubic-bezier(.4,0,.2,1);
+              transition-duration: .15s;
+              min-height: var(--elderly-min-touch-target);
+              border: 2px solid transparent;
+              text-decoration: none;
+              display: inline-block;
+            }
+            
+            .nav-link:hover {
+              color: rgb(147 197 253);
+              background-color: rgb(255 255 255/.1);
+              border-color: rgba(255,255,255,.3);
+            }
+            
+            .nav-link:focus-visible {
+              outline: 3px solid var(--elderly-high-contrast);
+              outline-offset: 2px;
+              border-color: var(--elderly-high-contrast);
+            }
+            
+            .container {
+              width: 100%;
+              max-width: 1280px;
+              margin: 0 auto;
+              padding: 0 1rem;
+            }
+            
+            .text-center {
+              text-align: center;
+            }
+            
+            .text-white {
+              color: rgb(255 255 255);
+            }
+            
+            .text-white\\/80 {
+              color: rgb(255 255 255/.8);
+            }
+            
+            .text-white\\/60 {
+              color: var(--elderly-text-contrast-secondary);
+            }
+            
+            .text-white\\/90 {
+              color: var(--elderly-text-contrast);
+            }
+            
+            .text-white\\/70 {
+              color: #E8F0FF;
+            }
+            
+            .text-white\\/50 {
+              color: #D8E0FF;
+            }
+            
+            :focus-visible {
+              outline: var(--elderly-focus-ring) solid var(--elderly-high-contrast) !important;
+              outline-offset: 2px !important;
             }
             
             .flex {
               display: flex;
+            }
+            
+            .flex-col {
+              flex-direction: column;
             }
             
             .items-center {
@@ -188,25 +324,103 @@ export default function RootLayout({
               justify-content: center;
             }
             
-            .relative {
-              position: relative;
+            .justify-between {
+              justify-content: space-between;
             }
             
-            .absolute {
-              position: absolute;
+            .grid {
+              display: grid;
             }
             
-            .inset-0 {
-              inset: 0;
+            .grid-cols-1 {
+              grid-template-columns: repeat(1, minmax(0, 1fr));
             }
             
-            .z-50 {
-              z-index: 50;
+            .grid-cols-2 {
+              grid-template-columns: repeat(2, minmax(0, 1fr));
             }
             
-            .px-4 {
-              padding-left: 1rem;
-              padding-right: 1rem;
+            .gap-4 {
+              gap: 1rem;
+            }
+            
+            .gap-6 {
+              gap: 1.5rem;
+            }
+            
+            .gap-8 {
+              gap: 2rem;
+            }
+            
+            .gap-10 {
+              gap: 2.5rem;
+            }
+            
+            .mb-4 {
+              margin-bottom: 1rem;
+            }
+            
+            .mb-6 {
+              margin-bottom: 1.5rem;
+            }
+            
+            .mb-8 {
+              margin-bottom: 2rem;
+            }
+            
+            .mb-10 {
+              margin-bottom: 2.5rem;
+            }
+            
+            .mb-16 {
+              margin-bottom: 4rem;
+            }
+            
+            .mb-20 {
+              margin-bottom: 5rem;
+            }
+            
+            .mb-24 {
+              margin-bottom: 6rem;
+            }
+            
+            .mt-4 {
+              margin-top: 1rem;
+            }
+            
+            .mt-6 {
+              margin-top: 1.5rem;
+            }
+            
+            .mt-8 {
+              margin-top: 2rem;
+            }
+            
+            .mt-10 {
+              margin-top: 2.5rem;
+            }
+            
+            .mt-12 {
+              margin-top: 3rem;
+            }
+            
+            .mt-24 {
+              margin-top: 6rem;
+            }
+            
+            .py-16 {
+              padding-top: 4rem;
+              padding-bottom: 4rem;
+            }
+            
+            .py-20 {
+              padding-top: 5rem;
+              padding-bottom: 5rem;
+            }
+            
+            .py-24 {
+              padding-top: 6rem;
+              padding-bottom: 6rem;
             }
             
             .py-28 {
@@ -214,136 +428,115 @@ export default function RootLayout({
               padding-bottom: 7rem;
             }
             
-            .mb-8 {
-              margin-bottom: 2rem;
+            .py-36 {
+              padding-top: 9rem;
+              padding-bottom: 9rem;
             }
             
-            .text-white {
-              color: rgb(255 255 255);
+            .py-44 {
+              padding-top: 11rem;
+              padding-bottom: 11rem;
             }
             
-            .bg-\\[\\#1F2C90\\]\\/20 {
-              background-color: rgb(31 44 144 / 0.2);
+            .px-4 {
+              padding-left: 1rem;
+              padding-right: 1rem;
+            }
+            
+            .px-6 {
+              padding-left: 1.5rem;
+              padding-right: 1.5rem;
+            }
+            
+            .px-8 {
+              padding-left: 2rem;
+              padding-right: 2rem;
             }
             
             @media (min-width: 640px) {
-              .sm\\:px-6 {
-                padding-left: 1.5rem;
-                padding-right: 1.5rem;
+              .sm\\:text-lg {
+                font-size: var(--elderly-font-size-large) !important;
               }
               
-              .sm\\:py-36 {
-                padding-top: 9rem;
-                padding-bottom: 9rem;
+              .sm\\:text-xl {
+                font-size: var(--elderly-font-size-xl) !important;
               }
               
-              .sm\\:text-5xl {
-                font-size: 3rem;
-                line-height: 1;
+              .sm\\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+              }
+              
+              .sm\\:flex-row {
+                flex-direction: row;
+              }
+            }
+            
+            @media (min-width: 768px) {
+              .md\\:text-xl {
+                font-size: var(--elderly-font-size-xl) !important;
+              }
+              
+              .md\\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+              }
+              
+              .md\\:grid-cols-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
               }
             }
             
             @media (min-width: 1024px) {
-              .lg\\:px-8 {
-                padding-left: 2rem;
-                padding-right: 2rem;
+              .lg\\:grid-cols-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
               }
               
-              .lg\\:py-44 {
-                padding-top: 11rem;
-                padding-bottom: 11rem;
-              }
-              
-              .lg\\:text-6xl {
-                font-size: 3.75rem;
-                line-height: 1;
+              .lg\\:grid-cols-4 {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
               }
             }
             
-            *:focus-visible {
-              outline: var(--focus-ring-width) solid var(--focus-ring-color) !important;
-              outline-offset: var(--focus-ring-offset) !important;
-              border-radius: 4px;
-            }
-            
-            .skip-link {
+            .sr-only {
               position: absolute;
-              top: -100px;
-              left: 6px;
-              background: #1F2C90;
-              color: #FFFFFF;
-              padding: 12px 24px;
-              text-decoration: none;
-              border-radius: 4px;
-              z-index: 9999;
-              font-weight: 600;
-              font-size: 14px;
-              transition: top 0.3s ease;
-              opacity: 0;
-              box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-              transform: scale(0.9);
-              clip: rect(0 0 0 0);
+              width: 1px;
+              height: 1px;
+              padding: 0;
+              margin: -1px;
               overflow: hidden;
-              visibility: hidden;
-              pointer-events: none;
-              display: block;
-              width: auto;
-              height: auto;
+              clip: rect(0, 0, 0, 0);
+              white-space: nowrap;
+              border: 0;
             }
             
-            .skip-link:focus {
-              top: 6px;
-              outline: var(--focus-ring-width) solid var(--focus-ring-color);
-              outline-offset: var(--focus-ring-offset);
-              opacity: 1;
-              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-              transform: scale(1);
-              clip: auto;
-              overflow: visible;
-              visibility: visible;
-              pointer-events: auto;
+            @media (prefers-reduced-motion: reduce) {
+              * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+              }
+              
+              .btn-primary:hover {
+                transform: none;
+              }
             }
           `
         }} />
-        
-
-        
-        {/* Structured Data */}
-        <StructuredData pageType="home" />
       </head>
-      <body className={`${inter.className} antialiased min-h-screen`}>
-        {/* Simplified background gradient */}
-        <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/40 via-[#2B3CA0]/20 to-[#4F4F00]/30" />
+      <body className={inter.className}>
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         
-        {/* Simplified dark overlay for better readability */}
-        <div 
-          className="fixed inset-0 bg-black/15 mix-blend-overlay pointer-events-none z-[9998]"
-          aria-hidden="true"
-        />
+        <Header />
+        <main id="main-content">
+          {children}
+        </main>
         
-        {/* Main content */}
-        <div className="relative z-[9999] min-h-screen">
-          {/* Skip to main content link for keyboard users */}
-          <a href="#main-content" className="skip-link">
-            Spring naar hoofdinhoud
-          </a>
-          
-          <Header />
-          <main id="main-content" className="pt-20">
-            {children}
-          </main>
-        </div>
-
-        {/* Hidden Admin Access */}
-        <HiddenAdminAccess />
-
-        {/* Error overlay - rendered at root level */}
-        <div id="error-overlay-root" style={{ position: 'relative', zIndex: 2147483647 }} />
-
-        {/* Contrast test component */}
-        {process.env.NODE_ENV !== 'production' && <ContrastTest />}
-
+        <CalendarCSSLoader />
+        <ContrastTest />
         <ErrorOverlay />
+        <HiddenAdminAccess />
+        <StructuredData />
       </body>
     </html>
   );

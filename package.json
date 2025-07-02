@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "analyze-css": "node scripts/optimize-css.js"
+    "optimize-css": "node scripts/optimize-css.js",
+    "build:optimized": "npm run optimize-css && next build"
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.10",
@@ -27,9 +28,12 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@fullhuman/postcss-purgecss": "^7.0.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.21",
+    "cssnano": "^7.0.7",
     "eslint": "^9",
     "eslint-config-next": "15.1.8",
     "postcss": "^8",

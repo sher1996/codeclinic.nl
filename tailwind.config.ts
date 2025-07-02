@@ -8,28 +8,21 @@ const config: Config = {
     './lib/**/*.{js,ts,jsx,tsx,mdx}',
     './utils/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  // Reduced safelist - only keep essential dynamic classes
   safelist: [
-    // Critical classes that might be dynamically generated
+    // Critical classes that are dynamically generated
     'text-white',
     'text-black',
     'bg-white',
     'bg-black',
-    'border-white',
-    'border-black',
-    // Animation classes
+    // Essential animation classes
     'animate-fadeIn',
     'animate-fadeInUp',
-    'animate-float',
     'animate-pulse',
-    // Focus states
+    // Critical focus states
     'focus-visible:outline-none',
     'focus-visible:ring-2',
     'focus-visible:ring-white',
-    // Responsive utilities
-    'sm:text-lg',
-    'md:text-xl',
-    'lg:text-2xl',
-    'xl:text-3xl',
   ],
   theme: {
     extend: {
@@ -132,14 +125,11 @@ const config: Config = {
         mono: ['"IBM Plex Mono"', 'monospace'],
       },
       animation: {
-        // optional access to Tailwind class if desired: animate-code-rain
         'code-rain': 'codeRain 12s linear infinite',
-        // new Deep Matrix rain animation
         'matrix-rain': 'matrixRain 10s linear infinite',
         'typing': 'typing 0.6s steps(25, end) linear, blink-caret .3s step-end infinite',
       },
       keyframes: {
-        // fallback if you prefer to use Tailwind class utilities instead of CSS file
         codeRain: {
           '0%': { backgroundPosition: '0 0' },
           '100%': { backgroundPosition: '0 100vh' },

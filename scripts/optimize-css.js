@@ -10,6 +10,15 @@
 
 import fs from 'fs';
 import path from 'path';
+import postcss from 'postcss';
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
+import purgecss from '@fullhuman/postcss-purgecss';
+import cssnano from 'cssnano';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Configuration
 const config = {
@@ -192,4 +201,119 @@ function main() {
 }
 
 // Run the script
-main(); 
+main();
+
+const inputFile = path.join(__dirname, '../app/globals.css');
+const outputFile = path.join(__dirname, '../app/globals.optimized.css');
+
+async function optimizeCSS() {
+  try {
+    console.log('🔧 Optimizing CSS...');
+    
+    // Read the input CSS file
+    const css = fs.readFileSync(inputFile, 'utf8');
+    
+    // Process with PostCSS
+    const result = await postcss([
+      tailwindcss,
+      autoprefixer,
+      purgecss({
+        content: [
+          './app/**/*.{js,ts,jsx,tsx,mdx}',
+          './components/**/*.{js,ts,jsx,tsx,mdx}',
+          './src/**/*.{js,ts,jsx,tsx,mdx}',
+          './lib/**/*.{js,ts,jsx,tsx,mdx}',
+          './utils/**/*.{js,ts,jsx,tsx,mdx}',
+        ],
+        defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || [],
+        safelist: [
+          // Critical classes that are dynamically generated
+          'text-white',
+          'text-black',
+          'bg-white',
+          'bg-black',
+          // Essential animation classes
+          'animate-fadeIn',
+          'animate-fadeInUp',
+          'animate-pulse',
+          // Critical focus states
+          'focus-visible:outline-none',
+          'focus-visible:ring-2',
+          'focus-visible:ring-white',
+          // Responsive utilities
+          'sm:text-lg',
+          'md:text-xl',
+          'lg:text-2xl',
+          'xl:text-3xl',
+          // Common utility patterns
+          /^text-/,
+          /^bg-/,
+          /^border-/,
+          /^p[xy]?-/,
+          /^m[xy]?-/,
+          /^grid-cols-/,
+          /^gap-/,
+          /^flex-/,
+          /^items-/,
+          /^justify-/,
+          /^w-/,
+          /^h-/,
+          /^max-w-/,
+          /^min-h-/,
+          /^rounded-/,
+          /^shadow-/,
+          /^transition-/,
+          /^duration-/,
+          /^ease-/,
+          /^opacity-/,
+          /^z-/,
+          /^relative$/,
+          /^absolute$/,
+          /^fixed$/,
+          /^sticky$/,
+          /^block$/,
+          /^inline$/,
+          /^inline-block$/,
+          /^hidden$/,
+          /^visible$/,
+          /^sr-only$/,
+        ],
+      }),
+      cssnano({
+        preset: ['default', {
+          discardComments: {
+            removeAll: true,
+          },
+          discardUnused: true,
+          mergeIdents: false,
+          reduceIdents: false,
+          zindex: false,
+        }],
+      }),
+    ]).process(css, {
+      from: inputFile,
+      to: outputFile,
+    });
+    
+    // Write the optimized CSS
+    fs.writeFileSync(outputFile, result.css);
+    
+    // Calculate size reduction
+    const originalSize = fs.statSync(inputFile).size;
+    const optimizedSize = fs.statSync(outputFile).size;
+    const reduction = ((originalSize - optimizedSize) / originalSize * 100).toFixed(2);
+    
+    console.log(`✅ CSS optimization complete!`);
+    console.log(`📊 Original size: ${(originalSize / 1024).toFixed(2)} KB`);
+    console.log(`📊 Optimized size: ${(optimizedSize / 1024).toFixed(2)} KB`);
+    console.log(`📊 Size reduction: ${reduction}%`);
+    console.log(`📁 Output file: ${outputFile}`);
+    
+  } catch (error) {
+    console.error('❌ Error optimizing CSS:', error);
+    process.exit(1);
+  }
+}
+
+// Run the optimization
+optimizeCSS(); 
