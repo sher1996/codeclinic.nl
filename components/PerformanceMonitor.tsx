@@ -2,6 +2,17 @@
 
 import { useEffect, useState } from 'react';
 
+// Add these type declarations at the top if not available globally
+
+type PerformanceEventTiming = PerformanceEntry & {
+  processingStart: number;
+};
+
+type LayoutShift = PerformanceEntry & {
+  value: number;
+  hadRecentInput: boolean;
+};
+
 export default function PerformanceMonitor() {
   const [metrics, setMetrics] = useState<{
     fcp: number | null;
@@ -43,8 +54,9 @@ export default function PerformanceMonitor() {
       const fidObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         entries.forEach((entry) => {
-          if (entry.processingStart && entry.startTime) {
-            const fid = entry.processingStart - entry.startTime;
+          const firstInputEntry = entry as PerformanceEventTiming;
+          if (firstInputEntry.processingStart && firstInputEntry.startTime) {
+            const fid = firstInputEntry.processingStart - firstInputEntry.startTime;
             setMetrics(prev => ({ ...prev, fid }));
           }
         });
@@ -54,9 +66,10 @@ export default function PerformanceMonitor() {
       // Cumulative Layout Shift
       const clsObserver = new PerformanceObserver((list) => {
         let clsValue = 0;
-        list.getEntries().forEach((entry: any) => {
-          if (!entry.hadRecentInput) {
-            clsValue += entry.value;
+        list.getEntries().forEach((entry: PerformanceEntry) => {
+          const layoutShiftEntry = entry as LayoutShift;
+          if (!layoutShiftEntry.hadRecentInput) {
+            clsValue += layoutShiftEntry.value;
           }
         });
         setMetrics(prev => ({ ...prev, cls: clsValue }));
@@ -81,7 +94,7 @@ export default function PerformanceMonitor() {
               allLoaded = false;
               break;
             }
-          } catch (e) {
+          } catch {
             allLoaded = false;
             break;
           }

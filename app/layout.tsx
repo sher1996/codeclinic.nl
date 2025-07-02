@@ -7,6 +7,7 @@ import HiddenAdminAccess from '@/components/HiddenAdminAccess';
 import StructuredData from '@/components/StructuredData';
 import CSSLoader from '@/components/CSSLoader';
 import PerformanceMonitor from '@/components/PerformanceMonitor';
+import FontLoader from '@/components/FontLoader';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -100,24 +101,6 @@ export default function RootLayout({
         {/* DNS prefetch for external resources */}
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-        
-        {/* Preload critical fonts */}
-        <link
-          rel="preload"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          as="style"
-          onLoad={(e) => {
-            const target = e.target as HTMLLinkElement;
-            target.onload = null;
-            target.rel = 'stylesheet';
-          }}
-        />
-        <noscript>
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          />
-        </noscript>
         
         {/* Inline critical CSS */}
         <style dangerouslySetInnerHTML={{
@@ -500,6 +483,9 @@ export default function RootLayout({
         <StructuredData pageType="home" />
       </head>
       <body className={`${inter.className} antialiased min-h-screen`}>
+        {/* Font Loader */}
+        <FontLoader />
+        
         {/* Simplified background gradient */}
         <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#1F2C90]/40 via-[#2B3CA0]/20 to-[#4F4F00]/30" />
         
