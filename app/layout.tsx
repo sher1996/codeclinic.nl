@@ -98,6 +98,222 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         
+        {/* Preload critical CSS files in parallel */}
+        <link rel="preload" href="/_next/static/css/globals.css" as="style" />
+        <link rel="preload" href="/_next/static/css/calendar.css" as="style" />
+        
+        {/* Inline critical CSS for immediate rendering */}
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            /* Critical CSS for above-the-fold content */
+            :root {
+              --c-primary-600: #2563eb;
+              --c-primary-700: #1d4ed8;
+              --elderly-font-size-base: 20px;
+              --elderly-line-height: 1.8;
+              --focus-ring-color: #FFFFFF;
+              --focus-ring-offset: 3px;
+              --focus-ring-width: 3px;
+            }
+            
+            html {
+              scroll-behavior: smooth;
+              font-size: 16px;
+              line-height: 1.6;
+            }
+            
+            body {
+              font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;
+              font-size: var(--elderly-font-size-base);
+              line-height: var(--elderly-line-height);
+              color: #ffffff;
+              background: #0f172a;
+              overflow-x: hidden;
+              margin: 0;
+            }
+            
+            .hero {
+              height: 100vh;
+              overflow: hidden;
+              will-change: transform;
+              transform: translateZ(0);
+              backface-visibility: hidden;
+              min-height: 100vh;
+              display: flex;
+              align-items: center;
+              position: relative;
+            }
+            
+            .hero-content {
+              width: 100%;
+              z-index: 50;
+              min-height: 100vh;
+              display: flex;
+              align-items: center;
+              position: relative;
+            }
+            
+            .text-4xl {
+              font-size: 2.25rem;
+              line-height: 2.5rem;
+            }
+            
+            .text-5xl {
+              font-size: 3rem;
+              line-height: 1;
+            }
+            
+            .text-6xl {
+              font-size: 3.75rem;
+              line-height: 1;
+            }
+            
+            .font-extrabold {
+              font-weight: 800;
+            }
+            
+            .leading-\\[1\\.1\\] {
+              line-height: 1.1;
+            }
+            
+            .tracking-tight {
+              letter-spacing: -0.025em;
+            }
+            
+            .flex {
+              display: flex;
+            }
+            
+            .items-center {
+              align-items: center;
+            }
+            
+            .justify-center {
+              justify-content: center;
+            }
+            
+            .relative {
+              position: relative;
+            }
+            
+            .absolute {
+              position: absolute;
+            }
+            
+            .inset-0 {
+              inset: 0;
+            }
+            
+            .z-50 {
+              z-index: 50;
+            }
+            
+            .px-4 {
+              padding-left: 1rem;
+              padding-right: 1rem;
+            }
+            
+            .py-28 {
+              padding-top: 7rem;
+              padding-bottom: 7rem;
+            }
+            
+            .mb-8 {
+              margin-bottom: 2rem;
+            }
+            
+            .text-white {
+              color: rgb(255 255 255);
+            }
+            
+            .bg-\\[\\#1F2C90\\]\\/20 {
+              background-color: rgb(31 44 144 / 0.2);
+            }
+            
+            @media (min-width: 640px) {
+              .sm\\:px-6 {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+              }
+              
+              .sm\\:py-36 {
+                padding-top: 9rem;
+                padding-bottom: 9rem;
+              }
+              
+              .sm\\:text-5xl {
+                font-size: 3rem;
+                line-height: 1;
+              }
+            }
+            
+            @media (min-width: 1024px) {
+              .lg\\:px-8 {
+                padding-left: 2rem;
+                padding-right: 2rem;
+              }
+              
+              .lg\\:py-44 {
+                padding-top: 11rem;
+                padding-bottom: 11rem;
+              }
+              
+              .lg\\:text-6xl {
+                font-size: 3.75rem;
+                line-height: 1;
+              }
+            }
+            
+            *:focus-visible {
+              outline: var(--focus-ring-width) solid var(--focus-ring-color) !important;
+              outline-offset: var(--focus-ring-offset) !important;
+              border-radius: 4px;
+            }
+            
+            .skip-link {
+              position: absolute;
+              top: -100px;
+              left: 6px;
+              background: #1F2C90;
+              color: #FFFFFF;
+              padding: 12px 24px;
+              text-decoration: none;
+              border-radius: 4px;
+              z-index: 9999;
+              font-weight: 600;
+              font-size: 14px;
+              transition: top 0.3s ease;
+              opacity: 0;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+              transform: scale(0.9);
+              clip: rect(0 0 0 0);
+              overflow: hidden;
+              visibility: hidden;
+              pointer-events: none;
+              display: block;
+              width: auto;
+              height: auto;
+            }
+            
+            .skip-link:focus {
+              top: 6px;
+              outline: var(--focus-ring-width) solid var(--focus-ring-color);
+              outline-offset: var(--focus-ring-offset);
+              opacity: 1;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+              transform: scale(1);
+              clip: auto;
+              overflow: visible;
+              visibility: visible;
+              pointer-events: auto;
+            }
+          `
+        }} />
+        
+        {/* Load non-critical CSS (no event handlers, no media="print") */}
+        <link rel="stylesheet" href="/_next/static/css/globals.css" />
+        <link rel="stylesheet" href="/_next/static/css/calendar.css" />
+        
         {/* Structured Data */}
         <StructuredData pageType="home" />
       </head>

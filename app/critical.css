@@ -1,6 +1,7 @@
-/* Critical CSS for above-the-fold content */
-/* This file contains only the most essential styles for the hero section and initial page load */
+/* Critical CSS for above-the-fold content - Optimized for performance */
+/* This file contains only the most essential styles for immediate rendering */
 
+/* Essential CSS variables */
 :root {
   --c-primary-600: #2563eb;
   --c-primary-700: #1d4ed8;
@@ -11,7 +12,7 @@
   --focus-ring-width: 3px;
 }
 
-/* Essential base styles */
+/* Critical base styles */
 html {
   scroll-behavior: smooth;
   font-size: 16px;
@@ -28,7 +29,7 @@ body {
   margin: 0;
 }
 
-/* Hero section critical styles */
+/* Critical hero styles */
 .hero {
   height: 100vh;
   overflow: hidden;
@@ -50,7 +51,7 @@ body {
   position: relative;
 }
 
-/* Essential text styles */
+/* Critical text styles */
 .text-4xl {
   font-size: 2.25rem;
   line-height: 2.5rem;
@@ -78,7 +79,7 @@ body {
   letter-spacing: -0.025em;
 }
 
-/* Essential layout utilities */
+/* Critical layout utilities */
 .flex {
   display: flex;
 }
@@ -107,7 +108,7 @@ body {
   z-index: 50;
 }
 
-/* Essential spacing */
+/* Critical spacing */
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -122,7 +123,7 @@ body {
   margin-bottom: 2rem;
 }
 
-/* Essential colors */
+/* Critical colors */
 .text-white {
   color: rgb(255 255 255);
 }
@@ -131,7 +132,7 @@ body {
   background-color: rgb(31 44 144 / 0.2);
 }
 
-/* Essential responsive utilities */
+/* Critical responsive utilities */
 @media (min-width: 640px) {
   .sm\:px-6 {
     padding-left: 1.5rem;
@@ -166,14 +167,14 @@ body {
   }
 }
 
-/* Essential focus styles */
+/* Critical focus styles */
 *:focus-visible {
   outline: var(--focus-ring-width) solid var(--focus-ring-color) !important;
   outline-offset: var(--focus-ring-offset) !important;
   border-radius: 4px;
 }
 
-/* Skip link for accessibility */
+/* Critical skip link */
 .skip-link {
   position: absolute;
   top: -100px;
@@ -204,10 +205,68 @@ body {
   outline: var(--focus-ring-width) solid var(--focus-ring-color);
   outline-offset: var(--focus-ring-offset);
   opacity: 1;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transform: scale(1);
   clip: auto;
   overflow: visible;
   visibility: visible;
   pointer-events: auto;
+}
+
+/* Critical header styles */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Critical navigation styles */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+}
+
+/* Critical button styles */
+.btn-primary {
+  background: linear-gradient(135deg, var(--c-primary-600), var(--c-primary-700));
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Critical container styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: 0 2rem;
+  }
 } 

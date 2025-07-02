@@ -13,6 +13,7 @@ const nextConfig = {
     optimizePackageImports: ['lucide-react', 'framer-motion', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
     esmExternals: true,
     optimizeCss: true, // Enable CSS optimization
+    optimizeServerReact: true, // Optimize server-side React rendering
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
