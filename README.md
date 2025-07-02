@@ -35,41 +35,6 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-## Performance Optimizations
-
-This project includes several performance optimizations to eliminate render-blocking resources and improve Core Web Vitals:
-
-### CSS Optimization
-- **Critical CSS Inlining**: Essential styles are inlined in the HTML head to eliminate render-blocking
-- **Deferred CSS Loading**: Non-critical styles are loaded asynchronously after the initial paint
-- **Font Optimization**: Google Fonts are preloaded with fallbacks for better performance
-
-### Performance Monitoring
-- **Core Web Vitals Tracking**: Real-time monitoring of FCP, LCP, FID, CLS, and TTFB
-- **CSS Loading Metrics**: Performance monitoring for CSS loading times
-- **Development Tools**: Performance monitor available in development mode
-
-### Optimization Scripts
-```bash
-# Run CSS optimization
-npm run optimize-css
-```
-
-### Key Improvements
-- Eliminated render-blocking CSS resources
-- Reduced First Contentful Paint (FCP) time
-- Improved Largest Contentful Paint (LCP) performance
-- Optimized font loading with DNS prefetching
-- Added performance monitoring for continuous improvement
-
-### Best Practices Implemented
-- Critical CSS extraction and inlining
-- Asynchronous CSS loading
-- Font preloading with fallbacks
-- DNS prefetching for external resources
-- Performance monitoring and metrics
-- Accessibility-first design with senior-friendly features
-
 <!-- Last build: $(date) -->
 
 <!-- Build triggered: $(date) -->

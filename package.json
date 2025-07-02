@@ -7,13 +7,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "optimize-css": "node scripts/optimize-css.js"
+    "lint": "next lint"
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.10",
     "@upstash/redis": "^1.35.0",
     "clsx": "^2.1.1",
+    "critters": "^0.0.23",
     "framer-motion": "^12.18.1",
     "lucide-react": "^0.511.0",
     "next": "^15.3.3",
