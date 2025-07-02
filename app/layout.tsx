@@ -98,10 +98,6 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         
-        {/* Preload critical CSS files in parallel */}
-        <link rel="preload" href="/_next/static/css/globals.css" as="style" />
-        <link rel="preload" href="/_next/static/css/calendar.css" as="style" />
-        
         {/* Inline critical CSS for immediate rendering */}
         <style dangerouslySetInnerHTML={{
           __html: `
@@ -310,9 +306,7 @@ export default function RootLayout({
           `
         }} />
         
-        {/* Load non-critical CSS (no event handlers, no media="print") */}
-        <link rel="stylesheet" href="/_next/static/css/globals.css" />
-        <link rel="stylesheet" href="/_next/static/css/calendar.css" />
+
         
         {/* Structured Data */}
         <StructuredData pageType="home" />
