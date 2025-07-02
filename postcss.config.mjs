@@ -1,10 +1,13 @@
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
+
 /** @type {import('postcss-load-config').Config} */
 const config = {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-    ...(process.env.NODE_ENV === 'production' && {
-      '@fullhuman/postcss-purgecss': {
+  plugins: [
+    tailwindcss,
+    autoprefixer,
+    ...(process.env.NODE_ENV === 'production' ? [
+      ['@fullhuman/postcss-purgecss', {
         content: [
           './app/**/*.{js,ts,jsx,tsx,mdx}',
           './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -65,8 +68,8 @@ const config = {
           /^visible$/,
           /^sr-only$/,
         ],
-      },
-      'cssnano': {
+      }],
+      ['cssnano', {
         preset: ['default', {
           discardComments: {
             removeAll: true,
@@ -76,9 +79,9 @@ const config = {
           reduceIdents: false,
           zindex: false,
         }],
-      },
-    }),
-  },
+      }],
+    ] : []),
+  ],
 };
 
 export default config;
