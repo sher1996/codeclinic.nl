@@ -47,22 +47,12 @@ export default function CSSLoader({
 
 // Component for loading calendar CSS only when needed
 export function CalendarCSSLoader() {
-  return (
-    <CSSLoader 
-      href="/_next/static/css/app/calendar.css"
-      onLoad={() => console.log('Calendar CSS loaded')}
-      onError={() => console.error('Failed to load calendar CSS')}
-    />
-  );
+  // Calendar CSS is already imported in the app, no need to load dynamically
+  return null;
 }
 
 // Component for loading additional styles
 export function AdditionalCSSLoader() {
-  return (
-    <CSSLoader 
-      href="/_next/static/css/app/additional.css"
-      onLoad={() => console.log('Additional CSS loaded')}
-      onError={() => console.error('Failed to load additional CSS')}
-    />
-  );
+  // Additional CSS is already imported in the app, no need to load dynamically
+  return null;
 } 

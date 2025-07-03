@@ -1,7 +1,9 @@
-tunnel: your-tunnel-name
-credentials-file: .cloudflared/your-tunnel-name.json
+tunnel: codeclinic-ws
+credentials-file: ~/.cloudflared/70976bf7-d7fb-44fd-835e-7369012f491f.json
 
 ingress:
-  - hostname: voice.your-domain.com
-    service: http://localhost:3000
+  - hostname: ws.codeclinic.nl
+    service: http://localhost:8765
+    originRequest:
+      noTLSVerify: true
   - service: http_status:404 
