@@ -76,11 +76,18 @@ async def relay(ws: WebSocket):
             print("← RAW:", raw)
             print("   keys:", list(event.keys()))
 
-            # Ignore everything except real transcripts
-            if not isinstance(event, dict) or "text" not in event:
+            # Handle Twilio voice input - they send "voicePrompt" not "text"
+            if not isinstance(event, dict):
                 continue
-
-            user = event["text"]
+                
+            # Check for voicePrompt (Twilio format) or text (fallback)
+            user = None
+            if "voicePrompt" in event:
+                user = event["voicePrompt"]
+            elif "text" in event:
+                user = event["text"]
+            else:
+                continue
             print("← USER:", user)
 
             # ---------- call OpenAI ----------------
