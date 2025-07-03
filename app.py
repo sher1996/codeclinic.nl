@@ -72,6 +72,10 @@ async def relay(ws: WebSocket):
             raw = await ws.receive_text()
             event = json.loads(raw)
 
+            # NEW: show the keys Twilio actually uses
+            print("← RAW:", raw)
+            print("   keys:", list(event.keys()))
+
             # Ignore everything except real transcripts
             if not isinstance(event, dict) or "text" not in event:
                 continue
