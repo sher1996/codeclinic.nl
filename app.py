@@ -11,6 +11,9 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
+# Verify API key is loaded
+print("API key loaded?", bool(os.getenv("OPENAI_API_KEY")))
+
 app = FastAPI(title="Computer Help WebSocket Bot")
 
 # Add CORS middleware
