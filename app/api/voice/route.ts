@@ -6,6 +6,7 @@ export async function GET() {
   <Connect>
     <ConversationRelay
       url="${WS_URL.replace('http', 'ws')}"
+      language="nl-NL"
       ttsProvider="ElevenLabs"
       voice="UgBBYS2sOqTuMpoF3BR0"
       welcomeGreeting="Hi! I'm your CodeClinic assistant. Ask me anything." />
