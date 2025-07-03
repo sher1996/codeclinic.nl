@@ -1,12 +1,8 @@
+import os, json, asyncio
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-import json
-import asyncio
-import os
-from typing import List
-import openai
-from datetime import datetime
 from dotenv import load_dotenv
+from openai import AsyncOpenAI
 
 # Load environment variables from .env file
 load_dotenv()
@@ -31,42 +27,9 @@ app.add_middleware(
 )
 
 # Initialize OpenAI client
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: List[WebSocket] = []
-
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.active_connections.append(websocket)
-        print(f"Client connected. Total connections: {len(self.active_connections)}")
-
-    def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
-        print(f"Client disconnected. Total connections: {len(self.active_connections)}")
-
-    async def send_personal_message(self, message: str, websocket: WebSocket):
-        await websocket.send_text(message)
-
-    async def broadcast(self, message: str):
-        for connection in self.active_connections:
-            await connection.send_text(message)
-
-manager = ConnectionManager()
-
-async def get_ai_response(user_message: str) -> str:
-    """Get response from OpenAI for user message"""
-    try:
-        if not os.getenv("OPENAI_API_KEY"):
-            return "I'm sorry, but I'm not properly configured to respond right now. Please contact CodeClinic support."
-        
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {
-                    "role": "system",
-                    "content": """You are the helpful voice agent for CodeClinic.nl. Answer in Dutch unless the caller speaks English. Keep replies under 80 characters for low latency.
+SYSTEM = os.getenv("SYSTEM_PROMPT", """You are the helpful voice agent for CodeClinic.nl. Answer in Dutch unless the caller speaks English. Keep replies under 80 characters for low latency.
 
 COMPANY: CodeClinic.nl - Expert computerhulp in Rotterdam sinds 2020. Telefoon: +31-6-24837889. Email: info@codeclinic.nl.
 
@@ -90,21 +53,7 @@ PAYMENT: iDEAL, contant, pin. Alle prijzen incl. 21% BTW.
 
 HOURS: Ma-Vr 09:00-17:00, Za 10:00-15:00.
 
-TONE: Vriendelijk, professioneel, geduldig met senioren. Kort en duidelijk antwoorden."""
-                },
-                {
-                    "role": "user",
-                    "content": user_message
-                }
-            ],
-            max_tokens=150,
-            temperature=0.7
-        )
-        
-        return response.choices[0].message.content.strip()
-    except Exception as e:
-        print(f"OpenAI API error: {e}")
-        return "I'm sorry, I'm having trouble processing your request right now. Please try again or contact CodeClinic directly."
+TONE: Vriendelijk, professioneel, geduldig met senioren. Kort en duidelijk antwoorden.""")
 
 @app.get("/")
 async def root():
@@ -112,59 +61,50 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "connections": len(manager.active_connections)}
+    return {"status": "healthy"}
 
 @app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await manager.connect(websocket)
+async def relay(ws: WebSocket):
+    await ws.accept()
+    print("📞  Caller connected!")
     try:
         while True:
-            data = await websocket.receive_text()
+            raw = await ws.receive_text()
+            event = json.loads(raw)
+
+            # Ignore everything except real transcripts
+            if not isinstance(event, dict) or "text" not in event:
+                continue
+
+            user = event["text"]
+            print("← USER:", user)
+
+            # ---------- call OpenAI ----------------
+            reply_accum = ""
             try:
-                message = json.loads(data)
-                
-                # Log incoming message from Twilio
-                print(f"← {json.dumps(message)}")
-                
-                # Handle Twilio ConversationRelay messages
-                if "text" in message:
-                    user_text = message["text"]
-                    
-                    # Get AI response
-                    ai_response = await get_ai_response(user_text)
-                    
-                    # Prepare response for Twilio
-                    response = {
-                        "text": ai_response
-                    }
-                    
-                    # Log outgoing response to Twilio
-                    print(f"→ {json.dumps(response)}")
-                    
-                    # Send response back to Twilio
-                    await manager.send_personal_message(json.dumps(response), websocket)
-                    
-                else:
-                    # Handle other message types
-                    print(f"Received non-text message: {message}")
-                    response = {
-                        "text": "I received your message but I'm not sure how to process it. Could you please try speaking again?"
-                    }
-                    await manager.send_personal_message(json.dumps(response), websocket)
-                
-            except json.JSONDecodeError:
-                # Handle plain text messages (fallback)
-                print(f"Received non-JSON message: {data}")
-                response = {
-                    "text": "I received your message but I'm not sure how to process it. Could you please try speaking again?"
-                }
-                await manager.send_personal_message(json.dumps(response), websocket)
-                
+                stream = await client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    stream=True,
+                    messages=[
+                        {"role":"system","content":SYSTEM},
+                        {"role":"user","content":user}
+                    ],
+                    max_tokens=120,
+                    timeout=20,
+                )
+                async for chunk in stream:
+                    delta = chunk.choices[0].delta.content or ""
+                    if delta:
+                        await ws.send_json({"text": delta})
+                        reply_accum += delta
+                print("→ BOT:", reply_accum)
+            except Exception as e:
+                # send a very short apology if OpenAI fails
+                await ws.send_json({"text": "Sorry, er ging iets mis."})
+                print("⚠️ OpenAI error:", e)
+
     except WebSocketDisconnect:
-        manager.disconnect(websocket)
-    except Exception as e:
-        print(f"WebSocket error: {e}")
-        manager.disconnect(websocket)
+        print("Caller hung up")
 
 if __name__ == "__main__":
     import uvicorn
