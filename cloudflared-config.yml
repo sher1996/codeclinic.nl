@@ -1,0 +1,7 @@
+tunnel: your-tunnel-name
+credentials-file: .cloudflared/your-tunnel-name.json
+
+ingress:
+  - hostname: voice.your-domain.com
+    service: http://localhost:3000
+  - service: http_status:404 

@@ -1,0 +1,16 @@
+const WS_URL = process.env.WS_URL || 'ws://localhost:8765/ws';   // dev default
+
+export async function GET() {
+  return new Response(`<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Connect>
+    <ConversationRelay
+      url="${WS_URL.replace('http', 'ws')}"
+      ttsProvider="ElevenLabs"
+      voice="UgBBYS2sOqTuMpoF3BR0"
+      welcomeGreeting="Hi! I'm your CodeClinic assistant. Ask me anything." />
+  </Connect>
+</Response>`, {
+    headers: { 'Content-Type': 'text/xml' },
+  });
+} 
