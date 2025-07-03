@@ -3,7 +3,7 @@ export class WebSocketClient {
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
-  private onMessageCallback: ((data: any) => void) | null = null;
+  private onMessageCallback: ((data: unknown) => void) | null = null;
   private onConnectCallback: (() => void) | null = null;
   private onDisconnectCallback: (() => void) | null = null;
 
@@ -72,7 +72,7 @@ export class WebSocketClient {
     }
   }
 
-  send(message: any) {
+  send(message: unknown) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       const messageStr = typeof message === 'string' ? message : JSON.stringify(message);
       this.ws.send(messageStr);
@@ -81,7 +81,7 @@ export class WebSocketClient {
     }
   }
 
-  onMessage(callback: (data: any) => void) {
+  onMessage(callback: (data: unknown) => void) {
     this.onMessageCallback = callback;
   }
 

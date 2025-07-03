@@ -105,7 +105,7 @@ export default function RootLayout({
           as="style"
         />
         <noscript>
-          <link rel="stylesheet" href="/_next/static/css/app/globals.css" />
+          {/* <link rel="stylesheet" href="/_next/static/css/app/globals.css" /> removed for Next.js best practice */}
         </noscript>
         
         {/* Non-critical CSS will be loaded dynamically */}
