@@ -106,12 +106,12 @@ async def relay(ws: WebSocket):
                 async for chunk in stream:
                     delta = chunk.choices[0].delta.content or ""
                     if delta:
-                        await ws.send_json({"text": delta})
+                        await ws.send_json({"type": "response", "text": delta})
                         reply_accum += delta
                 print("→ BOT:", reply_accum)
             except Exception as e:
                 # send a very short apology if OpenAI fails
-                await ws.send_json({"text": "Sorry, er ging iets mis."})
+                await ws.send_json({"type": "response", "text": "Sorry, er ging iets mis."})
                 print("⚠️ OpenAI error:", e)
 
     except WebSocketDisconnect:
