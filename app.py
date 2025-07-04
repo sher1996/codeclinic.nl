@@ -110,13 +110,21 @@ async def relay(ws: WebSocket):
                 
                 # Send complete response at once
                 if reply_accum:
-                    response_frame = {"text": reply_accum}
+                    response_frame = {
+                        "type": "text",
+                        "token": reply_accum,
+                        "last": True
+                    }
                     await ws.send_json(response_frame)
-                    print("→ BOT frame:", response_frame)
+                    print("→ BOT frame sent")
                 print("→ BOT:", reply_accum)
             except Exception as e:
                 # send a very short apology if OpenAI fails
-                await ws.send_json({"text": "Sorry, er ging iets mis."})
+                await ws.send_json({
+                    "type": "text",
+                    "token": "Sorry, er ging iets mis.",
+                    "last": True
+                })
                 print("⚠️ OpenAI error:", e)
 
     except WebSocketDisconnect:
