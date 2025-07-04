@@ -9,7 +9,7 @@ export async function GET() {
       language="nl-NL"
       ttsProvider="ElevenLabs"
       voice="UgBBYS2sOqTuMpoF3BR0"
-      welcomeGreeting="Hi! I'm your CodeClinic assistant. Ask me anything." />
+      welcomeGreeting="Hi! I'm Sam, your CodeClinic assistant. How can I help you today?" />
   </Connect>
 </Response>`, {
     headers: { 'Content-Type': 'text/xml' },
