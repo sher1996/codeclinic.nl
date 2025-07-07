@@ -10,6 +10,12 @@ interface PerformanceMetrics {
   ttfb: number;
 }
 
+// Add LayoutShift interface for type safety
+interface LayoutShift extends PerformanceEntry {
+  value: number;
+  hadRecentInput: boolean;
+}
+
 export default function PerformanceMonitor() {
   useEffect(() => {
     // Only run in production and if PerformanceObserver is available
@@ -71,11 +77,15 @@ export default function PerformanceMonitor() {
       const clsObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         entries.forEach((entry: PerformanceEntry) => {
-          // @ts-ignore: hadRecentInput is not in the base type, but is present on LayoutShift
-          if (!(entry as any).hadRecentInput) {
-            clsValue += (entry as any).value;
-            metrics.cls = clsValue;
-            console.log(`📐 CLS: ${clsValue.toFixed(4)}`);
+          // Type guard for LayoutShift
+          if ('hadRecentInput' in entry && 'value' in entry) {
+            const layoutShift = entry as LayoutShift;
+            // @ts-expect-error: hadRecentInput is not in the base type, but is present on LayoutShift
+            if (!layoutShift.hadRecentInput) {
+              clsValue += layoutShift.value;
+              metrics.cls = clsValue;
+              console.log(`📐 CLS: ${clsValue.toFixed(4)}`);
+            }
           }
         });
       });
