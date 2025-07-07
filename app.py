@@ -1,8 +1,9 @@
 import os, json, asyncio
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
+from pydantic import BaseModel
 
 # Load environment variables from .env file
 load_dotenv()
@@ -55,6 +56,9 @@ OPENINGSTIJDEN: Ma-Vr 09:00-17:00, Za 10:00-15:00.
 
 TOON: Vriendelijk, natuurlijk, geduldig met senioren. Spreek als een echte persoon, niet als een robot. Kort en duidelijk antwoorden.""")
 
+class ChatRequest(BaseModel):
+    text: str
+
 @app.get("/")
 async def root():
     return {"message": "Computer Help WebSocket Bot is running"}
@@ -62,6 +66,27 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
+
+@app.post("/chat")
+async def chat(request: ChatRequest):
+    """Handle HTTP chat requests from the voice system"""
+    try:
+        response = await client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": SYSTEM},
+                {"role": "user", "content": request.text}
+            ],
+            max_tokens=120,
+            timeout=20,
+        )
+        
+        reply = response.choices[0].message.content or "Sorry, ik begrijp het niet."
+        return {"reply": reply}
+        
+    except Exception as e:
+        print(f"⚠️ OpenAI error in /chat: {e}")
+        return {"reply": "Sorry, er ging iets mis."}
 
 @app.websocket("/ws")
 async def relay(ws: WebSocket):
