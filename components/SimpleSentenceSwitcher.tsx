@@ -53,7 +53,7 @@ export default function SimpleSentenceSwitcher({ className = '' }: SimpleSentenc
 
   return (
     <p
-      className={`text-lg leading-[1.6] text-white/90 max-w-[45ch] mb-16 transition-opacity duration-500 ${className}`}
+      className={`text-lg leading-[1.6] text-white/90 max-w-[45ch] mb-12 transition-opacity duration-500 ${className}`}
       style={{ opacity: visible ? 1 : 0, minHeight: '3em' }}
     >
       {sentences[index]}

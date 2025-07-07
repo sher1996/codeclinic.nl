@@ -3,7 +3,6 @@ import './calendar.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
-import ContrastTest from '@/components/ContrastTest';
 import ErrorOverlay from '@/components/ErrorOverlay';
 import HiddenAdminAccess from '@/components/HiddenAdminAccess';
 import StructuredData from '@/components/StructuredData';
@@ -533,7 +532,6 @@ export default function RootLayout({
           {children}
         </main>
         
-        <ContrastTest />
         <ErrorOverlay />
         <HiddenAdminAccess />
         <StructuredData />

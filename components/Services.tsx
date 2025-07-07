@@ -704,172 +704,197 @@ export default function Services({ forceVisible = false }: ServicesProps) {
               </motion.div>
             </div>
 
-            {/* Remote Support Pricing */}
-            <motion.div 
-              className="col-span-1 md:col-span-4 mb-8 md:mb-0"
-              initial={{ opacity: 0, y: 30, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              whileHover={{ 
-                scale: 1.02,
-                transition: { duration: 0.2 }
-              }}
-              viewport={{ once: false, margin: "-50px" }}
-              transition={{ 
-                duration: 0.5, 
-                delay: 0.1,
-                type: "spring",
-                stiffness: 100
-              }}
-            >
-              <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-10 h-full flex flex-col justify-between w-full
-                hover:shadow-[0_0_30px_rgba(0,212,255,0.15)] transition-all duration-300">
-                <div className="flex items-center gap-6 mb-6">
-                  <motion.span 
-                    className="text-4xl w-6 text-[#FFFFFF]" 
-                    role="img" 
-                    aria-label="Remote computer support"
-                    whileHover={{ rotate: 15 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  >💻</motion.span>
-                  <h3 className="text-2xl font-bold text-[#FFFFFF]">Remote Hulp</h3>
-                </div>
-                
-                {/* Guarantee Badge - Prominent placement */}
-                <div className="mb-6 flex justify-center">
-                  <GuaranteeBadge />
-                </div>
-                
-                <p className="text-[#FFFFFF]/80 mb-8">Klaar terwijl u kijkt</p>
-                <div className="space-y-8 flex-grow">
-                  <p className="text-3xl font-semibold text-[#FFFFFF]">€44 <span className="text-base">/uur</span></p>
-                  <p className="text-[#FFFFFF]/80">Direct start, per-minuut facturering</p>
-                  <p className="text-sm text-[#FFFFFF]/80">Daarna afrekening per minuut, geen minimum.</p>
-                  <ul className="space-y-6">
-                    <li className="flex items-center gap-4">
-                      <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Bliksem icoon voor direct start">⚡</span>
-                      <span className="text-[#FFFFFF]/80">Direct start, betalen per minuut</span>
-                    </li>
-                    <li className="flex items-center gap-4">
-                      <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Creditcard icoon voor iDEAL betaling">💳</span>
-                      <span className="text-[#FFFFFF]/80">iDEAL betaling</span>
-                    </li>
-                    <li className="flex items-center gap-4">
-                      <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Klok icoon voor snelle verbinding">⏰</span>
-                      <span className="text-[#FFFFFF]/80">Meestal binnen 5 min verbonden</span>
-                    </li>
-                  </ul>
-                </div>
-                <a href="#boek" className="mt-10 bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3]" data-analytics="pricing_button_remote">
-                  Start direct <ChevronRight className="w-4 h-4" />
-                </a>
-              </div>
-            </motion.div>
+            {/* Pricing Cards Grid - Equal Heights */}
+            <div className="col-span-1 md:col-span-12">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-stretch">
+                {/* Remote Support Pricing */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  whileHover={{ 
+                    scale: 1.02,
+                    transition: { duration: 0.2 }
+                  }}
+                  viewport={{ once: false, margin: "-50px" }}
+                  transition={{ 
+                    duration: 0.5, 
+                    delay: 0.1,
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  className="h-full"
+                >
+                  <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-10 min-h-[580px] h-full flex flex-col w-full
+                    hover:shadow-[0_0_30px_rgba(0,212,255,0.15)] transition-all duration-300">
+                    <div className="flex items-center gap-6 mb-8">
+                      <motion.span 
+                        className="text-4xl text-[#FFFFFF]" 
+                        role="img" 
+                        aria-label="Remote computer support"
+                        whileHover={{ rotate: 15 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                      >💻</motion.span>
+                      <h3 className="text-2xl font-bold text-[#FFFFFF]">Remote Hulp</h3>
+                    </div>
+                    
+                    <div className="mb-6 flex justify-center">
+                      <GuaranteeBadge />
+                    </div>
+                    
+                    <p className="text-[#FFFFFF]/80 mb-8 text-center text-lg">Niet opgelost = geen kosten</p>
+                    
+                    <div className="text-center mb-8">
+                      <p className="text-4xl font-semibold text-[#FFFFFF] mb-3">€44 <span className="text-lg">/uur</span></p>
+                      <p className="text-[#FFFFFF]/80 text-base">Klaar terwijl u kijkt</p>
+                    </div>
+                    
+                    <div className="flex-grow">
+                      <p className="text-[#FFFFFF]/80 mb-6 text-base">Direct start, per-minuut facturering</p>
+                      <ul className="space-y-4">
+                        <li className="flex items-center gap-4">
+                          <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Bliksem icoon">⚡</span>
+                          <span className="text-[#FFFFFF]/80 text-base">Direct start, betalen per minuut</span>
+                        </li>
+                        <li className="flex items-center gap-4">
+                          <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Creditcard icoon">💳</span>
+                          <span className="text-[#FFFFFF]/80 text-base">iDEAL betaling</span>
+                        </li>
+                        <li className="flex items-center gap-4">
+                          <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Klok icoon">⏰</span>
+                          <span className="text-[#FFFFFF]/80 text-base">Meestal binnen 5 min verbonden</span>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="mt-8">
+                      <a href="#boek" className="w-full bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3] text-lg" data-analytics="pricing_button_remote">
+                        Start direct <ChevronRight className="w-5 h-5" />
+                      </a>
+                    </div>
+                  </div>
+                </motion.div>
 
-            {/* Bundles Pricing */}
-            <motion.div 
-              className="col-span-1 md:col-span-4 mb-8 md:mb-0"
-              initial={{ opacity: 0, y: 30, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              whileHover={{ 
-                scale: 1.02,
-                transition: { duration: 0.2 }
-              }}
-              viewport={{ once: false, margin: "-50px" }}
-              transition={{ 
-                duration: 0.5, 
-                delay: 0.2,
-                type: "spring",
-                stiffness: 100
-              }}
-            >
-              <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-10 h-full flex flex-col justify-between w-full
-                hover:shadow-[0_0_30px_rgba(0,212,255,0.15)] transition-all duration-300">
-                <div className="flex items-center gap-6 mb-6">
-                  <motion.span 
-                    className="text-4xl w-6 text-[#FFFFFF]" 
-                    role="img" 
-                    aria-label="Service bundles"
-                    whileHover={{ rotate: 15 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  >🛠️</motion.span>
-                  <h3 className="text-2xl font-bold text-[#FFFFFF]">Service Bundles</h3>
-                </div>
-                
-                {/* Guarantee Badge - Prominent placement */}
-                <div className="mb-6 flex justify-center">
-                  <GuaranteeBadge />
-                </div>
-                
-                <p className="text-[#FFFFFF]/80 mb-8">Vaste prijs, geen verrassingen</p>
-                <div className="space-y-8 flex-grow">
-                  <ul className="space-y-6">
-                    <li className="flex items-center gap-4">
-                      <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Vinkje icoon voor virus scan">✅</span>
-                      <span className="text-[#FFFFFF]/80"><strong className="text-[#FFFFFF]">Virus & Malware Scan</strong> — €99</span>
-                    </li>
-                    <li className="flex items-center gap-4">
-                      <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Vinkje icoon voor computer tune-up">✅</span>
-                      <span className="text-[#FFFFFF]/80"><strong className="text-[#FFFFFF]">Computer Tune-up</strong> — €79</span>
-                    </li>
-                  </ul>
-                </div>
-                <a href="#boek" className="mt-10 bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3]" data-analytics="pricing_button_bundle">
-                  Boek bundle <ChevronRight className="w-4 h-4" />
-                </a>
-              </div>
-            </motion.div>
+                {/* Bundles Pricing */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  whileHover={{ 
+                    scale: 1.02,
+                    transition: { duration: 0.2 }
+                  }}
+                  viewport={{ once: false, margin: "-50px" }}
+                  transition={{ 
+                    duration: 0.5, 
+                    delay: 0.2,
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  className="h-full"
+                >
+                  <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-10 min-h-[580px] h-full flex flex-col w-full
+                    hover:shadow-[0_0_30px_rgba(0,212,255,0.15)] transition-all duration-300">
+                    <div className="flex items-center gap-6 mb-8">
+                      <motion.span 
+                        className="text-4xl text-[#FFFFFF]" 
+                        role="img" 
+                        aria-label="Service bundles"
+                        whileHover={{ rotate: 15 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                      >🛠️</motion.span>
+                      <h3 className="text-2xl font-bold text-[#FFFFFF]">Service Bundles</h3>
+                    </div>
+                    
+                    <div className="mb-6 flex justify-center">
+                      <GuaranteeBadge />
+                    </div>
+                    
+                    <p className="text-[#FFFFFF]/80 mb-8 text-center text-lg">Niet opgelost = geen kosten</p>
+                    
+                    <div className="text-center mb-8">
+                      <p className="text-2xl font-semibold text-[#FFFFFF] mb-3">Vaste prijs, geen verrassingen</p>
+                    </div>
+                    
+                    <div className="flex-grow">
+                      <ul className="space-y-6">
+                        <li className="flex items-center gap-4">
+                          <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Vinkje icoon">✅</span>
+                          <span className="text-[#FFFFFF]/80 text-base"><strong className="text-[#FFFFFF]">Virus & Malware Scan</strong> — €99</span>
+                        </li>
+                        <li className="flex items-center gap-4">
+                          <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Vinkje icoon">✅</span>
+                          <span className="text-[#FFFFFF]/80 text-base"><strong className="text-[#FFFFFF]">Computer Tune-up</strong> — €79</span>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="mt-8">
+                      <a href="#boek" className="w-full bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3] text-lg" data-analytics="pricing_button_bundle">
+                        Boek bundle <ChevronRight className="w-5 h-5" />
+                      </a>
+                    </div>
+                  </div>
+                </motion.div>
 
-            {/* On-Site Support Pricing */}
-            <motion.div 
-              className="col-span-1 md:col-span-4"
-              initial={{ opacity: 0, y: 30, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              whileHover={{ 
-                scale: 1.02,
-                transition: { duration: 0.2 }
-              }}
-              viewport={{ once: false, margin: "-50px" }}
-              transition={{ 
-                duration: 0.5, 
-                delay: 0.3,
-                type: "spring",
-                stiffness: 100
-              }}
-            >
-              <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-10 h-full flex flex-col justify-between w-full
-                hover:shadow-[0_0_30px_rgba(0,212,255,0.15)] transition-all duration-300">
-                <div className="flex items-center gap-6 mb-6">
-                  <motion.span 
-                    className="text-4xl w-6 text-[#FFFFFF]" 
-                    role="img" 
-                    aria-label="On-site computer support"
-                    whileHover={{ rotate: 15 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  >🏠</motion.span>
-                  <h3 className="text-2xl font-bold text-[#FFFFFF]">Computerhulp aan huis</h3>
-                </div>
-                
-                {/* Guarantee Badge - Prominent placement */}
-                <div className="mb-6 flex justify-center">
-                  <GuaranteeBadge />
-                </div>
-                
-                <p className="text-[#FFFFFF]/80 mb-8">Geen voorrijkosten in Rotterdam</p>
-                <div className="space-y-8 flex-grow">
-                  <p className="text-3xl font-semibold text-[#FFFFFF]">€50 <span className="text-base">/uur</span></p>
-                  <p className="text-[#FFFFFF]/80">≤ 10 km vanaf Rotterdam-centrum, daarna €0,25/km</p>
-                  <ul className="space-y-6">
-                    <li className="flex items-center gap-4">
-                      <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Creditcard icoon voor betalingsmethoden">💳</span>
-                      <span className="text-[#FFFFFF]/80">iDEAL, contant of pin</span>
-                    </li>
-                  </ul>
-                </div>
-                <a href="#boek" className="mt-10 bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3]" data-analytics="pricing_button_onsite">
-                  Plan bezoek <ChevronRight className="w-4 h-4" />
-                </a>
+                {/* On-Site Support Pricing */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  whileHover={{ 
+                    scale: 1.02,
+                    transition: { duration: 0.2 }
+                  }}
+                  viewport={{ once: false, margin: "-50px" }}
+                  transition={{ 
+                    duration: 0.5, 
+                    delay: 0.3,
+                    type: "spring",
+                    stiffness: 100
+                  }}
+                  className="h-full"
+                >
+                  <div className="bg-white/15 backdrop-blur-lg rounded-2xl p-10 min-h-[580px] h-full flex flex-col w-full
+                    hover:shadow-[0_0_30px_rgba(0,212,255,0.15)] transition-all duration-300">
+                    <div className="flex items-center gap-6 mb-8">
+                      <motion.span 
+                        className="text-4xl text-[#FFFFFF]" 
+                        role="img" 
+                        aria-label="On-site computer support"
+                        whileHover={{ rotate: 15 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                      >🏠</motion.span>
+                      <h3 className="text-2xl font-bold text-[#FFFFFF]">Thuisservice</h3>
+                    </div>
+                    
+                    <div className="mb-6 flex justify-center">
+                      <GuaranteeBadge />
+                    </div>
+                    
+                    <p className="text-[#FFFFFF]/80 mb-8 text-center text-lg">Niet opgelost = geen kosten</p>
+                    
+                    <div className="text-center mb-8">
+                      <p className="text-4xl font-semibold text-[#FFFFFF] mb-3">€50 <span className="text-lg">/uur</span></p>
+                      <p className="text-[#FFFFFF]/80 text-base">Geen voorrijkosten in Rotterdam</p>
+                    </div>
+                    
+                    <div className="flex-grow">
+                      <p className="text-[#FFFFFF]/80 mb-6 text-base">≤ 10 km vanaf Rotterdam-centrum, daarna €0,25/km</p>
+                      <ul className="space-y-4">
+                        <li className="flex items-center gap-4">
+                          <span className="text-2xl text-[#FFFFFF]/80" role="img" aria-label="Creditcard icoon">💳</span>
+                          <span className="text-[#FFFFFF]/80 text-base">iDEAL, contant of pin</span>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="mt-8">
+                      <a href="#boek" className="w-full bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3] text-lg" data-analytics="pricing_button_onsite">
+                        Plan bezoek <ChevronRight className="w-5 h-5" />
+                      </a>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
-            </motion.div>
+            </div>
 
             {/* VAT Notice */}
             <div className="col-span-1 md:col-span-12 mt-6 flex justify-center items-center">

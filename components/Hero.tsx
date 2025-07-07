@@ -34,14 +34,14 @@ export default function Hero() {
       <section
         ref={heroRef}
         id="hero"
-        className="relative py-28 sm:py-36 lg:py-44"
+        className="relative py-48 sm:py-56 lg:py-64"
         aria-label="Hero section"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
             <div className="col-span-1 md:col-span-12">
-              <div className="text-white py-16 sm:py-20 lg:py-24 w-full">
-                <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl lg:max-w-[18ch] mb-8">
+              <div className="text-white py-24 sm:py-32 lg:py-40 w-full">
+                <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl lg:max-w-[18ch] mb-6">
                   Expert computerhulp
                 </h1>
                 <SimpleSentenceSwitcher />
