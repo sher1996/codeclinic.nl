@@ -84,7 +84,6 @@ export default function PerformanceMonitor() {
           // Type guard for LayoutShift
           if ('hadRecentInput' in entry && 'value' in entry) {
             const layoutShift = entry as LayoutShift;
-            // @ts-expect-error: hadRecentInput is not in the base type, but is present on LayoutShift
             if (!layoutShift.hadRecentInput) {
               clsValue += layoutShift.value;
               metrics.cls = clsValue;
