@@ -106,34 +106,10 @@ export default function RootLayout({
         <link rel="preload" href="/logo-cc.png" as="image" type="image/png" />
         
         {/* Defer non-critical CSS */}
-        <link
-          rel="preload"
-          href="/_next/static/css/app/globals.css"
-          as="style"
-          onLoad={(e) => {
-            const target = e.target as HTMLLinkElement;
-            target.onload = null;
-            target.rel = 'stylesheet';
-          }}
-        />
-        <noscript>
-          <link rel="stylesheet" href="/_next/static/css/app/globals.css" />
-        </noscript>
+        {/* Removed manual CSS <link> and <noscript> tags as per Next.js requirements */}
         
         {/* Defer calendar CSS */}
-        <link
-          rel="preload"
-          href="/_next/static/css/app/calendar.css"
-          as="style"
-          onLoad={(e) => {
-            const target = e.target as HTMLLinkElement;
-            target.onload = null;
-            target.rel = 'stylesheet';
-          }}
-        />
-        <noscript>
-          <link rel="stylesheet" href="/_next/static/css/app/calendar.css" />
-        </noscript>
+        {/* Removed manual CSS <link> and <noscript> tags as per Next.js requirements */}
         
         {/* Inline critical CSS for immediate rendering */}
         <style dangerouslySetInnerHTML={{

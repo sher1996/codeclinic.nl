@@ -70,9 +70,10 @@ export default function PerformanceMonitor() {
       let clsValue = 0;
       const clsObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        entries.forEach((entry: any) => {
-          if (!entry.hadRecentInput) {
-            clsValue += entry.value;
+        entries.forEach((entry: PerformanceEntry) => {
+          // @ts-ignore: hadRecentInput is not in the base type, but is present on LayoutShift
+          if (!(entry as any).hadRecentInput) {
+            clsValue += (entry as any).value;
             metrics.cls = clsValue;
             console.log(`📐 CLS: ${clsValue.toFixed(4)}`);
           }
