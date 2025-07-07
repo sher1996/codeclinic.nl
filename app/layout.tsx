@@ -6,9 +6,13 @@ import Header from '@/components/Header';
 import ErrorOverlay from '@/components/ErrorOverlay';
 import HiddenAdminAccess from '@/components/HiddenAdminAccess';
 import StructuredData from '@/components/StructuredData';
+import PerformanceMonitor from '@/components/PerformanceMonitor';
 
-
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap', // Optimize font loading
+  preload: true,
+});
 
 export const metadata: Metadata = {
   title: 'CodeClinic – Computerhulp aan huis en op afstand in Rotterdam',
@@ -90,24 +94,46 @@ export default function RootLayout({
         <link rel="alternate" hrefLang="nl" href="https://codeclinic.nl" />
         <link rel="alternate" hrefLang="x-default" href="https://codeclinic.nl" />
         
-        {/* Preload critical resources */}
-        <link
-          rel="preconnect"
-          href="https://assets.calendly.com"
-          crossOrigin="anonymous"
-        />
+        {/* DNS Prefetch and Preconnect for external resources */}
+        <link rel="dns-prefetch" href="//assets.calendly.com" />
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+        <link rel="preconnect" href="https://assets.calendly.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
-        {/* Preload critical CSS */}
+        {/* Preload critical resources */}
+        <link rel="preload" href="/logo-cc.png" as="image" type="image/png" />
+        
+        {/* Defer non-critical CSS */}
         <link
           rel="preload"
           href="/_next/static/css/app/globals.css"
           as="style"
+          onLoad={(e) => {
+            const target = e.target as HTMLLinkElement;
+            target.onload = null;
+            target.rel = 'stylesheet';
+          }}
         />
         <noscript>
-          {/* <link rel="stylesheet" href="/_next/static/css/app/globals.css" /> removed for Next.js best practice */}
+          <link rel="stylesheet" href="/_next/static/css/app/globals.css" />
         </noscript>
         
-        {/* Non-critical CSS will be loaded dynamically */}
+        {/* Defer calendar CSS */}
+        <link
+          rel="preload"
+          href="/_next/static/css/app/calendar.css"
+          as="style"
+          onLoad={(e) => {
+            const target = e.target as HTMLLinkElement;
+            target.onload = null;
+            target.rel = 'stylesheet';
+          }}
+        />
+        <noscript>
+          <link rel="stylesheet" href="/_next/static/css/app/calendar.css" />
+        </noscript>
         
         {/* Inline critical CSS for immediate rendering */}
         <style dangerouslySetInnerHTML={{
@@ -132,6 +158,7 @@ export default function RootLayout({
               font-size: var(--elderly-font-size-base);
               background: #0f172a;
               overflow-y: scroll;
+              scroll-behavior: smooth;
             }
             
             body {
@@ -521,6 +548,31 @@ export default function RootLayout({
             }
           `
         }} />
+        
+        {/* Defer non-critical JavaScript */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Defer loading of non-critical resources
+              function loadDeferredResources() {
+                // Load email-decode.min.js only when needed
+                if (document.querySelector('[data-email]')) {
+                  const script = document.createElement('script');
+                  script.src = 'https://cdn.jsdelivr.net/npm/email-decode@1.0.0/dist/email-decode.min.js';
+                  script.async = true;
+                  document.head.appendChild(script);
+                }
+              }
+              
+              // Load deferred resources after page load
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', loadDeferredResources);
+              } else {
+                loadDeferredResources();
+              }
+            `
+          }}
+        />
       </head>
       <body className={inter.className}>
         <a href="#main-content" className="skip-link">
@@ -535,6 +587,7 @@ export default function RootLayout({
         <ErrorOverlay />
         <HiddenAdminAccess />
         <StructuredData />
+        <PerformanceMonitor />
       </body>
     </html>
   );
