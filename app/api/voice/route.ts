@@ -1,17 +1,13 @@
-const WS_URL = process.env.WS_URL || 'ws://localhost:8765/ws';   // dev default
+import { NextResponse } from "next/server";
 
-export async function GET() {
-  return new Response(`<?xml version="1.0" encoding="UTF-8"?>
+export function GET() {
+  const twiml = `
 <Response>
-  <Connect>
-    <ConversationRelay
-      url="${WS_URL.replace('http', 'ws')}"
-      language="nl-NL"
-      ttsProvider="ElevenLabs"
-      voice="XJa38TJgDqYhj5mYbSJA"
-      welcomeGreeting="Hoi, ik ben Sam van CodeClinic. Waarmee kan ik helpen?" />
-  </Connect>
-</Response>`, {
-    headers: { 'Content-Type': 'text/xml' },
-  });
+  <Gather input="speech" action="/api/handle" language="nl-NL" speechTimeout="auto">
+    <Say language="nl-NL">Hoi, ik ben Sam. Waarmee kan ik helpen?</Say>
+  </Gather>
+  <Say language="nl-NL">Sorry, ik hoorde niets.</Say>
+  <Hangup/>
+</Response>`;
+  return new NextResponse(twiml, { headers: { "Content-Type": "text/xml" } });
 } 
