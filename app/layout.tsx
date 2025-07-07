@@ -1,5 +1,5 @@
-import './globals.css';
-import './calendar.css';
+// import './globals.css';
+// import './calendar.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
@@ -7,6 +7,7 @@ import ErrorOverlay from '@/components/ErrorOverlay';
 import HiddenAdminAccess from '@/components/HiddenAdminAccess';
 import StructuredData from '@/components/StructuredData';
 import PerformanceMonitor from '@/components/PerformanceMonitor';
+import { CSSLoaderManager } from '@/components/CSSLoader';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -564,6 +565,7 @@ export default function RootLayout({
         <HiddenAdminAccess />
         <StructuredData />
         <PerformanceMonitor />
+        <CSSLoaderManager />
       </body>
     </html>
   );
