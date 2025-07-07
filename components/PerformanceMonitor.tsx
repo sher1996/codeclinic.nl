@@ -63,8 +63,12 @@ export default function PerformanceMonitor() {
         const entries = list.getEntries();
         entries.forEach((entry) => {
           if (entry.entryType === 'first-input') {
-            metrics.fid = entry.processingStart - entry.startTime;
-            console.log(`⚡ FID: ${metrics.fid.toFixed(2)}ms`);
+            // Type guard for PerformanceEventTiming
+            if ('processingStart' in entry) {
+              const eventTiming = entry as PerformanceEventTiming;
+              metrics.fid = eventTiming.processingStart - eventTiming.startTime;
+              console.log(`⚡ FID: ${metrics.fid.toFixed(2)}ms`);
+            }
           }
         });
       });
