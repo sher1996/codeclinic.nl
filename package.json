@@ -1,0 +1,44 @@
+{
+  "name": "computer-help",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "optimize-css": "node scripts/optimize-css.js",
+    "build:optimized": "npm run optimize-css && next build"
+  },
+  "dependencies": {
+    "@tailwindcss/forms": "^0.5.10",
+    "@upstash/redis": "^1.35.0",
+    "clsx": "^2.1.1",
+    "critters": "^0.0.23",
+    "framer-motion": "^12.18.1",
+    "lucide-react": "^0.511.0",
+    "next": "^15.3.3",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "resend": "^4.6.0",
+    "tailwind-merge": "^3.3.0",
+    "tailwindcss-bg-patterns": "^0.3.0",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@flydotio/dockerfile": "^0.7.10",
+    "@fullhuman/postcss-purgecss": "^7.0.2",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.21",
+    "cssnano": "^7.0.7",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.8",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
