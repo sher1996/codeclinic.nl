@@ -68,7 +68,7 @@ export async function POST(req: Request) {
 
     } catch (error) {
       clearTimeout(timeoutId);
-      if (error.name === 'AbortError') {
+      if (error instanceof Error && error.name === 'AbortError') {
         console.error("Bot API timeout");
         return new NextResponse(
           `<Response><Say language="nl-NL">Sorry, het duurt te lang. Probeer het nog eens.</Say></Response>`,
