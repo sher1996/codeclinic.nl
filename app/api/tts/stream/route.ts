@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
           similarity_boost: 0.85,   // Higher similarity for voice consistency
           style: 0.1,               // Minimal style variation for clarity
           use_speaker_boost: true,  // Enhance speaker clarity
-          speaking_rate: 0.9        // Slower, more natural speaking rate
+          speaking_rate: 1.1        // Slightly faster for better flow
         },
         output_format: "mp3_44100_128"  // Standard quality for faster generation
       }),
