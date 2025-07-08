@@ -4,7 +4,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const text = searchParams.get("text") || "…";
   
-  // Call ElevenLabs streaming TTS with improved voice settings
+  // Call ElevenLabs streaming TTS with improved voice settings for louder audio
   const elevenRes = await fetch(
     `https://api.elevenlabs.io/v1/text-to-speech/${process.env.ELEVEN_VOICE_ID || "XJa38TJgDqYhj5mYbSJA"}/stream`,
     {
@@ -17,12 +17,13 @@ export async function GET(req: NextRequest) {
         text,
         model_id: "eleven_multilingual_v2",
         voice_settings: {
-          stability: 0.5,           // More natural variation
-          similarity_boost: 0.75,   // Maintain voice consistency
-          style: 0.3,               // Slight style variation
-          use_speaker_boost: true   // Enhance speaker clarity
+          stability: 0.6,           // Slightly more stable for clearer speech
+          similarity_boost: 0.8,    // Higher similarity for consistent voice
+          style: 0.2,               // Less style variation for clearer speech
+          use_speaker_boost: true,  // Enhance speaker clarity
+          speaking_rate: 1.1        // Slightly faster for better clarity
         },
-        output_format: "mp3_44100_128"
+        output_format: "mp3_44100_192"  // Higher quality audio
       }),
     }
   );
