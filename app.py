@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
 from pydantic import BaseModel
+import time
 
 # Load environment variables from .env file
 load_dotenv()
@@ -62,6 +63,9 @@ async def health_check():
 async def chat(request: ChatRequest):
     """Handle HTTP chat requests from the voice system"""
     try:
+        print(f"📞 CHAT REQUEST: {request.text}")
+        start_time = time.time()
+        
         response = await client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -73,6 +77,12 @@ async def chat(request: ChatRequest):
         )
         
         reply = response.choices[0].message.content or "Sorry, ik begrijp het niet."
+        end_time = time.time()
+        response_time = end_time - start_time
+        
+        print(f"🤖 BOT REPLY: {reply}")
+        print(f"⏱️  RESPONSE TIME: {response_time:.2f}s")
+        
         return {"reply": reply}
         
     except Exception as e:
