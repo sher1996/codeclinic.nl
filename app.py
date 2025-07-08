@@ -31,22 +31,40 @@ app.add_middleware(
 # Initialize OpenAI client
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-SYSTEM = os.getenv("SYSTEM_PROMPT", """Je bent Sam van CodeClinic.nl, een vriendelijke computerhulp in Rotterdam. Spreek altijd Nederlands.
+# Use a faster model for short HTTP replies
+FAST_MODEL = os.getenv("FAST_OPENAI_MODEL", "gpt-3.5-turbo-0125")
+STREAM_MODEL = os.getenv("STREAM_OPENAI_MODEL", "gpt-4o-mini")
 
-DIENSTEN:
-- Virus verwijdering: vanaf €49
-- Computer opschonen: vanaf €39  
-- Wifi optimalisatie: vanaf €45
-- Remote hulp: €44/uur
-- Aan huis: €50/uur
+SYSTEM = os.getenv("SYSTEM_PROMPT", """Je bent Sam van CodeClinic.nl – een vriendelijke **computerhulp in Rotterdam** met >15 jaar ervaring.
 
-LOCATIE: Rotterdam en omgeving
-TELEFOON: +31-6-24837889
-EMAIL: info@codeclinic.nl
+=== BEDRIJFSINFORMATIE ===
+• Locatie: Rotterdam & omgeving (geen voorrijkosten in Rotterdam-stad)
+• Telefoon: +31-6-24837889  (bel / WhatsApp)
+• E-mail: info@codeclinic.nl
+• Garantie: **Niet opgelost = geen kosten**
 
-GARANTIE: "Niet opgelost = geen kosten"
+=== TARIEVEN ===
+• Remote hulp: €44 per uur (TeamViewer)
+• Aan-huis hulp: €50 per uur (≤10 km gratis, daarna €0,25/km)
 
-TOON: Wees vriendelijk, geduldig en natuurlijk. Geef korte, duidelijke antwoorden. Help de beller met hun computerprobleem.""")
+=== POPULAIRE DIENSTEN (vanaf-prijzen) ===
+• Virus- & malware-verwijdering – €49
+• Computer opschonen & versnellen – €39
+• Wifi / netwerk optimalisatie – €45
+• Back-ups & data-herstel – €45
+• Printer / scanner instellen – €35
+• Software & updates – €35
+
+Zie codeclinic.nl/diensten voor het volledige aanbod.
+
+=== TONE OF VOICE ===
+• Spreek **altijd Nederlands** (informeel, duidelijk, vriendelijk).
+• Geef korte, concrete antwoorden (max ±3 zinnen), tenzij extra uitleg nodig is.
+• Verwijs naar prijzen en diensten **exact** zoals hierboven – **verzín nooit bedragen of diensten**.
+• Bied altijd een afspraakoptie via telefoon of de online planner.
+• Noem nooit dat je een taalmodel bent.
+• Als je het antwoord niet zeker weet: zeg “Dat weet ik niet zeker” i.p.v. hallucineren.
+""")
 
 class ChatRequest(BaseModel):
     text: str
@@ -65,9 +83,9 @@ async def chat(request: ChatRequest):
     try:
         print(f"📞 CHAT REQUEST: {request.text}")
         start_time = time.time()
-        
+
         response = await client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=FAST_MODEL,
             messages=[
                 {"role": "system", "content": SYSTEM},
                 {"role": "user", "content": request.text}
@@ -75,16 +93,16 @@ async def chat(request: ChatRequest):
             max_tokens=120,
             timeout=20,
         )
-        
+
         reply = response.choices[0].message.content or "Sorry, ik begrijp het niet."
         end_time = time.time()
         response_time = end_time - start_time
-        
+
         print(f"🤖 BOT REPLY: {reply}")
         print(f"⏱️  RESPONSE TIME: {response_time:.2f}s")
-        
+
         return {"reply": reply}
-        
+
     except Exception as e:
         print(f"⚠️ OpenAI error in /chat: {e}")
         return {"reply": "Sorry, er ging iets mis."}
@@ -120,7 +138,7 @@ async def relay(ws: WebSocket):
             reply_accum = ""
             try:
                 stream = await client.chat.completions.create(
-                    model="gpt-4o-mini",
+                    model=STREAM_MODEL,
                     stream=True,
                     messages=[
                         {"role":"system","content":SYSTEM},
@@ -133,7 +151,7 @@ async def relay(ws: WebSocket):
                     delta = chunk.choices[0].delta.content or ""
                     if delta:
                         reply_accum += delta
-                
+
                 # Send complete response at once
                 if reply_accum:
                     response_frame = {
