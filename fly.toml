@@ -23,3 +23,16 @@ primary_region = 'ams'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+
+# Explicitly disable auto-stopping
+[processes]
+  app = "python app.py"
+
+# Ensure machines stay running - disable auto-stopping completely
+[experimental]
+  auto_stop_machines = false
+
+# Additional configuration to prevent auto-stopping
+[deploy]
+  strategy = "rolling"
+  max_unavailable = 0
