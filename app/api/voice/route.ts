@@ -6,7 +6,7 @@ export function GET() {
   
   const twiml = `
 <Response>
-  <Gather input="speech" action="/api/handle" language="nl-NL" speechTimeout="auto">
+  <Gather input="speech" action="/api/handle" language="nl-NL" speechTimeout="auto" timeout="10">
     <Play>https://codeclinic.nl/api/tts/stream?text=${greetingText}</Play>
   </Gather>
   <Play>https://codeclinic.nl/api/tts/stream?text=${fallbackText}</Play>
