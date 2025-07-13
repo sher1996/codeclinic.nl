@@ -106,11 +106,4 @@ export default function ConsentManager() {
       </div>
     </div>
   );
-}
-
-// Extend Window interface for gtag
-declare global {
-  interface Window {
-    gtag: (...args: unknown[]) => void;
-  }
 } 
