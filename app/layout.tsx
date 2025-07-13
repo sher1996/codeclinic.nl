@@ -2,6 +2,7 @@ import './globals.css';
 import './calendar.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Script from 'next/script';
 import Header from '@/components/Header';
 import ErrorOverlay from '@/components/ErrorOverlay';
 import HiddenAdminAccess from '@/components/HiddenAdminAccess';
@@ -79,8 +80,13 @@ export default function RootLayout({
     <html lang="nl" className="scroll-smooth">
       <head>
         {/* Google tag (gtag.js) with consent mode */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-8VM2Y5JZEM"></script>
-        <script
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-8VM2Y5JZEM"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
