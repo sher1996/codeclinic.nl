@@ -10,11 +10,6 @@ interface ConsentPreferences {
 
 export default function ConsentManager() {
   const [showBanner, setShowBanner] = useState(false);
-  const [_consent, setConsent] = useState<ConsentPreferences>({
-    analytics: false,
-    advertising: false,
-    personalization: false,
-  });
 
   useEffect(() => {
     // Check if user has already made a consent choice
@@ -23,7 +18,6 @@ export default function ConsentManager() {
       setShowBanner(true);
     } else {
       const parsedConsent = JSON.parse(savedConsent);
-      setConsent(parsedConsent);
       updateConsentMode(parsedConsent);
     }
   }, []);
@@ -45,7 +39,6 @@ export default function ConsentManager() {
       advertising: true,
       personalization: true,
     };
-    setConsent(newConsent);
     localStorage.setItem('codeclinic-consent', JSON.stringify(newConsent));
     updateConsentMode(newConsent);
     setShowBanner(false);
@@ -57,7 +50,6 @@ export default function ConsentManager() {
       advertising: false,
       personalization: false,
     };
-    setConsent(newConsent);
     localStorage.setItem('codeclinic-consent', JSON.stringify(newConsent));
     updateConsentMode(newConsent);
     setShowBanner(false);
@@ -69,7 +61,6 @@ export default function ConsentManager() {
       advertising: false,
       personalization: false,
     };
-    setConsent(newConsent);
     localStorage.setItem('codeclinic-consent', JSON.stringify(newConsent));
     updateConsentMode(newConsent);
     setShowBanner(false);
