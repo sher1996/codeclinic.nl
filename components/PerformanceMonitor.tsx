@@ -2,17 +2,6 @@
 
 import { useEffect } from 'react';
 
-// Extend Window interface for Google Analytics
-declare global {
-  interface Window {
-    gtag?: (
-      command: string,
-      targetId: string,
-      config?: Record<string, unknown>
-    ) => void;
-  }
-}
-
 interface PerformanceMetrics {
   fcp: number;
   lcp: number;
