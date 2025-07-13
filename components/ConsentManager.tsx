@@ -10,7 +10,7 @@ interface ConsentPreferences {
 
 export default function ConsentManager() {
   const [showBanner, setShowBanner] = useState(false);
-  const [consent, setConsent] = useState<ConsentPreferences>({
+  const [_consent, setConsent] = useState<ConsentPreferences>({
     analytics: false,
     advertising: false,
     personalization: false,
