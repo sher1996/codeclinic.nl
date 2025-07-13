@@ -8,6 +8,7 @@ import HiddenAdminAccess from '@/components/HiddenAdminAccess';
 import StructuredData from '@/components/StructuredData';
 import PerformanceMonitor from '@/components/PerformanceMonitor';
 import { CSSLoaderManager } from '@/components/CSSLoader';
+import ConsentManager from '@/components/ConsentManager';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -77,6 +78,34 @@ export default function RootLayout({
   return (
     <html lang="nl" className="scroll-smooth">
       <head>
+        {/* Google tag (gtag.js) with consent mode */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-8VM2Y5JZEM"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              
+              // Initialize consent mode with default settings
+              gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'analytics_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'wait_for_update': 500
+              });
+              
+              // Configure Google Analytics with consent mode
+              gtag('config', 'G-8VM2Y5JZEM', {
+                'consent_mode': 'advanced',
+                'anonymize_ip': true,
+                'allow_google_signals': false,
+                'allow_ad_personalization_signals': false
+              });
+            `,
+          }}
+        />
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
@@ -566,6 +595,7 @@ export default function RootLayout({
         <StructuredData />
         <PerformanceMonitor />
         <CSSLoaderManager />
+        <ConsentManager />
       </body>
     </html>
   );

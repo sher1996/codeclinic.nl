@@ -57,7 +57,7 @@ export class WebSocketClient {
       };
 
       this.ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        // console.error('WebSocket error:', error);
       };
 
     } catch (error) {

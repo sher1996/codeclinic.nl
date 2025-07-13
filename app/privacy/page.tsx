@@ -1,156 +1,146 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Privacy & Cookies - CodeClinic Computerhulp Rotterdam',
-  description: 'Lees hoe CodeClinic uw persoonlijke gegevens beschermt en gebruikt. Transparante privacyverklaring voor computerhulp diensten in Rotterdam.',
-  keywords: 'privacy computerhulp, cookies computer reparatie, gegevensbescherming computerhulp Rotterdam, privacyverklaring computer ondersteuning',
-  openGraph: {
-    title: 'Privacy & Cookies - CodeClinic Computerhulp Rotterdam',
-    description: 'Lees hoe CodeClinic uw persoonlijke gegevens beschermt en gebruikt. Transparante privacyverklaring voor computerhulp diensten in Rotterdam.',
-    url: 'https://codeclinic.nl/privacy',
-  },
-  twitter: {
-    title: 'Privacy & Cookies - CodeClinic Computerhulp Rotterdam',
-    description: 'Lees hoe CodeClinic uw persoonlijke gegevens beschermt en gebruikt. Transparante privacyverklaring voor computerhulp diensten in Rotterdam.',
-  },
-  alternates: {
-    canonical: '/privacy',
-  },
+  title: 'Privacy Policy - CodeClinic',
+  description: 'Lees hoe CodeClinic uw privacy beschermt en hoe wij uw gegevens verwerken volgens de AVG/GDPR.',
 };
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white">
-      <div className="max-w-4xl mx-auto px-4 py-16">
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
-          <h1 className="text-4xl font-bold text-center mb-8 text-white">
-            Privacy & Cookies
-          </h1>
-          
-          <div className="space-y-8 text-lg leading-relaxed">
-            <section>
-              <h2 className="text-2xl font-semibold mb-4 text-blue-200">
-                Uw Privacy is Belangrijk voor Ons
-              </h2>
-              <p className="text-white/90">
-                Bij CodeClinic.nl nemen we uw privacy zeer serieus. Deze pagina legt uit hoe we uw persoonlijke gegevens verzamelen, gebruiken en beschermen.
-              </p>
-            </section>
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 to-purple-900 text-white">
+      <div className="container mx-auto px-4 py-16 max-w-4xl">
+        <h1 className="text-4xl font-bold mb-8 text-center">Privacy Policy</h1>
+        
+        <div className="prose prose-invert max-w-none">
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">1. Inleiding</h2>
+            <p className="mb-4">
+              CodeClinic respecteert uw privacy en zorgt ervoor dat alle persoonlijke informatie die u ons verschaft vertrouwelijk wordt behandeld. 
+              Deze privacy policy is van toepassing op alle diensten van CodeClinic.
+            </p>
+          </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-4 text-blue-200">
-                Welke Gegevens Verzamelen We?
-              </h2>
-              <div className="space-y-3 text-white/90">
-                <p>We verzamelen alleen de gegevens die nodig zijn om u te helpen:</p>
-                <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li><strong>Contactgegevens:</strong> Uw naam, telefoonnummer en e-mailadres</li>
-                  <li><strong>Afspraakgegevens:</strong> Datum, tijd en locatie van uw afspraak</li>
-                  <li><strong>Computerproblemen:</strong> Beschrijving van het probleem dat u ervaart</li>
-                  <li><strong>Technische informatie:</strong> Type computer en besturingssysteem (alleen als nodig)</li>
-                </ul>
-              </div>
-            </section>
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">2. Verwerking van persoonsgegevens</h2>
+            <p className="mb-4">
+              CodeClinic verwerkt persoonsgegevens wanneer u gebruik maakt van onze diensten en/of wanneer u deze zelf aan ons verstrekt. 
+              Hieronder vindt u een overzicht van de persoonsgegevens die wij verwerken:
+            </p>
+            <ul className="list-disc pl-6 mb-4">
+              <li>Voor- en achternaam</li>
+              <li>E-mailadres</li>
+              <li>Telefoonnummer</li>
+              <li>Adresgegevens</li>
+              <li>IP-adres</li>
+              <li>Website gebruik (via cookies)</li>
+            </ul>
+          </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-4 text-blue-200">
-                Hoe Beschermen We Uw Gegevens?
-              </h2>
-              <div className="space-y-3 text-white/90">
-                <p>We nemen uitgebreide maatregelen om uw gegevens veilig te houden:</p>
-                <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li><strong>Versleutelde verbindingen:</strong> Alle gegevens worden versleuteld verzonden</li>
-                  <li><strong>Veilige servers:</strong> Uw gegevens worden op beveiligde servers opgeslagen</li>
-                  <li><strong>Toegangscontrole:</strong> Alleen geautoriseerd personeel heeft toegang tot uw gegevens</li>
-                  <li><strong>Regelmatige updates:</strong> We houden onze beveiliging up-to-date</li>
-                </ul>
-              </div>
-            </section>
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">3. Doel en grondslag</h2>
+            <p className="mb-4">
+              CodeClinic verwerkt uw persoonsgegevens voor de volgende doelen:
+            </p>
+            <ul className="list-disc pl-6 mb-4">
+              <li>Het afhandelen van uw betaling</li>
+              <li>U te kunnen bellen of e-mailen indien dit nodig is om onze dienstverlening uit te kunnen voeren</li>
+              <li>U te informeren over wijzigingen van onze diensten en producten</li>
+              <li>Om goederen en diensten bij u af te leveren</li>
+              <li>CodeClinic analyseert uw gedrag op de website om de website te verbeteren en producten en diensten aan te bieden op uw behoeften af te stemmen.</li>
+            </ul>
+          </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-4 text-blue-200">
-                Hoe Gebruiken We Uw Gegevens?
-              </h2>
-              <div className="space-y-3 text-white/90">
-                <p>Uw gegevens worden alleen gebruikt voor:</p>
-                <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li>Het maken en beheren van uw afspraken</li>
-                  <li>Het leveren van computerhulp en ondersteuning</li>
-                  <li>Het sturen van belangrijke informatie over uw afspraak</li>
-                  <li>Het verbeteren van onze dienstverlening</li>
-                </ul>
-                <p className="mt-4">
-                  <strong>We verkopen of delen uw gegevens nooit met derden</strong> voor marketingdoeleinden.
-                </p>
-              </div>
-            </section>
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">4. Cookies en tracking</h2>
+            <p className="mb-4">
+              CodeClinic gebruikt cookies en vergelijkbare technologieën om uw ervaring te verbeteren en websiteverkeer te analyseren. 
+              Wij gebruiken Google Analytics met consent mode om uw privacy te respecteren.
+            </p>
+            
+            <h3 className="text-xl font-semibold mb-3">Google Analytics</h3>
+            <p className="mb-4">
+              Onze website gebruikt Google Analytics om bezoekersstatistieken bij te houden. 
+              Google Analytics gebruikt cookies om informatie over uw bezoek aan onze website te verzamelen.
+            </p>
+            
+            <h3 className="text-xl font-semibold mb-3">Consent Mode</h3>
+            <p className="mb-4">
+              Wij hebben Google Analytics Consent Mode geïmplementeerd om te voldoen aan de AVG/GDPR. 
+              Dit betekent dat:
+            </p>
+            <ul className="list-disc pl-6 mb-4">
+              <li>Geen tracking plaatsvindt zonder uw toestemming</li>
+              <li>U kunt kiezen tussen verschillende niveaus van toestemming</li>
+              <li>Uw voorkeuren worden opgeslagen en gerespecteerd</li>
+              <li>U kunt uw toestemming op elk moment wijzigen</li>
+            </ul>
+          </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-4 text-blue-200">
-                Cookies
-              </h2>
-              <div className="space-y-3 text-white/90">
-                <p>Onze website gebruikt cookies om uw ervaring te verbeteren:</p>
-                <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li><strong>Noodzakelijke cookies:</strong> Voor het correct functioneren van de website</li>
-                  <li><strong>Voorkeuren cookies:</strong> Om uw instellingen te onthouden</li>
-                  <li><strong>Analytische cookies:</strong> Om te begrijpen hoe de website wordt gebruikt (anoniem)</li>
-                </ul>
-                <p className="mt-4">
-                  U kunt cookies altijd uitschakelen via uw browserinstellingen, maar dit kan de functionaliteit van de website beïnvloeden.
-                </p>
-              </div>
-            </section>
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">5. Bewaartermijn</h2>
+            <p className="mb-4">
+              CodeClinic bewaart uw persoonsgegevens niet langer dan strikt nodig is om de doelen te realiseren waarvoor uw gegevens worden verzameld. 
+              Onze bewaartermijn is 7 jaar (dit geldt voor de wettelijke bewaarplicht).
+            </p>
+          </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-4 text-blue-200">
-                Uw Rechten
-              </h2>
-              <div className="space-y-3 text-white/90">
-                <p>U heeft het recht om:</p>
-                <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li>Uw gegevens in te zien en te wijzigen</li>
-                  <li>Uw gegevens te laten verwijderen</li>
-                  <li>Bezwaar te maken tegen het gebruik van uw gegevens</li>
-                  <li>Uw gegevens te laten overdragen</li>
-                </ul>
-              </div>
-            </section>
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">6. Delen van persoonsgegevens met derden</h2>
+            <p className="mb-4">
+              CodeClinic verkoopt uw gegevens niet aan derden en verstrekt deze uitsluitend indien dit nodig is voor de uitvoering van onze overeenkomst met u of om te voldoen aan een wettelijke verplichting.
+            </p>
+          </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-4 text-blue-200">
-                Contact
-              </h2>
-              <div className="space-y-3 text-white/90">
-                <p>
-                  Heeft u vragen over uw privacy of wilt u uw gegevens inzien? Neem dan contact met ons op:
-                </p>
-                <div className="bg-white/5 rounded-lg p-4 mt-4">
-                  <p><strong>E-mail:</strong> <a href="mailto:info@codeclinic.nl" className="text-blue-200 hover:text-blue-100">info@codeclinic.nl</a></p>
-                  <p><strong>Telefoon:</strong> <a href="tel:+31624837889" className="text-blue-200 hover:text-blue-100">+31 6 24837889</a></p>
-                </div>
-              </div>
-            </section>
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">7. Cookies en vergelijkbare technieken</h2>
+            <p className="mb-4">
+              CodeClinic gebruikt alleen technische, functionele en analytische cookies die geen inbreuk maken op uw privacy. 
+              Een cookie is een klein tekstbestand dat bij het eerste bezoek aan deze website wordt opgeslagen op uw computer, tablet of smartphone. 
+              De cookies die wij gebruiken zijn noodzakelijk voor de technische werking van de website en uw gebruiksgemak.
+            </p>
+          </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-4 text-blue-200">
-                Wijzigingen
-              </h2>
-              <p className="text-white/90">
-                We kunnen deze privacyverklaring af en toe aanpassen. Belangrijke wijzigingen zullen we altijd duidelijk communiceren via onze website.
-              </p>
-            </section>
-          </div>
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">8. Gegevens inzien, aanpassen of verwijderen</h2>
+            <p className="mb-4">
+              U heeft het recht om uw persoonsgegevens in te zien, aan te passen of te verwijderen. 
+              Daarnaast heeft u het recht om uw eventuele toestemming voor de gegevensverwerking in te trekken of bezwaar te maken tegen de verwerking van uw persoonsgegevens door CodeClinic.
+            </p>
+            <p className="mb-4">
+              U kunt een verzoek tot inzage, correctie, verwijdering van uw persoonsgegevens of verzoek tot intrekking van uw toestemming of bezwaar op de verwerking van uw persoonsgegevens sturen naar info@codeclinic.nl.
+            </p>
+          </section>
 
-          <div className="mt-12 text-center">
-            <Link 
-              href="/"
-              className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200"
-            >
-              ← Terug naar Homepage
-            </Link>
-          </div>
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">9. Beveiliging</h2>
+            <p className="mb-4">
+              CodeClinic neemt de bescherming van uw gegevens serieus en neemt passende maatregelen om misbruik, verlies, onbevoegde toegang, ongewenste openbaarmaking en ongeoorloofde wijziging tegen te gaan. 
+              Als u de indruk heeft dat uw gegevens niet goed beveiligd zijn of er aanwijzingen zijn van misbruik, neem dan contact op via info@codeclinic.nl.
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">10. Contact</h2>
+            <p className="mb-4">
+              Voor vragen over deze privacy policy of over de verwerking van uw persoonsgegevens kunt u contact opnemen met:
+            </p>
+            <div className="bg-gray-800 p-4 rounded-lg">
+              <p><strong>CodeClinic</strong></p>
+              <p>E-mail: info@codeclinic.nl</p>
+              <p>Website: www.codeclinic.nl</p>
+            </div>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">11. Wijzigingen</h2>
+            <p className="mb-4">
+              CodeClinic behoudt zich het recht voor om wijzigingen aan te brengen in deze privacy policy. 
+              Het is raadzaam om deze privacy policy regelmatig te raadplegen, zodat u van deze wijzigingen op de hoogte bent.
+            </p>
+            <p className="text-sm text-gray-300">
+              Laatste update: {new Date().toLocaleDateString('nl-NL')}
+            </p>
+          </section>
         </div>
       </div>
     </div>
