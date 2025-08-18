@@ -1,5 +1,6 @@
-import './globals.css';
-import './calendar.css';
+// CSS files are now loaded dynamically via CSSLoaderManager
+// import './globals.css';
+// import './calendar.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
@@ -138,8 +139,8 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
-        {/* Preload critical resources */}
-        <link rel="preload" href="/logo-cc.png" as="image" type="image/png" />
+        {/* Preload critical resources - only if logo is used above the fold */}
+        {/* <link rel="preload" href="/logo-cc.png" as="image" type="image/png" /> */}
         
         {/* Defer non-critical CSS */}
         {/* Removed manual CSS <link> and <noscript> tags as per Next.js requirements */}

@@ -6,12 +6,32 @@ import { Resend } from 'resend';
 import { Redis } from '@upstash/redis';
 import { Booking, AtomicBookingResult } from '@/types/booking';
 
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
+// Initialize Redis with error handling
+let redis: Redis | null = null;
+let resend: Resend | null = null;
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+try {
+  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+    redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    });
+  } else {
+    console.warn('[calendar] Redis credentials not configured');
+  }
+} catch (error) {
+  console.error('[calendar] Failed to initialize Redis:', error);
+}
+
+try {
+  if (process.env.RESEND_API_KEY) {
+    resend = new Resend(process.env.RESEND_API_KEY);
+  } else {
+    console.warn('[calendar] Resend API key not configured');
+  }
+} catch (error) {
+  console.error('[calendar] Failed to initialize Resend:', error);
+}
 
 // Validation schema for booking data
 const bookingSchema = z.object({
@@ -54,6 +74,10 @@ function isValidDate(date: string): boolean {
 
 // Atomic booking function using Redis transactions
 async function atomicBookSlot(bookingData: Booking): Promise<AtomicBookingResult> {
+  if (!redis) {
+    return { success: false, error: 'Database not configured' };
+  }
+  
   try {
     // Use Redis transaction to ensure atomicity
     const result = await redis.eval(`
@@ -114,8 +138,8 @@ async function atomicBookSlot(bookingData: Booking): Promise<AtomicBookingResult
 
 // Function to send admin notification email
 async function sendAdminNotification(booking: Booking) {
-  if (!process.env.ADMIN_EMAIL || !process.env.RESEND_API_KEY) {
-    console.log('[calendar] Admin email not configured, skipping notification');
+  if (!process.env.ADMIN_EMAIL || !resend) {
+    console.log('[calendar] Admin email not configured or Resend not initialized, skipping notification');
     return;
   }
 
@@ -153,6 +177,15 @@ async function sendAdminNotification(booking: Booking) {
 }
 
 export async function GET() {
+  if (!redis) {
+    return NextResponse.json({ 
+      ok: false, 
+      error: 'Database not configured',
+      timeSlots: generateTimeSlots(),
+      bookings: []
+    }, { status: 503 });
+  }
+  
   const rawBookings = await redis.lrange('bookings', 0, -1);
   const bookings: Booking[] = [];
   for (const b of rawBookings) {

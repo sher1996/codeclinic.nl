@@ -35,7 +35,14 @@ export class WebSocketClient {
         try {
           const data = JSON.parse(event.data);
           if (this.onMessageCallback) {
-            this.onMessageCallback(data);
+            // Use setTimeout to avoid blocking the message channel
+            setTimeout(() => {
+              try {
+                this.onMessageCallback(data);
+              } catch (error) {
+                console.error('Error in message callback:', error);
+              }
+            }, 0);
           }
         } catch (error) {
           console.error('Error parsing WebSocket message:', error);
