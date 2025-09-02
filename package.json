@@ -12,6 +12,7 @@
     "build:optimized": "npm run optimize-css && next build"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.57.0",
     "@tailwindcss/forms": "^0.5.10",
     "@upstash/redis": "^1.35.0",
     "clsx": "^2.1.1",

@@ -39,14 +39,6 @@ export const metadata: Metadata = {
     description: 'CodeClinic: snelle en betrouwbare computerhulp voor thuis en via internet. Geen voorrijkosten in Rotterdam, niet opgelost = geen kosten. Plan direct uw afspraak!',
     url: 'https://codeclinic.nl',
     siteName: 'CodeClinic.nl',
-    images: [
-      {
-        url: '/logo-cc.png',
-        width: 1200,
-        height: 630,
-        alt: 'CodeClinic.nl - Expert Computerhulp Rotterdam',
-      },
-    ],
     locale: 'nl_NL',
     type: 'website',
   },
@@ -54,7 +46,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'CodeClinic – Computerhulp aan huis en op afstand in Rotterdam',
     description: 'CodeClinic: snelle en betrouwbare computerhulp voor thuis en via internet. Geen voorrijkosten in Rotterdam, niet opgelost = geen kosten.',
-    images: ['/logo-cc.png'],
   },
   robots: {
     index: true,

@@ -1,26 +1,25 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { Resend } from 'resend';
+import { createClient } from '@supabase/supabase-js';
+import { Booking } from '@/types/booking';
 
-// Import Upstash Redis
-import { Redis } from '@upstash/redis';
-import { Booking, AtomicBookingResult } from '@/types/booking';
-
-// Initialize Redis with error handling
-let redis: Redis | null = null;
+// Initialize Supabase client
+let supabase: any = null;
 let resend: Resend | null = null;
 
 try {
-  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-    redis = new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN,
-    });
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
+    supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_ANON_KEY
+    );
+    console.log('[calendar] Supabase client initialized');
   } else {
-    console.warn('[calendar] Redis credentials not configured');
+    console.warn('[calendar] Supabase credentials not configured');
   }
 } catch (error) {
-  console.error('[calendar] Failed to initialize Redis:', error);
+  console.error('[calendar] Failed to initialize Supabase:', error);
 }
 
 try {
@@ -56,84 +55,16 @@ function generateTimeSlots(): string[] {
 
 // Helper to validate date is not in the past (uses local timezone)
 function isValidDate(date: string): boolean {
-  // Parse booking date as local date
   const [year, month, day] = date.split('-').map(Number);
   const bookingDate = new Date(year, month - 1, day);
-
-  // Get tomorrow's date in local time
   const now = new Date();
   const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-
-  // Format both as YYYY-MM-DD
+  
   const pad = (n: number) => n.toString().padStart(2, '0');
   const bookingStr = `${bookingDate.getFullYear()}-${pad(bookingDate.getMonth() + 1)}-${pad(bookingDate.getDate())}`;
   const tomorrowStr = `${tomorrow.getFullYear()}-${pad(tomorrow.getMonth() + 1)}-${pad(tomorrow.getDate())}`;
-
-  return bookingStr >= tomorrowStr;
-}
-
-// Atomic booking function using Redis transactions
-async function atomicBookSlot(bookingData: Booking): Promise<AtomicBookingResult> {
-  if (!redis) {
-    return { success: false, error: 'Database not configured' };
-  }
   
-  try {
-    // Use Redis transaction to ensure atomicity
-    const result = await redis.eval(`
-      -- Get all existing bookings
-      local bookings = redis.call('LRANGE', 'bookings', 0, -1)
-      
-      -- Check if slot is already booked
-      for i, booking in ipairs(bookings) do
-        local bookingObj = cjson.decode(booking)
-        if bookingObj.date == ARGV[1] and bookingObj.time == ARGV[2] then
-          return cjson.encode({success = false, error = 'Slot already booked'})
-        end
-      end
-      
-      -- If slot is available, add the booking
-      local newBooking = cjson.encode({
-        name = ARGV[3],
-        email = ARGV[4],
-        phone = ARGV[5],
-        date = ARGV[1],
-        time = ARGV[2],
-        notes = ARGV[6],
-        appointmentType = ARGV[7],
-        id = ARGV[8],
-        createdAt = ARGV[9],
-        updatedAt = ARGV[10]
-      })
-      
-      redis.call('RPUSH', 'bookings', newBooking)
-      return cjson.encode({success = true, booking = cjson.decode(newBooking)})
-    `, [], [
-      bookingData.date,
-      bookingData.time,
-      bookingData.name,
-      bookingData.email,
-      bookingData.phone,
-      bookingData.notes || '',
-      bookingData.appointmentType || 'onsite',
-      bookingData.id,
-      bookingData.createdAt,
-      bookingData.updatedAt
-    ]);
-
-    // Handle the result which can be either a string or object
-    if (typeof result === 'string') {
-      return JSON.parse(result);
-    } else if (typeof result === 'object' && result !== null) {
-      // If it's already an object, return it directly
-      return result as AtomicBookingResult;
-    } else {
-      throw new Error(`Unexpected result type from Redis eval: ${typeof result}`);
-    }
-  } catch (error) {
-    console.error('[calendar] Atomic booking failed:', error);
-    return { success: false, error: 'Booking failed' };
-  }
+  return bookingStr >= tomorrowStr;
 }
 
 // Function to send admin notification email
@@ -172,41 +103,62 @@ async function sendAdminNotification(booking: Booking) {
     console.log('[calendar] Admin notification sent successfully');
   } catch (error: unknown) {
     console.error('[calendar] Failed to send admin notification:', error);
-    // Don't fail the booking if admin notification fails
   }
 }
 
 export async function GET() {
-  if (!redis) {
-    return NextResponse.json({ 
-      ok: false, 
-      error: 'Database not configured',
-      timeSlots: generateTimeSlots(),
-      bookings: []
-    }, { status: 503 });
-  }
-  
-  const rawBookings = await redis.lrange('bookings', 0, -1);
-  const bookings: Booking[] = [];
-  for (const b of rawBookings) {
-    try {
-      // Check if it's already an object or needs parsing
-      let booking: Booking;
-      if (typeof b === 'string') {
-        booking = JSON.parse(b);
-      } else {
-        booking = b as Booking;
-      }
-      bookings.push(booking);
-    } catch {
-      console.error('[calendar] Failed to parse booking from Redis:', typeof b === 'string' ? b : JSON.stringify(b));
+  try {
+    if (!supabase) {
+      console.error('[calendar] Supabase not initialized - using fallback mode');
+      return NextResponse.json({ 
+        ok: true, 
+        warning: 'Database not configured - using fallback mode',
+        timeSlots: generateTimeSlots(),
+        bookings: [],
+        fallback: true
+      });
     }
+    
+    console.log('[calendar] Fetching bookings from Supabase...');
+    
+    // Fetch all bookings from Supabase
+    const { data: bookings, error } = await supabase
+      .from('bookings')
+      .select('*')
+      .order('date', { ascending: true })
+      .order('time', { ascending: true });
+    
+    if (error) {
+      console.error('[calendar] Supabase query failed:', error);
+      return NextResponse.json({ 
+        ok: true, 
+        warning: 'Database query failed - using fallback mode',
+        details: error.message,
+        timeSlots: generateTimeSlots(),
+        bookings: [],
+        fallback: true
+      });
+    }
+    
+    console.log('[calendar] Successfully fetched bookings:', bookings?.length || 0);
+    
+    return NextResponse.json({
+      ok: true,
+      timeSlots: generateTimeSlots(),
+      bookings: bookings || [],
+      fallback: false
+    });
+  } catch (error) {
+    console.error('[calendar] GET request failed:', error);
+    return NextResponse.json({ 
+      ok: true, 
+      warning: 'Server error - using fallback mode',
+      details: error instanceof Error ? error.message : 'Unknown error',
+      timeSlots: generateTimeSlots(),
+      bookings: [],
+      fallback: true
+    });
   }
-  return NextResponse.json({
-    ok: true,
-    timeSlots: generateTimeSlots(),
-    bookings,
-  });
 }
 
 export async function POST(request: Request) {
@@ -222,32 +174,76 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: 'Bookings must be made at least one day in advance' }, { status: 400 });
     }
 
-    // Add a unique ID and timestamps
-    const booking: Booking = {
-      ...validated,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+    if (!supabase) {
+      return NextResponse.json({ ok: false, error: 'Database not configured' }, { status: 503 });
+    }
+
+    // Check if slot is already booked
+    const { data: existingBooking, error: checkError } = await supabase
+      .from('bookings')
+      .select('id')
+      .eq('date', validated.date)
+      .eq('time', validated.time)
+      .single();
+    
+    if (checkError && checkError.code !== 'PGRST116') { // PGRST116 = no rows found
+      console.error('[calendar] Error checking existing booking:', checkError);
+      return NextResponse.json({ ok: false, error: 'Database error' }, { status: 500 });
+    }
+    
+    if (existingBooking) {
+      console.log('[calendar] Slot already booked:', validated.date, validated.time);
+      return NextResponse.json({ ok: false, error: 'Slot already booked' }, { status: 409 });
+    }
+
+    // Create new booking
+    const bookingData = {
+      name: validated.name,
+      email: validated.email,
+      phone: validated.phone,
+      date: validated.date,
+      time: validated.time,
+      notes: validated.notes || null,
+      appointment_type: validated.appointmentType || 'onsite'
     };
 
-    // Use atomic booking to prevent race conditions
-    const result = await atomicBookSlot(booking);
+    const { data: newBooking, error: insertError } = await supabase
+      .from('bookings')
+      .insert(bookingData)
+      .select()
+      .single();
     
-    if (!result.success) {
-      return NextResponse.json({ ok: false, error: result.error }, { status: 409 });
+    if (insertError) {
+      console.error('[calendar] Failed to insert booking:', insertError);
+      return NextResponse.json({ ok: false, error: 'Failed to create booking' }, { status: 500 });
     }
+
+    console.log('[calendar] Booking created successfully:', newBooking);
+
+    // Convert to Booking type for email notification
+    const booking: Booking = {
+      id: newBooking.id.toString(),
+      name: newBooking.name,
+      email: newBooking.email,
+      phone: newBooking.phone,
+      date: newBooking.date,
+      time: newBooking.time,
+      notes: newBooking.notes,
+      appointmentType: newBooking.appointment_type,
+      createdAt: newBooking.created_at,
+      updatedAt: newBooking.updated_at
+    };
 
     // Send admin notification email
-    if (result.booking) {
-      await sendAdminNotification(result.booking);
-    }
+    await sendAdminNotification(booking);
 
-    return NextResponse.json({ ok: true, booking: result.booking }, { status: 201 });
+    return NextResponse.json({ ok: true, booking }, { status: 201 });
   } catch (err: unknown) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ ok: false, error: 'Invalid data', details: err.errors }, { status: 400 });
     }
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    console.error('[calendar] POST request failed:', err);
     return NextResponse.json({ ok: false, error: 'Server error', details: errorMessage }, { status: 500 });
   }
-} 
+}
