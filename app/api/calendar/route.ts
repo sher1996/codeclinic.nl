@@ -122,6 +122,9 @@ async function sendAdminNotification(booking: Booking) {
 
 export async function GET() {
   try {
+    console.log('[calendar] GET request received');
+    console.log('[calendar] Supabase client status:', supabase ? 'initialized' : 'not initialized');
+    
     if (!supabase) {
       console.error('[calendar] Supabase not initialized - using fallback mode');
       return NextResponse.json({ 
@@ -134,6 +137,7 @@ export async function GET() {
     }
     
     console.log('[calendar] Fetching bookings from Supabase...');
+    console.log('[calendar] Supabase URL:', process.env.SUPABASE_URL);
     
     // Fetch all bookings from Supabase
     const { data: bookings, error } = await supabase
@@ -144,6 +148,12 @@ export async function GET() {
     
     if (error) {
       console.error('[calendar] Supabase query failed:', error);
+      console.error('[calendar] Error details:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
       return NextResponse.json({ 
         ok: true, 
         warning: 'Database query failed - using fallback mode',
@@ -164,6 +174,7 @@ export async function GET() {
     });
   } catch (error) {
     console.error('[calendar] GET request failed:', error);
+    console.error('[calendar] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
     return NextResponse.json({ 
       ok: true, 
       warning: 'Server error - using fallback mode',
@@ -177,6 +188,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    console.log('[calendar] POST request received');
+    console.log('[calendar] Supabase client status:', supabase ? 'initialized' : 'not initialized');
+    
     const data = await request.json();
     console.log('[calendar] Received booking data:', data);
     
@@ -225,6 +239,8 @@ export async function POST(request: Request) {
       }, { status: 201 });
     }
 
+    console.log('[calendar] Checking if slot is already booked in Supabase...');
+    
     // Check if slot is already booked
     const { data: existingBooking, error: checkError } = await supabase
       .from('bookings')
@@ -235,7 +251,13 @@ export async function POST(request: Request) {
     
     if (checkError && checkError.code !== 'PGRST116') { // PGRST116 = no rows found
       console.error('[calendar] Error checking existing booking:', checkError);
-      return NextResponse.json({ ok: false, error: 'Database error' }, { status: 500 });
+      console.error('[calendar] Check error details:', {
+        message: checkError.message,
+        code: checkError.code,
+        details: checkError.details,
+        hint: checkError.hint
+      });
+      return NextResponse.json({ ok: false, error: 'Database error', details: checkError.message }, { status: 500 });
     }
     
     if (existingBooking) {
@@ -243,6 +265,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: 'Slot already booked' }, { status: 409 });
     }
 
+    console.log('[calendar] Creating new booking in Supabase...');
+    
     // Create new booking
     const bookingData = {
       name: validated.name,
@@ -254,6 +278,8 @@ export async function POST(request: Request) {
       appointment_type: validated.appointmentType || 'onsite'
     };
 
+    console.log('[calendar] Booking data to insert:', bookingData);
+
     const { data: newBooking, error: insertError } = await supabase
       .from('bookings')
       .insert(bookingData)
@@ -262,7 +288,13 @@ export async function POST(request: Request) {
     
     if (insertError) {
       console.error('[calendar] Failed to insert booking:', insertError);
-      return NextResponse.json({ ok: false, error: 'Failed to create booking' }, { status: 500 });
+      console.error('[calendar] Insert error details:', {
+        message: insertError.message,
+        code: insertError.code,
+        details: insertError.details,
+        hint: insertError.hint
+      });
+      return NextResponse.json({ ok: false, error: 'Failed to create booking', details: insertError.message }, { status: 500 });
     }
 
     console.log('[calendar] Booking created successfully:', newBooking);
