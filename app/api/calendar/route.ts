@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { Resend } from 'resend';
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Booking } from '@/types/booking';
 
 // Initialize Supabase client
-let supabase: any = null;
+let supabase: SupabaseClient | null = null;
 let resend: Resend | null = null;
 
 try {
