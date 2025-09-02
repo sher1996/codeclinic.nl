@@ -9,7 +9,7 @@ let supabase: SupabaseClient | null = null;
 let resend: Resend | null = null;
 
 // In-memory storage for fallback mode (bookings when database is not available)
-let fallbackBookings: Array<{
+const fallbackBookings: Array<{
   id: string;
   name: string;
   email: string;
