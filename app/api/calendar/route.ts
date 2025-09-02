@@ -8,6 +8,20 @@ import { Booking } from '@/types/booking';
 let supabase: SupabaseClient | null = null;
 let resend: Resend | null = null;
 
+// In-memory storage for fallback mode (bookings when database is not available)
+let fallbackBookings: Array<{
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  date: string;
+  time: string;
+  notes?: string;
+  appointment_type: string;
+  created_at: string;
+  updated_at: string;
+}> = [];
+
 try {
   if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
     supabase = createClient(
@@ -114,7 +128,7 @@ export async function GET() {
         ok: true, 
         warning: 'Database not configured - using fallback mode',
         timeSlots: generateTimeSlots(),
-        bookings: [],
+        bookings: fallbackBookings,
         fallback: true
       });
     }
@@ -135,7 +149,7 @@ export async function GET() {
         warning: 'Database query failed - using fallback mode',
         details: error.message,
         timeSlots: generateTimeSlots(),
-        bookings: [],
+        bookings: fallbackBookings,
         fallback: true
       });
     }
@@ -155,7 +169,7 @@ export async function GET() {
       warning: 'Server error - using fallback mode',
       details: error instanceof Error ? error.message : 'Unknown error',
       timeSlots: generateTimeSlots(),
-      bookings: [],
+      bookings: fallbackBookings,
       fallback: true
     });
   }
@@ -175,17 +189,39 @@ export async function POST(request: Request) {
     }
 
     if (!supabase) {
-      console.warn('[calendar] Supabase not configured - booking will not be persisted');
-      // Return success but indicate it's not persisted
+      console.warn('[calendar] Supabase not configured - storing in fallback mode');
+      
+      // Check if slot is already booked in fallback storage
+      const existingBooking = fallbackBookings.find(
+        booking => booking.date === validated.date && booking.time === validated.time
+      );
+      
+      if (existingBooking) {
+        console.log('[calendar] Slot already booked in fallback mode:', validated.date, validated.time);
+        return NextResponse.json({ ok: false, error: 'Slot already booked' }, { status: 409 });
+      }
+      
+      // Create new booking in fallback storage
+      const newBooking = {
+        id: 'fallback-' + Date.now(),
+        name: validated.name,
+        email: validated.email,
+        phone: validated.phone,
+        date: validated.date,
+        time: validated.time,
+        notes: validated.notes || undefined,
+        appointment_type: validated.appointmentType || 'onsite',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      
+      fallbackBookings.push(newBooking);
+      console.log('[calendar] Booking stored in fallback mode:', newBooking);
+      
       return NextResponse.json({ 
         ok: true, 
-        warning: 'Booking received but not saved - database not configured',
-        booking: {
-          id: 'temp-' + Date.now(),
-          ...validated,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        }
+        warning: 'Booking saved in fallback mode - will be lost on server restart',
+        booking: newBooking
       }, { status: 201 });
     }
 
