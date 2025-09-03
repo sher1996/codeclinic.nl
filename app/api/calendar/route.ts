@@ -3,8 +3,7 @@ import { z } from 'zod';
 import { Resend } from 'resend';
 import { Booking } from '@/types/booking';
 
-// Initialize Supabase client
-let supabase: any = null;
+// Initialize Resend for email notifications
 let resend: Resend | null = null;
 
 // In-memory storage for fallback mode (bookings when database is not available)
@@ -21,24 +20,8 @@ const fallbackBookings: Array<{
   updated_at: string;
 }> = [];
 
-// Temporarily disable Supabase for testing
-// try {
-//   if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
-//     supabase = createClient(
-//       process.env.SUPABASE_URL,
-//       process.env.SUPABASE_ANON_KEY
-//     );
-//     console.log('[calendar] Supabase client initialized');
-//   } else {
-//     console.warn('[calendar] Supabase credentials not configured');
-//   }
-// } catch (error) {
-//   console.error('[calendar] Failed to initialize Supabase:', error);
-// }
-
-// Force fallback mode for testing
-supabase = null;
-console.log('[calendar] Supabase temporarily disabled - using fallback mode');
+// Supabase temporarily disabled for testing - using fallback mode only
+console.log('[calendar] Running in fallback mode - no database connection');
 
 try {
   if (process.env.RESEND_API_KEY) {
@@ -127,54 +110,14 @@ async function sendAdminNotification(booking: Booking) {
 export async function GET() {
   try {
     console.log('[calendar] GET request received');
-    console.log('[calendar] Supabase client status:', supabase ? 'initialized' : 'not initialized');
+    console.log('[calendar] Using fallback mode - no database connection');
     
-    if (!supabase) {
-      console.error('[calendar] Supabase not initialized - using fallback mode');
-      return NextResponse.json({ 
-        ok: true, 
-        warning: 'Database not configured - using fallback mode',
-        timeSlots: generateTimeSlots(),
-        bookings: fallbackBookings,
-        fallback: true
-      });
-    }
-    
-    console.log('[calendar] Fetching bookings from Supabase...');
-    console.log('[calendar] Supabase URL:', process.env.SUPABASE_URL);
-    
-    // Fetch all bookings from Supabase
-    const { data: bookings, error } = await supabase
-      .from('bookings')
-      .select('*')
-      .order('date', { ascending: true })
-      .order('time', { ascending: true });
-    
-    if (error) {
-      console.error('[calendar] Supabase query failed:', error);
-      console.error('[calendar] Error details:', {
-        message: error.message,
-        code: error.code,
-        details: error.details,
-        hint: error.hint
-      });
-      return NextResponse.json({ 
-        ok: true, 
-        warning: 'Database query failed - using fallback mode',
-        details: error.message,
-        timeSlots: generateTimeSlots(),
-        bookings: fallbackBookings,
-        fallback: true
-      });
-    }
-    
-    console.log('[calendar] Successfully fetched bookings:', bookings?.length || 0);
-    
-    return NextResponse.json({
-      ok: true,
+    return NextResponse.json({ 
+      ok: true, 
+      warning: 'Database not configured - using fallback mode',
       timeSlots: generateTimeSlots(),
-      bookings: bookings || [],
-      fallback: false
+      bookings: fallbackBookings,
+      fallback: true
     });
   } catch (error) {
     console.error('[calendar] GET request failed:', error);
@@ -193,7 +136,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     console.log('[calendar] POST request received');
-    console.log('[calendar] Supabase client status:', supabase ? 'initialized' : 'not initialized');
+    console.log('[calendar] Using fallback mode - no database connection');
     
     const data = await request.json();
     console.log('[calendar] Received booking data:', data);
@@ -206,121 +149,40 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: 'Bookings must be made at least one day in advance' }, { status: 400 });
     }
 
-    if (!supabase) {
-      console.warn('[calendar] Supabase not configured - storing in fallback mode');
-      
-      // Check if slot is already booked in fallback storage
-      const existingBooking = fallbackBookings.find(
-        booking => booking.date === validated.date && booking.time === validated.time
-      );
-      
-      if (existingBooking) {
-        console.log('[calendar] Slot already booked in fallback mode:', validated.date, validated.time);
-        return NextResponse.json({ ok: false, error: 'Slot already booked' }, { status: 409 });
-      }
-      
-      // Create new booking in fallback storage
-      const newBooking = {
-        id: 'fallback-' + Date.now(),
-        name: validated.name,
-        email: validated.email,
-        phone: validated.phone,
-        date: validated.date,
-        time: validated.time,
-        notes: validated.notes || undefined,
-        appointment_type: validated.appointmentType || 'onsite',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-      
-      fallbackBookings.push(newBooking);
-      console.log('[calendar] Booking stored in fallback mode:', newBooking);
-      
-      return NextResponse.json({ 
-        ok: true, 
-        warning: 'Booking saved in fallback mode - will be lost on server restart',
-        booking: newBooking
-      }, { status: 201 });
-    }
-
-    console.log('[calendar] Checking if slot is already booked in Supabase...');
+    console.log('[calendar] Using fallback mode - storing in memory');
     
-    // Check if slot is already booked
-    const { data: existingBooking, error: checkError } = await supabase
-      .from('bookings')
-      .select('id')
-      .eq('date', validated.date)
-      .eq('time', validated.time)
-      .single();
-    
-    if (checkError && checkError.code !== 'PGRST116') { // PGRST116 = no rows found
-      console.error('[calendar] Error checking existing booking:', checkError);
-      console.error('[calendar] Check error details:', {
-        message: checkError.message,
-        code: checkError.code,
-        details: checkError.details,
-        hint: checkError.hint
-      });
-      return NextResponse.json({ ok: false, error: 'Database error', details: checkError.message }, { status: 500 });
-    }
+    // Check if slot is already booked in fallback storage
+    const existingBooking = fallbackBookings.find(
+      booking => booking.date === validated.date && booking.time === validated.time
+    );
     
     if (existingBooking) {
-      console.log('[calendar] Slot already booked:', validated.date, validated.time);
+      console.log('[calendar] Slot already booked in fallback mode:', validated.date, validated.time);
       return NextResponse.json({ ok: false, error: 'Slot already booked' }, { status: 409 });
     }
-
-    console.log('[calendar] Creating new booking in Supabase...');
     
-    // Create new booking
-    const bookingData = {
+    // Create new booking in fallback storage
+    const newBooking = {
+      id: 'fallback-' + Date.now(),
       name: validated.name,
       email: validated.email,
       phone: validated.phone,
       date: validated.date,
       time: validated.time,
-      notes: validated.notes || null,
-      appointment_type: validated.appointmentType || 'onsite'
+      notes: validated.notes || undefined,
+      appointment_type: validated.appointmentType || 'onsite',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
-
-    console.log('[calendar] Booking data to insert:', bookingData);
-
-    const { data: newBooking, error: insertError } = await supabase
-      .from('bookings')
-      .insert(bookingData)
-      .select()
-      .single();
     
-    if (insertError) {
-      console.error('[calendar] Failed to insert booking:', insertError);
-      console.error('[calendar] Insert error details:', {
-        message: insertError.message,
-        code: insertError.code,
-        details: insertError.details,
-        hint: insertError.hint
-      });
-      return NextResponse.json({ ok: false, error: 'Failed to create booking', details: insertError.message }, { status: 500 });
-    }
-
-    console.log('[calendar] Booking created successfully:', newBooking);
-
-    // Convert to Booking type for email notification
-    const booking: Booking = {
-      id: newBooking.id.toString(),
-      name: newBooking.name,
-      email: newBooking.email,
-      phone: newBooking.phone,
-      date: newBooking.date,
-      time: newBooking.time,
-      notes: newBooking.notes,
-      appointmentType: newBooking.appointment_type,
-      createdAt: newBooking.created_at,
-      updatedAt: newBooking.updated_at
-    };
-
-    // Send admin notification email
-    await sendAdminNotification(booking);
-
-    return NextResponse.json({ ok: true, booking }, { status: 201 });
+    fallbackBookings.push(newBooking);
+    console.log('[calendar] Booking stored in fallback mode:', newBooking);
+    
+    return NextResponse.json({ 
+      ok: true, 
+      warning: 'Booking saved in fallback mode - will be lost on server restart',
+      booking: newBooking
+    }, { status: 201 });
   } catch (err: unknown) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ ok: false, error: 'Invalid data', details: err.errors }, { status: 400 });
