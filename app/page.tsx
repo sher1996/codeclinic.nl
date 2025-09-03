@@ -1,9 +1,28 @@
+'use client';
+
+import dynamic from 'next/dynamic';
 import Hero from '@/components/Hero';
-import Services from '@/components/Services';
-import Contact from '@/components/Contact';
-import Footer from '@/components/Footer';
 import HashNavigation from '@/components/HashNavigation';
-import PerformanceMonitor from '@/components/PerformanceMonitor';
+
+// Lazy load non-critical components to improve initial page load
+const Services = dynamic(() => import('@/components/Services'), {
+  ssr: false,
+  loading: () => <div style={{ minHeight: '400px' }} /> // Prevent layout shift
+});
+
+const Contact = dynamic(() => import('@/components/Contact'), {
+  ssr: false,
+  loading: () => <div style={{ minHeight: '300px' }} /> // Prevent layout shift
+});
+
+const Footer = dynamic(() => import('@/components/Footer'), {
+  ssr: false,
+  loading: () => <div style={{ minHeight: '200px' }} /> // Prevent layout shift
+});
+
+const PerformanceMonitor = dynamic(() => import('@/components/PerformanceMonitor'), {
+  ssr: false
+});
 
 export default function Home() {
   return (

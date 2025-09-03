@@ -67,27 +67,38 @@ export function CSSLoaderManager() {
     globalsLink.rel = 'stylesheet';
     globalsLink.href = '/globals.css';
     globalsLink.media = 'all';
+    globalsLink.crossOrigin = 'anonymous';
     
     // Load calendar.css with low priority (only when needed)
     const calendarLink = document.createElement('link');
     calendarLink.rel = 'stylesheet';
     calendarLink.href = '/calendar.css';
     calendarLink.media = 'all';
+    calendarLink.crossOrigin = 'anonymous';
     
-    // Load globals.css after a short delay
-    setTimeout(() => {
-      document.head.appendChild(globalsLink);
-    }, 50);
+    // Load globals.css after a short delay to avoid blocking critical path
+    const loadGlobals = () => {
+      if (!document.head.contains(globalsLink)) {
+        document.head.appendChild(globalsLink);
+      }
+    };
+    
+    // Use requestIdleCallback for better performance
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(loadGlobals, { timeout: 100 });
+    } else {
+      setTimeout(loadGlobals, 50);
+    }
     
     // Load calendar.css only when calendar component is in viewport
     const loadCalendarCSS = () => {
-      const calendarElement = document.querySelector('.appointment-calendar');
+      const calendarElement = document.querySelector('.appointment-calendar, [data-calendar-container]');
       if (calendarElement && !document.head.contains(calendarLink)) {
         document.head.appendChild(calendarLink);
       }
     };
     
-    // Check if calendar is in viewport
+    // Check if calendar is in viewport with optimized observer
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -95,11 +106,26 @@ export function CSSLoaderManager() {
           observer.disconnect();
         }
       });
+    }, {
+      rootMargin: '50px', // Start loading 50px before element is visible
+      threshold: 0.1
     });
     
-    const calendarContainer = document.querySelector('[data-calendar-container]');
+    // Look for calendar container with multiple selectors
+    const calendarContainer = document.querySelector('[data-calendar-container], .appointment-calendar, #contact');
     if (calendarContainer) {
       observer.observe(calendarContainer);
+    } else {
+      // Fallback: load calendar CSS after a delay if no calendar found
+      setTimeout(() => {
+        const fallbackCalendar = document.querySelector('[data-calendar-container], .appointment-calendar, #contact');
+        if (fallbackCalendar) {
+          observer.observe(fallbackCalendar);
+        } else {
+          // Load calendar CSS anyway after 2 seconds as fallback
+          setTimeout(loadCalendarCSS, 2000);
+        }
+      }, 1000);
     }
     
     return () => {

@@ -1,11 +1,30 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
-import SimpleSentenceSwitcher from './SimpleSentenceSwitcher';
+import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
+
+// Lazy load SimpleSentenceSwitcher to improve LCP
+const SimpleSentenceSwitcher = dynamic(() => import('./SimpleSentenceSwitcher'), {
+  ssr: false,
+  loading: () => (
+    <p className="text-xl sm:text-2xl lg:text-3xl text-white/90 mb-8">
+      Direct professionele hulp bij al uw computerproblemen in Rotterdam.
+    </p>
+  )
+});
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
-  const isLowEnd = typeof window !== 'undefined' ? window.navigator.hardwareConcurrency <= 4 : false;
+  const [isLowEnd, setIsLowEnd] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Optimize hardware detection
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsLowEnd(window.navigator.hardwareConcurrency <= 4);
+      setIsVisible(true);
+    }
+  }, []);
 
   // Simplified intersection observer for fade-in effect
   useEffect(() => {
@@ -36,6 +55,7 @@ export default function Hero() {
         id="hero"
         className="relative py-48 sm:py-56 lg:py-64"
         aria-label="Hero section"
+        style={{ minHeight: '100vh' }} // Prevent layout shift
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
@@ -44,15 +64,25 @@ export default function Hero() {
                 <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl lg:max-w-[18ch] mb-6">
                   Expert computerhulp
                 </h1>
-                <SimpleSentenceSwitcher />
+                {isVisible && <SimpleSentenceSwitcher />}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Scroll indicator */}
-      <div className="absolute left-1/2 transform -translate-x-1/2 z-40" style={{ position: 'absolute', bottom: '1.5rem', left: '50%', transform: 'translateX(-50%)' }}>
+      {/* Scroll indicator - optimized for CLS */}
+      <div 
+        className="absolute left-1/2 transform -translate-x-1/2 z-40" 
+        style={{ 
+          position: 'absolute', 
+          bottom: '1.5rem', 
+          left: '50%', 
+          transform: 'translateX(-50%)',
+          width: '120px',
+          height: '60px'
+        }}
+      >
         <div className="scroll-indicator">
           <span className="scroll-indicator-text">Scroll om meer te zien</span>
           <div className="scroll-indicator-arrow">

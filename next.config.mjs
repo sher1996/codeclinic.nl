@@ -14,6 +14,7 @@ const nextConfig = {
     esmExternals: true,
     optimizeCss: true, // Enable CSS optimization
     optimizeServerReact: true, // Optimize server-side React rendering
+    scrollRestoration: true, // Enable scroll restoration
   },
   
   // External packages for server components
@@ -41,6 +42,10 @@ const nextConfig = {
         pathname: '/resources/badges/**',
       },
     ],
+    formats: ['image/webp', 'image/avif'],
+    minimumCacheTTL: 31536000, // 1 year
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   // Reduce bundle size
   webpack: (config, { dev, isServer }) => {
