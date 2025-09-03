@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { Resend } from 'resend';
+// import { createClient, SupabaseClient } from '@supabase/supabase-js';
+// import { Resend } from 'resend';
 
 // Initialize Supabase client
-let supabase: SupabaseClient | null = null;
-let resend: Resend | null = null;
+let supabase: any = null;
+let resend: any = null;
 
 // In-memory storage for fallback mode (bookings when database is not available)
 const fallbackBookings: Array<{
@@ -25,38 +25,15 @@ const fallbackBookings: Array<{
 console.log('[calendar] Starting service initialization...');
 
 try {
-  // Initialize Supabase
-  console.log('[calendar] Checking Supabase environment variables...');
-  console.log('[calendar] SUPABASE_URL exists:', !!process.env.SUPABASE_URL);
-  console.log('[calendar] SUPABASE_SERVICE_ROLE_KEY exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+  // Initialize Supabase - TEMPORARILY DISABLED FOR TESTING
+  console.log('[calendar] Supabase temporarily disabled for testing');
+  supabase = null;
   
-  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    console.log('[calendar] Supabase URL:', process.env.SUPABASE_URL);
-    console.log('[calendar] Supabase key length:', process.env.SUPABASE_SERVICE_ROLE_KEY?.length || 0);
-    
-    supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
-    console.log('[calendar] Supabase client initialized successfully');
-  } else {
-    console.warn('[calendar] Supabase environment variables not configured');
-    console.warn('[calendar] SUPABASE_URL:', !!process.env.SUPABASE_URL);
-    console.warn('[calendar] SUPABASE_SERVICE_ROLE_KEY:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
-  }
-
-  // Initialize Resend
-  console.log('[calendar] Checking Resend environment variables...');
-  console.log('[calendar] RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
+  // Initialize Resend - TEMPORARILY DISABLED FOR TESTING
+  console.log('[calendar] Resend temporarily disabled for testing');
+  resend = null;
   
-  if (process.env.RESEND_API_KEY) {
-    resend = new Resend(process.env.RESEND_API_KEY);
-    console.log('[calendar] Resend client initialized successfully');
-  } else {
-    console.warn('[calendar] Resend API key not configured');
-  }
-  
-  console.log('[calendar] Service initialization completed');
+  console.log('[calendar] Service initialization completed - fallback mode only');
 } catch (error) {
   console.error('[calendar] Failed to initialize services:', error);
   console.error('[calendar] Error details:', error instanceof Error ? error.message : 'Unknown error');
