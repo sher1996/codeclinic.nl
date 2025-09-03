@@ -1,10 +1,5 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { Resend } from 'resend';
-import { Booking } from '@/types/booking';
-
-// Initialize Resend for email notifications
-let resend: Resend | null = null;
 
 // In-memory storage for fallback mode (bookings when database is not available)
 const fallbackBookings: Array<{
@@ -20,18 +15,7 @@ const fallbackBookings: Array<{
   updated_at: string;
 }> = [];
 
-// Supabase temporarily disabled for testing - using fallback mode only
 console.log('[calendar] Running in fallback mode - no database connection');
-
-try {
-  if (process.env.RESEND_API_KEY) {
-    resend = new Resend(process.env.RESEND_API_KEY);
-  } else {
-    console.warn('[calendar] Resend API key not configured');
-  }
-} catch (error) {
-  console.error('[calendar] Failed to initialize Resend:', error);
-}
 
 // Validation schema for booking data
 const bookingSchema = z.object({
@@ -68,44 +52,7 @@ function isValidDate(date: string): boolean {
   return bookingStr >= tomorrowStr;
 }
 
-// Function to send admin notification email
-async function sendAdminNotification(booking: Booking) {
-  if (!process.env.ADMIN_EMAIL || !resend) {
-    console.log('[calendar] Admin email not configured or Resend not initialized, skipping notification');
-    return;
-  }
 
-  try {
-    const appointmentType = booking.appointmentType || 'onsite';
-    const typeText = appointmentType === 'remote' ? 'Remote hulp' : 'Aan huis bezoek';
-    const typeEmoji = appointmentType === 'remote' ? '💻' : '🏠';
-    
-    const html = `
-      <h2>${typeEmoji} Nieuwe afspraak geboekt - ${typeText}!</h2>
-      <p><strong>Type:</strong> ${typeText}</p>
-      <p><strong>Naam:</strong> ${booking.name}</p>
-      <p><strong>Email:</strong> ${booking.email}</p>
-      <p><strong>Telefoon:</strong> ${booking.phone}</p>
-      <p><strong>Datum:</strong> ${booking.date}</p>
-      <p><strong>Tijd:</strong> ${booking.time}</p>
-      <p><strong>Notities:</strong> ${booking.notes || 'Geen notities'}</p>
-      <p><strong>Boekingsnummer:</strong> ${booking.id}</p>
-      <p><strong>Geboekt op:</strong> ${new Date(booking.createdAt).toLocaleString('nl-NL')}</p>
-    `;
-
-    await resend.emails.send({
-      from: "Computer Help <onboarding@resend.dev>",
-      to: process.env.ADMIN_EMAIL,
-      subject: `${typeEmoji} Nieuwe ${typeText}: ${booking.name} - ${booking.date} om ${booking.time}`,
-      html,
-      text: `${typeEmoji} Nieuwe afspraak geboekt - ${typeText}!\n\nType: ${typeText}\nNaam: ${booking.name}\nEmail: ${booking.email}\nTelefoon: ${booking.phone}\nDatum: ${booking.date}\nTijd: ${booking.time}\nNotities: ${booking.notes || 'Geen notities'}\nBoekingsnummer: ${booking.id}\nGeboekt op: ${new Date(booking.createdAt).toLocaleString('nl-NL')}`,
-    });
-
-    console.log('[calendar] Admin notification sent successfully');
-  } catch (error: unknown) {
-    console.error('[calendar] Failed to send admin notification:', error);
-  }
-}
 
 export async function GET() {
   try {
