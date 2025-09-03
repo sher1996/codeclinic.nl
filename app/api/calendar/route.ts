@@ -4,8 +4,10 @@ import { z } from 'zod';
 // import { Resend } from 'resend';
 
 // Initialize Supabase client
-let supabase: any = null;
-let resend: any = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let supabase: any | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let resend: any | null = null;
 
 // In-memory storage for fallback mode (bookings when database is not available)
 const fallbackBookings: Array<{

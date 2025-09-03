@@ -14,16 +14,18 @@ const nextConfig = {
     esmExternals: true,
     optimizeCss: true, // Enable CSS optimization
     optimizeServerReact: true, // Optimize server-side React rendering
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
-    turbo: {
-      rules: {
-        '*.css': {
-          loaders: ['css-loader'],
-          as: '*.css',
-        },
+  },
+  
+  // Turbopack configuration (moved from experimental.turbo)
+  turbopack: {
+    rules: {
+      '*.css': {
+        loaders: ['css-loader'],
+        as: '*.css',
       },
     },
   },
+  
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
