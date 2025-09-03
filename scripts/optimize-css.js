@@ -40,7 +40,7 @@ class CSSOptimizer {
       
       console.log('✅ CSS optimization completed!');
       
-    } catch (error) {
+  } catch (error) {
       console.error('❌ CSS optimization failed:', error);
       process.exit(1);
     }

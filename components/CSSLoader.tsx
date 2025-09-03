@@ -9,7 +9,7 @@ interface CSSLoaderProps {
 }
 
 export default function CSSLoader({ href, onLoad, onError }: CSSLoaderProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [, setIsLoaded] = useState(false);
 
   useEffect(() => {
     // Check if CSS is already loaded

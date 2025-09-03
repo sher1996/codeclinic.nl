@@ -2,9 +2,6 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Calendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
 import { useCSSLoader } from './CSSLoader';
 
 interface AppointmentCalendarProps {
@@ -69,7 +66,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   const [isLowEnd, setIsLowEnd] = useState(false);
 
   // Load calendar CSS only when component is rendered
-  const isCalendarCSSLoaded = useCSSLoader('/calendar.css', true);
+  useCSSLoader('/calendar.css', true);
 
   const fetchBookedTimes = useCallback(async (date: Date) => {
     setIsLoadingBookings(true);

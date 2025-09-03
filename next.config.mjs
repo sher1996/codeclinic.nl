@@ -15,19 +15,6 @@ const nextConfig = {
     optimizeCss: true, // Enable CSS optimization
     optimizeServerReact: true, // Optimize server-side React rendering
     scrollRestoration: true, // Enable scroll restoration
-    // New optimizations for critical path
-    optimizePackageImports: ['lucide-react', 'framer-motion', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
-    turbo: {
-      rules: {
-        '*.css': {
-          loaders: ['css-loader'],
-          as: '*.css',
-        },
-      },
-    },
-    // Critical path optimizations
-    optimizeCriticalPath: true,
-    optimizeCssImports: true,
   },
   
   // External packages for server components
