@@ -22,19 +22,24 @@ const fallbackBookings: Array<{
   updated_at: string;
 }> = [];
 
-try {
-  if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
-    supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_ANON_KEY
-    );
-    console.log('[calendar] Supabase client initialized');
-  } else {
-    console.warn('[calendar] Supabase credentials not configured');
-  }
-} catch (error) {
-  console.error('[calendar] Failed to initialize Supabase:', error);
-}
+// Temporarily disable Supabase for testing
+// try {
+//   if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
+//     supabase = createClient(
+//       process.env.SUPABASE_URL,
+//       process.env.SUPABASE_ANON_KEY
+//     );
+//     console.log('[calendar] Supabase client initialized');
+//   } else {
+//     console.warn('[calendar] Supabase credentials not configured');
+//   }
+// } catch (error) {
+//   console.error('[calendar] Failed to initialize Supabase:', error);
+// }
+
+// Force fallback mode for testing
+supabase = null;
+console.log('[calendar] Supabase temporarily disabled - using fallback mode');
 
 try {
   if (process.env.RESEND_API_KEY) {
