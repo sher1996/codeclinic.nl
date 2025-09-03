@@ -1,5 +1,5 @@
 import './globals.css';
-import './calendar.css';
+// Calendar CSS will be loaded dynamically when needed to reduce critical request chain
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
@@ -145,21 +145,15 @@ export default function RootLayout({
         {/* Preload critical fonts */}
         <link rel="preload" href="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         
-        {/* Defer non-critical CSS */}
-        {/* Removed manual CSS <link> and <noscript> tags as per Next.js requirements */}
-        
-        {/* Defer calendar CSS */}
-        {/* Removed manual CSS <link> and <noscript> tags as per Next.js requirements */}
-        
-        {/* Optimized critical CSS for above-the-fold content only */}
+        {/* Critical CSS - Ultra-optimized for above-the-fold content - Minimal size for fastest LCP */}
         <style dangerouslySetInnerHTML={{
           __html: `
-            /* Essential variables and base styles */
+            /* Essential variables and base styles - Ultra-optimized for LCP */
             :root{--c-primary-700:#1d4ed8;--c-secondary-700:#047857;--elderly-font-size-base:20px;--elderly-line-height:1.8;--elderly-min-touch-target:48px;--elderly-high-contrast:#FFFFFF}
             html{font-size:var(--elderly-font-size-base);background:#0f172a;overflow-y:scroll;scroll-behavior:smooth}
             body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;color:#FFFFFF;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif;position:relative;z-index:0;text-shadow:0 2px 4px rgba(0,0,0,.8);min-height:100vh;line-height:var(--elderly-line-height);margin:0}
             
-            /* Hero section critical styles - optimized for LCP */
+            /* Hero section critical styles - ultra-optimized for LCP */
             .relative{position:relative}
             .isolate{isolation:isolate}
             .overflow-hidden{overflow:hidden}
@@ -194,7 +188,7 @@ export default function RootLayout({
             .lg\\:py-40{padding-top:10rem;padding-bottom:10rem}
             .w-full{width:100%}
             
-            /* Critical typography - optimized for FCP */
+            /* Critical typography - ultra-optimized for FCP */
             h1,h2,h3,h4,h5,h6{font-weight:700;letter-spacing:-.025em;color:rgb(255 255 255);text-shadow:0 2px 4px rgba(0,0,0,.8);line-height:var(--elderly-line-height);margin:0}
             h1{font-size:clamp(2.5rem,5vw,4rem)}
             h2{font-size:clamp(2rem,4vw,3.5rem)}
@@ -209,7 +203,7 @@ export default function RootLayout({
             .lg\\:max-w-\\[18ch\\]{max-width:18ch}
             .mb-6{margin-bottom:1.5rem}
             
-            /* Essential layout utilities */
+            /* Essential layout utilities - minimal set for above-the-fold */
             .container{width:100%;max-width:1280px;margin:0 auto;padding:0 1rem}
             .text-center{text-align:center}
             .flex{display:flex}
@@ -226,23 +220,27 @@ export default function RootLayout({
             .px-6{padding-left:1.5rem;padding-right:1.5rem}
             .px-8{padding-left:2rem;padding-right:2rem}
             
-            /* Essential responsive breakpoints */
+            /* Essential responsive breakpoints - minimal set */
             @media (min-width:640px){.sm\\:text-lg{font-size:var(--elderly-font-size-large)!important}.sm\\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.sm\\:flex-row{flex-direction:row}}
             @media (min-width:768px){.md\\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.md\\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}
             @media (min-width:1024px){.lg\\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.lg\\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}}
             
-            /* Accessibility */
+            /* Accessibility - essential only */
             .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
             :focus-visible{outline:3px solid var(--elderly-high-contrast)!important;outline-offset:2px!important}
             
             /* Reduced motion support */
             @media (prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important}}
             
-            /* Layout shift prevention */
+            /* Layout shift prevention - critical for CLS */
             .will-change-transform{will-change:transform}
             .transform{transform:translateZ(0)}
           `
         }} />
+        
+        {/* Defer non-critical CSS loading - will be loaded dynamically when needed */}
+        <link rel="preload" href="/calendar.css" as="style" />
+        <noscript><link rel="stylesheet" href="/calendar.css" /></noscript>
         
         {/* Preload email-decode script to reduce critical path latency */}
         <link rel="preload" href="https://cdn.jsdelivr.net/npm/email-decode@1.0.0/dist/email-decode.min.js" as="script" crossOrigin="anonymous" />

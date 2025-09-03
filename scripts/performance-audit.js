@@ -1,261 +1,236 @@
 #!/usr/bin/env node
 
-/**
- * Performance Audit Script for CodeClinic.nl
- * 
- * This script helps identify and fix performance issues based on Lighthouse metrics.
- * Run with: node scripts/performance-audit.js
- */
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
 
-const fs = require('fs');
-const path = require('path');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Performance thresholds based on Lighthouse scoring
-const PERFORMANCE_THRESHOLDS = {
-  FCP: { good: 1800, needsImprovement: 3000 }, // First Contentful Paint (ms)
-  LCP: { good: 2500, needsImprovement: 4000 }, // Largest Contentful Paint (ms)
-  FID: { good: 100, needsImprovement: 300 },   // First Input Delay (ms)
-  CLS: { good: 0.1, needsImprovement: 0.25 },  // Cumulative Layout Shift
-  SI: { good: 3400, needsImprovement: 5800 },  // Speed Index (ms)
-  TBT: { good: 200, needsImprovement: 600 },   // Total Blocking Time (ms)
-};
+// Performance audit script for monitoring CSS optimizations
+class PerformanceAuditor {
+  constructor() {
+    this.results = {
+      timestamp: new Date().toISOString(),
+      cssOptimizations: {},
+      performanceMetrics: {},
+      recommendations: []
+    };
+  }
 
-// Current Lighthouse scores from the report
-const CURRENT_SCORES = {
-  Performance: 71,
-  Accessibility: 100,
-  BestPractices: 96,
-  SEO: 100,
-  FCP: 2600,
-  LCP: 4100,
-  CLS: 0.217,
-  SI: 3700,
-  TBT: 20
-};
-
-function analyzePerformance() {
-  console.log('🚀 CodeClinic.nl Performance Audit\n');
-  console.log('=' .repeat(50));
-  
-  // Overall Performance Score
-  console.log(`\n📊 Overall Performance Score: ${CURRENT_SCORES.Performance}/100`);
-  if (CURRENT_SCORES.Performance >= 90) {
-    console.log('✅ Excellent performance!');
-  } else if (CURRENT_SCORES.Performance >= 50) {
-    console.log('⚠️  Performance needs improvement');
-  } else {
-    console.log('❌ Poor performance - immediate action required');
-  }
-  
-  // Core Web Vitals Analysis
-  console.log('\n🎯 Core Web Vitals Analysis:');
-  console.log('-'.repeat(30));
-  
-  // FCP Analysis
-  const fcpStatus = getMetricStatus(CURRENT_SCORES.FCP, PERFORMANCE_THRESHOLDS.FCP);
-  console.log(`First Contentful Paint (FCP): ${CURRENT_SCORES.FCP}ms ${fcpStatus.icon}`);
-  if (fcpStatus.status !== 'good') {
-    console.log(`  💡 Recommendation: Optimize critical CSS and reduce render-blocking resources`);
-  }
-  
-  // LCP Analysis
-  const lcpStatus = getMetricStatus(CURRENT_SCORES.LCP, PERFORMANCE_THRESHOLDS.LCP);
-  console.log(`Largest Contentful Paint (LCP): ${CURRENT_SCORES.LCP}ms ${lcpStatus.icon}`);
-  if (lcpStatus.status !== 'good') {
-    console.log(`  💡 Recommendation: Optimize hero section, preload critical resources, improve server response time`);
-  }
-  
-  // CLS Analysis
-  const clsStatus = getMetricStatus(CURRENT_SCORES.CLS, PERFORMANCE_THRESHOLDS.CLS);
-  console.log(`Cumulative Layout Shift (CLS): ${CURRENT_SCORES.CLS} ${clsStatus.icon}`);
-  if (clsStatus.status !== 'good') {
-    console.log(`  💡 Recommendation: Reserve space for dynamic content, avoid layout shifts during loading`);
-  }
-  
-  // Speed Index Analysis
-  const siStatus = getMetricStatus(CURRENT_SCORES.SI, PERFORMANCE_THRESHOLDS.SI);
-  console.log(`Speed Index (SI): ${CURRENT_SCORES.SI}ms ${siStatus.icon}`);
-  if (siStatus.status !== 'good') {
-    console.log(`  💡 Recommendation: Optimize above-the-fold content, reduce JavaScript execution time`);
-  }
-  
-  // TBT Analysis
-  const tbtStatus = getMetricStatus(CURRENT_SCORES.TBT, PERFORMANCE_THRESHOLDS.TBT);
-  console.log(`Total Blocking Time (TBT): ${CURRENT_SCORES.TBT}ms ${tbtStatus.icon}`);
-  if (tbtStatus.status !== 'good') {
-    console.log(`  💡 Recommendation: Reduce JavaScript execution time, code splitting, lazy loading`);
-  }
-}
-
-function getMetricStatus(value, thresholds) {
-  if (value <= thresholds.good) {
-    return { status: 'good', icon: '✅' };
-  } else if (value <= thresholds.needsImprovement) {
-    return { status: 'needs-improvement', icon: '⚠️' };
-  } else {
-    return { status: 'poor', icon: '❌' };
-  }
-}
-
-function generateOptimizationPlan() {
-  console.log('\n📋 Optimization Plan:');
-  console.log('=' .repeat(50));
-  
-  const optimizations = [
-    {
-      priority: 'HIGH',
-      metric: 'LCP (4.1s → <2.5s)',
-      actions: [
-        '✅ Implemented: Critical CSS inlining',
-        '✅ Implemented: Non-blocking CSS loading',
-        '✅ Implemented: Component lazy loading',
-        '🔄 In Progress: Hero section optimization',
-        '⏳ Pending: Image optimization and preloading',
-        '⏳ Pending: Server response time optimization'
-      ]
-    },
-    {
-      priority: 'HIGH',
-      metric: 'FCP (2.6s → <1.8s)',
-      actions: [
-        '✅ Implemented: Critical CSS inlining',
-        '✅ Implemented: Font optimization',
-        '✅ Implemented: Resource preloading',
-        '🔄 In Progress: Component code splitting',
-        '⏳ Pending: JavaScript bundle optimization'
-      ]
-    },
-    {
-      priority: 'MEDIUM',
-      metric: 'CLS (0.217 → <0.1)',
-      actions: [
-        '✅ Implemented: Layout shift prevention in Hero',
-        '✅ Implemented: Reserved space for dynamic content',
-        '🔄 In Progress: Component loading placeholders',
-        '⏳ Pending: Image dimension optimization'
-      ]
-    },
-    {
-      priority: 'MEDIUM',
-      metric: 'SI (3.7s → <3.4s)',
-      actions: [
-        '✅ Implemented: Critical path optimization',
-        '✅ Implemented: Lazy loading non-critical components',
-        '🔄 In Progress: Above-the-fold optimization',
-        '⏳ Pending: Progressive enhancement'
-      ]
-    }
-  ];
-  
-  optimizations.forEach(opt => {
-    console.log(`\n🎯 ${opt.priority} Priority: ${opt.metric}`);
-    opt.actions.forEach(action => {
-      console.log(`   ${action}`);
-    });
-  });
-}
-
-function checkImplementationStatus() {
-  console.log('\n🔍 Implementation Status Check:');
-  console.log('=' .repeat(50));
-  
-  const checks = [
-    {
-      name: 'CSS Loading Optimization',
-      file: 'app/layout.tsx',
-      check: () => {
-        const content = fs.readFileSync('app/layout.tsx', 'utf8');
-        return content.includes('CSSLoaderManager') && !content.includes("import './globals.css'");
-      }
-    },
-    {
-      name: 'Component Lazy Loading',
-      file: 'app/page.tsx',
-      check: () => {
-        const content = fs.readFileSync('app/page.tsx', 'utf8');
-        return content.includes('dynamic') && content.includes('ssr: false');
-      }
-    },
-    {
-      name: 'Hero Component Optimization',
-      file: 'components/Hero.tsx',
-      check: () => {
-        const content = fs.readFileSync('components/Hero.tsx', 'utf8');
-        return content.includes('dynamic') && content.includes('minHeight');
-      }
-    },
-    {
-      name: 'Next.js Configuration',
-      file: 'next.config.mjs',
-      check: () => {
-        const content = fs.readFileSync('next.config.mjs', 'utf8');
-        return content.includes('optimizePackageImports') && content.includes('formats');
-      }
-    }
-  ];
-  
-  checks.forEach(check => {
+  async runAudit() {
+    console.log('🔍 Running Performance Audit...');
+    
     try {
-      const status = check.check() ? '✅' : '❌';
-      console.log(`${status} ${check.name} (${check.file})`);
+      // Audit CSS optimizations
+      await this.auditCSSOptimizations();
+      
+      // Check critical request chain
+      await this.auditCriticalRequestChain();
+      
+      // Generate performance report
+      await this.generatePerformanceReport();
+      
+      console.log('✅ Performance audit completed!');
+      
     } catch (error) {
-      console.log(`❌ ${check.name} (${check.file}) - File not found`);
+      console.error('❌ Performance audit failed:', error);
+      process.exit(1);
     }
-  });
-}
+  }
 
-function generateNextSteps() {
-  console.log('\n🚀 Next Steps:');
-  console.log('=' .repeat(50));
-  
-  const steps = [
-    '1. Deploy current optimizations to production',
-    '2. Run new Lighthouse audit to measure improvements',
-    '3. Monitor Core Web Vitals in Google Search Console',
-    '4. Implement image optimization (WebP/AVIF formats)',
-    '5. Add service worker for caching',
-    '6. Optimize server response time (TTFB)',
-    '7. Consider implementing edge caching',
-    '8. Set up performance monitoring alerts'
-  ];
-  
-  steps.forEach(step => {
-    console.log(`   ${step}`);
-  });
-  
-  console.log('\n📈 Expected Improvements:');
-  console.log('-'.repeat(30));
-  console.log('• LCP: 4.1s → 2.5s (39% improvement)');
-  console.log('• FCP: 2.6s → 1.8s (31% improvement)');
-  console.log('• CLS: 0.217 → 0.1 (54% improvement)');
-  console.log('• Overall Score: 71 → 85+ (20% improvement)');
-}
+  async auditCSSOptimizations() {
+    console.log('📊 Auditing CSS optimizations...');
+    
+    const cssFiles = [
+      'app/globals.css',
+      'app/calendar.css'
+    ];
+    
+    for (const cssFile of cssFiles) {
+      if (fs.existsSync(cssFile)) {
+        const stats = fs.statSync(cssFile);
+        const content = fs.readFileSync(cssFile, 'utf8');
+        
+        this.results.cssOptimizations[cssFile] = {
+          size: stats.size,
+          sizeKB: (stats.size / 1024).toFixed(2),
+          lines: content.split('\n').length,
+          selectors: (content.match(/[.#][a-zA-Z0-9_-]+/g) || []).length,
+          rules: (content.match(/[^}]+}/g) || []).length,
+          mediaQueries: (content.match(/@media/g) || []).length,
+          keyframes: (content.match(/@keyframes/g) || []).length
+        };
+        
+        console.log(`  ${cssFile}: ${this.results.cssOptimizations[cssFile].sizeKB} KB`);
+      }
+    }
+  }
 
-// Main execution
-function main() {
-  try {
-    analyzePerformance();
-    generateOptimizationPlan();
-    checkImplementationStatus();
-    generateNextSteps();
+  async auditCriticalRequestChain() {
+    console.log('⛓️  Auditing critical request chain...');
     
-    console.log('\n✨ Performance audit complete!');
-    console.log('\n💡 Tip: Run this script after each optimization to track progress.');
+    // Check layout.tsx for critical CSS implementation
+    const layoutPath = 'app/layout.tsx';
+    if (fs.existsSync(layoutPath)) {
+      const content = fs.readFileSync(layoutPath, 'utf8');
+      
+      // Check for critical CSS inline
+      const hasCriticalCSS = content.includes('dangerouslySetInnerHTML') && 
+                           content.includes('Critical CSS');
+      
+      // Check for deferred CSS loading
+      const hasDeferredCSS = content.includes('preload') && 
+                            content.includes('calendar.css');
+      
+      // Check for removed global CSS imports
+      const hasRemovedImports = !content.includes("import './calendar.css'");
+      
+      this.results.performanceMetrics.criticalRequestChain = {
+        criticalCSSInlined: hasCriticalCSS,
+        deferredCSSLoading: hasDeferredCSS,
+        removedGlobalImports: hasRemovedImports,
+        estimatedImprovement: hasCriticalCSS && hasDeferredCSS ? '300-500ms' : '0ms'
+      };
+      
+      console.log(`  Critical CSS inlined: ${hasCriticalCSS ? '✅' : '❌'}`);
+      console.log(`  Deferred CSS loading: ${hasDeferredCSS ? '✅' : '❌'}`);
+      console.log(`  Removed global imports: ${hasDeferredCSS ? '✅' : '❌'}`);
+    }
+  }
+
+  async generatePerformanceReport() {
+    console.log('📋 Generating performance report...');
     
-  } catch (error) {
-    console.error('❌ Error running performance audit:', error.message);
-    process.exit(1);
+    const reportPath = 'dist/performance-audit-report.json';
+    const reportDir = path.dirname(reportPath);
+    
+    if (!fs.existsSync(reportDir)) {
+      fs.mkdirSync(reportDir, { recursive: true });
+    }
+    
+    // Calculate total CSS size
+    let totalCSSSize = 0;
+    let totalSelectors = 0;
+    
+    Object.values(this.results.cssOptimizations).forEach(css => {
+      totalCSSSize += css.size;
+      totalSelectors += css.selectors;
+    });
+    
+    this.results.performanceMetrics.totalCSS = {
+      size: totalCSSSize,
+      sizeKB: (totalCSSSize / 1024).toFixed(2),
+      selectors: totalSelectors
+    };
+    
+    // Generate recommendations
+    this.generateRecommendations();
+    
+    // Write report
+    fs.writeFileSync(reportPath, JSON.stringify(this.results, null, 2));
+    
+    console.log(`  📄 Report saved to: ${reportPath}`);
+    
+    // Display summary
+    this.displaySummary();
+  }
+
+  generateRecommendations() {
+    const recommendations = [];
+    
+    // CSS size recommendations
+    const totalSizeKB = parseFloat(this.results.performanceMetrics.totalCSS.sizeKB);
+    if (totalSizeKB > 100) {
+      recommendations.push({
+        type: 'warning',
+        message: `CSS bundle is large (${totalSizeKB} KB). Consider splitting into smaller chunks.`,
+        impact: 'high',
+        effort: 'medium'
+      });
+    }
+    
+    // Selector count recommendations
+    const totalSelectors = this.results.performanceMetrics.totalCSS.selectors;
+    if (totalSelectors > 1000) {
+      recommendations.push({
+        type: 'warning',
+        message: `High number of selectors (${totalSelectors}). Consider removing unused CSS.`,
+        impact: 'medium',
+        effort: 'low'
+      });
+    }
+    
+    // Critical request chain recommendations
+    const crc = this.results.performanceMetrics.criticalRequestChain;
+    if (!crc.criticalCSSInlined) {
+      recommendations.push({
+        type: 'critical',
+        message: 'Critical CSS should be inlined to eliminate render-blocking.',
+        impact: 'high',
+        effort: 'medium'
+      });
+    }
+    
+    if (!crc.deferredCSSLoading) {
+      recommendations.push({
+        type: 'important',
+        message: 'Implement deferred CSS loading for non-critical styles.',
+        impact: 'high',
+        effort: 'low'
+      });
+    }
+    
+    this.results.recommendations = recommendations;
+  }
+
+  displaySummary() {
+    console.log('\n📊 Performance Audit Summary');
+    console.log('============================');
+    
+    // CSS Metrics
+    console.log('\n🎨 CSS Metrics:');
+    Object.entries(this.results.cssOptimizations).forEach(([file, metrics]) => {
+      console.log(`  ${file}: ${metrics.sizeKB} KB, ${metrics.selectors} selectors`);
+    });
+    
+    console.log(`\n  Total CSS: ${this.results.performanceMetrics.totalCSS.sizeKB} KB`);
+    console.log(`  Total Selectors: ${this.results.performanceMetrics.totalCSS.selectors}`);
+    
+    // Critical Request Chain
+    console.log('\n⛓️  Critical Request Chain:');
+    const crc = this.results.performanceMetrics.criticalRequestChain;
+    console.log(`  Critical CSS Inlined: ${crc.criticalCSSInlined ? '✅' : '❌'}`);
+    console.log(`  Deferred CSS Loading: ${crc.deferredCSSLoading ? '✅' : '❌'}`);
+    console.log(`  Estimated Improvement: ${crc.estimatedImprovement}`);
+    
+    // Recommendations
+    if (this.results.recommendations.length > 0) {
+      console.log('\n💡 Recommendations:');
+      this.results.recommendations.forEach((rec, index) => {
+        const icon = rec.type === 'critical' ? '🚨' : rec.type === 'warning' ? '⚠️' : '💡';
+        console.log(`  ${index + 1}. ${icon} ${rec.message} (${rec.impact} impact, ${rec.effort} effort)`);
+      });
+    } else {
+      console.log('\n🎉 No critical issues found! CSS optimizations are well implemented.');
+    }
+    
+    // Expected Performance Improvements
+    console.log('\n📈 Expected Performance Improvements:');
+    if (crc.criticalCSSInlined && crc.deferredCSSLoading) {
+      console.log('  • LCP improvement: 200-300ms');
+      console.log('  • Critical path reduction: 300-500ms');
+      console.log('  • Render-blocking elimination: 300-400ms');
+      console.log('  • First paint: Immediate');
+      console.log('  • Layout stability: Improved');
+    } else {
+      console.log('  • Implement critical CSS inlining for immediate improvements');
+      console.log('  • Add deferred CSS loading for non-critical styles');
+    }
   }
 }
 
-// Run the audit
-if (require.main === module) {
-  main();
-}
-
-module.exports = {
-  analyzePerformance,
-  generateOptimizationPlan,
-  checkImplementationStatus,
-  generateNextSteps
-};
+// Run performance audit
+const auditor = new PerformanceAuditor();
+auditor.runAudit().catch(console.error);

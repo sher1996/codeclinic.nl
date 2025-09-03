@@ -1,62 +1,95 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface CSSLoaderProps {
   href: string;
-  media?: string;
   onLoad?: () => void;
   onError?: () => void;
-  priority?: 'high' | 'low';
 }
 
-export default function CSSLoader({ 
-  href, 
-  media = 'all', 
-  onLoad, 
-  onError,
-  priority = 'low'
-}: CSSLoaderProps) {
+export default function CSSLoader({ href, onLoad, onError }: CSSLoaderProps) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
   useEffect(() => {
+    // Check if CSS is already loaded
+    const existingLink = document.querySelector(`link[href="${href}"]`);
+    if (existingLink) {
+      setIsLoaded(true);
+      onLoad?.();
+      return;
+    }
+
+    // Create and load CSS link
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = href;
-    link.media = media;
+    link.type = 'text/css';
     
-    if (onLoad) {
-      link.onload = onLoad;
-    }
+    link.onload = () => {
+      setIsLoaded(true);
+      onLoad?.();
+    };
     
-    if (onError) {
-      link.onerror = onError;
-    }
-    
-    // Load CSS based on priority
-    if (priority === 'high') {
-      // Load immediately for critical CSS
-      document.head.appendChild(link);
-    } else {
-      // Defer non-critical CSS loading
-      const timer = setTimeout(() => {
-        document.head.appendChild(link);
-      }, 100);
-      
-      return () => {
-        clearTimeout(timer);
-        if (document.head.contains(link)) {
-          document.head.removeChild(link);
-        }
-      };
-    }
-    
+    link.onerror = () => {
+      console.error(`Failed to load CSS: ${href}`);
+      onError?.();
+    };
+
+    // Add to head
+    document.head.appendChild(link);
+
+    // Cleanup function
     return () => {
-      if (document.head.contains(link)) {
-        document.head.removeChild(link);
+      if (link.parentNode) {
+        link.parentNode.removeChild(link);
       }
     };
-  }, [href, media, onLoad, onError, priority]);
-  
-  return null;
+  }, [href, onLoad, onError]);
+
+  return null; // This component doesn't render anything
+}
+
+// Hook for conditional CSS loading
+export function useCSSLoader(href: string, condition: boolean = true) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!condition) return;
+
+    // Check if CSS is already loaded
+    const existingLink = document.querySelector(`link[href="${href}"]`);
+    if (existingLink) {
+      setIsLoaded(true);
+      return;
+    }
+
+    // Create and load CSS link
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.type = 'text/css';
+    
+    link.onload = () => {
+      setIsLoaded(true);
+    };
+    
+    link.onerror = () => {
+      console.error(`Failed to load CSS: ${href}`);
+    };
+
+    // Add to head
+    document.head.appendChild(link);
+
+    // Cleanup function
+    return () => {
+      if (link.parentNode) {
+        link.parentNode.removeChild(link);
+      }
+    };
+  }, [href, condition]);
+
+  return isLoaded;
 }
 
 // Component for loading multiple CSS files
