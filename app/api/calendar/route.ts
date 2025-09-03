@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { Resend } from 'resend';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Booking } from '@/types/booking';
 
 // Initialize Supabase client
-let supabase: SupabaseClient | null = null;
+let supabase: any = null;
 let resend: Resend | null = null;
 
 // In-memory storage for fallback mode (bookings when database is not available)
