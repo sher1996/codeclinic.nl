@@ -22,8 +22,14 @@ const fallbackBookings: Array<{
 }> = [];
 
 // Initialize services
+console.log('[calendar] Starting service initialization...');
+
 try {
   // Initialize Supabase
+  console.log('[calendar] Checking Supabase environment variables...');
+  console.log('[calendar] SUPABASE_URL exists:', !!process.env.SUPABASE_URL);
+  console.log('[calendar] SUPABASE_SERVICE_ROLE_KEY exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+  
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
     console.log('[calendar] Supabase URL:', process.env.SUPABASE_URL);
     console.log('[calendar] Supabase key length:', process.env.SUPABASE_SERVICE_ROLE_KEY?.length || 0);
@@ -40,14 +46,21 @@ try {
   }
 
   // Initialize Resend
+  console.log('[calendar] Checking Resend environment variables...');
+  console.log('[calendar] RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
+  
   if (process.env.RESEND_API_KEY) {
     resend = new Resend(process.env.RESEND_API_KEY);
     console.log('[calendar] Resend client initialized successfully');
   } else {
     console.warn('[calendar] Resend API key not configured');
   }
+  
+  console.log('[calendar] Service initialization completed');
 } catch (error) {
   console.error('[calendar] Failed to initialize services:', error);
+  console.error('[calendar] Error details:', error instanceof Error ? error.message : 'Unknown error');
+  console.error('[calendar] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
 }
 
 // Validation schema for booking data
@@ -138,6 +151,11 @@ async function sendAdminNotification(booking: {
 
 
 export async function GET() {
+  console.log('[calendar] === GET REQUEST START ===');
+  console.log('[calendar] Environment check - SUPABASE_URL:', !!process.env.SUPABASE_URL);
+  console.log('[calendar] Environment check - SUPABASE_SERVICE_ROLE_KEY:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+  console.log('[calendar] Supabase client status:', !!supabase);
+  
   try {
     console.log('[calendar] GET request received');
     
@@ -189,6 +207,11 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  console.log('[calendar] === POST REQUEST START ===');
+  console.log('[calendar] Environment check - SUPABASE_URL:', !!process.env.SUPABASE_URL);
+  console.log('[calendar] Environment check - SUPABASE_SERVICE_ROLE_KEY:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+  console.log('[calendar] Supabase client status:', !!supabase);
+  
   try {
     console.log('[calendar] POST request received');
     
