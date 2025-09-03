@@ -25,6 +25,9 @@ const fallbackBookings: Array<{
 try {
   // Initialize Supabase
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.log('[calendar] Supabase URL:', process.env.SUPABASE_URL);
+    console.log('[calendar] Supabase key length:', process.env.SUPABASE_SERVICE_ROLE_KEY?.length || 0);
+    
     supabase = createClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -32,6 +35,8 @@ try {
     console.log('[calendar] Supabase client initialized successfully');
   } else {
     console.warn('[calendar] Supabase environment variables not configured');
+    console.warn('[calendar] SUPABASE_URL:', !!process.env.SUPABASE_URL);
+    console.warn('[calendar] SUPABASE_SERVICE_ROLE_KEY:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
   }
 
   // Initialize Resend
@@ -201,54 +206,65 @@ export async function POST(request: Request) {
     if (supabase) {
       console.log('[calendar] Using Supabase database');
       
-      // Check if slot is already booked in database
-      const { data: existingBookings, error: checkError } = await supabase
-        .from('bookings')
-        .select('id')
-        .eq('date', validated.date)
-        .eq('time', validated.time);
-      
-      if (checkError) {
-        console.error('[calendar] Error checking existing bookings:', checkError);
-        throw checkError;
+      try {
+        // Check if slot is already booked in database
+        console.log('[calendar] Checking for existing bookings...');
+        const { data: existingBookings, error: checkError } = await supabase
+          .from('bookings')
+          .select('id')
+          .eq('date', validated.date)
+          .eq('time', validated.time);
+        
+        if (checkError) {
+          console.error('[calendar] Error checking existing bookings:', checkError);
+          throw checkError;
+        }
+        
+        console.log('[calendar] Existing bookings found:', existingBookings?.length || 0);
+        
+        if (existingBookings && existingBookings.length > 0) {
+          console.log('[calendar] Slot already booked in database:', validated.date, validated.time);
+          return NextResponse.json({ ok: false, error: 'Slot already booked' }, { status: 409 });
+        }
+        
+        // Create new booking in database
+        console.log('[calendar] Creating new booking in database...');
+        const newBooking = {
+          name: validated.name,
+          email: validated.email,
+          phone: validated.phone,
+          date: validated.date,
+          time: validated.time,
+          notes: validated.notes || null,
+          appointment_type: validated.appointmentType || 'onsite',
+        };
+        
+        console.log('[calendar] Booking data to insert:', newBooking);
+        
+        const { data: insertedBooking, error: insertError } = await supabase
+          .from('bookings')
+          .insert([newBooking])
+          .select()
+          .single();
+        
+        if (insertError) {
+          console.error('[calendar] Error inserting booking:', insertError);
+          throw insertError;
+        }
+        
+        console.log('[calendar] Booking stored in database:', insertedBooking);
+        
+        // Send admin notification
+        await sendAdminNotification(insertedBooking);
+        
+        return NextResponse.json({ 
+          ok: true, 
+          booking: insertedBooking
+        }, { status: 201 });
+      } catch (dbError) {
+        console.error('[calendar] Database operation failed:', dbError);
+        throw dbError;
       }
-      
-      if (existingBookings && existingBookings.length > 0) {
-        console.log('[calendar] Slot already booked in database:', validated.date, validated.time);
-        return NextResponse.json({ ok: false, error: 'Slot already booked' }, { status: 409 });
-      }
-      
-      // Create new booking in database
-      const newBooking = {
-        name: validated.name,
-        email: validated.email,
-        phone: validated.phone,
-        date: validated.date,
-        time: validated.time,
-        notes: validated.notes || null,
-        appointment_type: validated.appointmentType || 'onsite',
-      };
-      
-      const { data: insertedBooking, error: insertError } = await supabase
-        .from('bookings')
-        .insert([newBooking])
-        .select()
-        .single();
-      
-      if (insertError) {
-        console.error('[calendar] Error inserting booking:', insertError);
-        throw insertError;
-      }
-      
-      console.log('[calendar] Booking stored in database:', insertedBooking);
-      
-      // Send admin notification
-      await sendAdminNotification(insertedBooking);
-      
-      return NextResponse.json({ 
-        ok: true, 
-        booking: insertedBooking
-      }, { status: 201 });
       
     } else {
       console.log('[calendar] Supabase not available, using fallback mode');
