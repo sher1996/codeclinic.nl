@@ -14,9 +14,10 @@ const nextConfig = {
     esmExternals: true,
     optimizeCss: true, // Enable CSS optimization
     optimizeServerReact: true, // Optimize server-side React rendering
-    optimizeCssImports: true, // Optimize CSS imports
-    serverComponentsExternalPackages: ['framer-motion'], // Externalize heavy packages
   },
+  
+  // External packages for server components
+  serverExternalPackages: [],
   
   // Turbopack configuration (moved from experimental.turbo)
   turbopack: {
