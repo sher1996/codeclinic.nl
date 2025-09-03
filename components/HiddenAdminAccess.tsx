@@ -70,6 +70,10 @@ export default function HiddenAdminAccess() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[99999] flex items-center justify-center p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="hidden-admin-modal-title"
+            aria-describedby="hidden-admin-modal-description"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -77,8 +81,9 @@ export default function HiddenAdminAccess() {
               exit={{ scale: 0.9, opacity: 0 }}
               className="bg-gray-900 rounded-xl p-6 w-full max-w-md border border-gray-700 relative z-[100000]"
             >
-              <h3 className="text-xl font-bold text-white mb-4">Admin Access</h3>
+              <h3 id="hidden-admin-modal-title" className="text-xl font-bold text-white mb-4">Admin Access</h3>
               
+              <div id="hidden-admin-modal-description" className="sr-only">Admin login form for accessing administrative functions</div>
               <form onSubmit={handlePasswordSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-1">

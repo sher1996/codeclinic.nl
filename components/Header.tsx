@@ -2,8 +2,10 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Phone, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+
+import WhatsAppIcon from './WhatsAppIcon';
 
 export default function Header() {
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -111,30 +113,33 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex gap-4 text-xl items-center" role="navigation" aria-label="Hoofdnavigatie">
-          <Link href="/#diensten" className="nav-link" aria-label="Ga naar diensten sectie">
+          <Link href="/#diensten" className="nav-link" aria-label="Ga naar diensten sectie" accessKey="d">
             Diensten
           </Link>
-          <Link href="/#services" className="nav-link" aria-label="Ga naar hulp die bij u past sectie">
+          <Link href="/#services" className="nav-link" aria-label="Ga naar hulp die bij u past sectie" accessKey="h">
             Hulp Die Bij U Past
           </Link>
-          <Link href="/#tarieven" className="nav-link" aria-label="Ga naar tarieven sectie">
+          <Link href="/#tarieven" className="nav-link" aria-label="Ga naar tarieven sectie" accessKey="t">
             Tarieven
           </Link>
-          <Link href="/#contact" className="nav-link" aria-label="Ga naar contact sectie">
+          <Link href="/#contact" className="nav-link" aria-label="Ga naar contact sectie" accessKey="c">
             Contact
           </Link>
           
           {/* Prominent Phone Number for Seniors */}
-          <a 
-            href="tel:+31624837889" 
-            className="flex items-center gap-2 bg-[#0066cc] text-white px-4 py-2 rounded-lg font-semibold text-lg hover:bg-[#0052a3] transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B] focus-visible:rounded-md"
-            style={{ minHeight: '48px', minWidth: '48px' }}
-            aria-label="Bel ons direct: +31 6 24837889"
-          >
-            <Phone className="w-5 h-5" aria-hidden="true" />
-            <span className="hidden lg:inline">+31 6 24837889</span>
-            <span className="lg:hidden">Bel ons</span>
-          </a>
+                      <a 
+              href="https://wa.me/31624837889" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-[#0066cc] text-white px-4 py-2 rounded-lg font-semibold text-lg hover:bg-[#0052a3] transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B] focus-visible:rounded-md"
+              style={{ minHeight: '48px', minWidth: '48px' }}
+              aria-label="WhatsApp ons direct: +31 6 24837889"
+              accessKey="w"
+            >
+              <WhatsAppIcon className="w-5 h-5" />
+              <span className="hidden lg:inline">+31 6 24837889</span>
+              <span className="lg:hidden">WhatsApp</span>
+            </a>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -162,6 +167,7 @@ export default function Header() {
           onClick={closeMobileMenu}
           role="dialog"
           aria-modal="true"
+          aria-labelledby="mobile-menu"
           aria-label="Mobiel navigatiemenu"
         >
           <div 
@@ -208,16 +214,18 @@ export default function Header() {
               </Link>
               
               {/* Mobile Phone Number */}
-              <a 
-                href="tel:+31624837889" 
-                className="px-8 py-6 bg-[#0066cc] text-white font-semibold text-xl flex items-center gap-3 hover:bg-[#0052a3] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B]"
-                onClick={closeMobileMenu}
-                style={{ minHeight: '48px' }}
-                aria-label="Bel ons direct: +31 6 24837889"
-              >
-                <Phone className="w-6 h-6" aria-hidden="true" />
-                +31 6 24837889
-              </a>
+                              <a 
+                  href="https://wa.me/31624837889" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-8 py-6 bg-[#0066cc] text-white font-semibold text-xl flex items-center gap-3 hover:bg-[#0052a3] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B]"
+                  onClick={closeMobileMenu}
+                  style={{ minHeight: '48px' }}
+                  aria-label="WhatsApp ons direct: +31 6 24837889"
+                >
+                  <WhatsAppIcon className="w-6 h-6" />
+                  +31 6 24837889
+                </a>
             </nav>
           </div>
         </div>

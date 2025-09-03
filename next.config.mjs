@@ -14,6 +14,8 @@ const nextConfig = {
     esmExternals: true,
     optimizeCss: true, // Enable CSS optimization
     optimizeServerReact: true, // Optimize server-side React rendering
+    optimizeCssImports: true, // Optimize CSS imports
+    serverComponentsExternalPackages: ['framer-motion'], // Externalize heavy packages
   },
   
   // Turbopack configuration (moved from experimental.turbo)
@@ -53,9 +55,11 @@ const nextConfig = {
       config.optimization.usedExports = true;
       config.optimization.sideEffects = false;
       
-      // More aggressive code splitting
+      // More aggressive code splitting for better performance
       config.optimization.splitChunks = {
         chunks: 'all',
+        minSize: 20000,
+        maxSize: 244000,
         cacheGroups: {
           // Separate vendor chunks for better caching
           vendor: {
@@ -63,6 +67,7 @@ const nextConfig = {
             name: 'vendors',
             chunks: 'all',
             priority: 10,
+            reuseExistingChunk: true,
           },
           // Separate Framer Motion chunk (large library)
           framerMotion: {
@@ -70,6 +75,7 @@ const nextConfig = {
             name: 'framer-motion',
             chunks: 'all',
             priority: 30,
+            reuseExistingChunk: true,
           },
           // Separate Lucide React chunk
           lucide: {
@@ -77,6 +83,7 @@ const nextConfig = {
             name: 'lucide-icons',
             chunks: 'all',
             priority: 25,
+            reuseExistingChunk: true,
           },
           // Separate FullCalendar chunks (only loaded when needed)
           fullcalendar: {
@@ -84,6 +91,7 @@ const nextConfig = {
             name: 'fullcalendar',
             chunks: 'async', // Only load when imported
             priority: 20,
+            reuseExistingChunk: true,
           },
           // Common React chunk
           react: {
@@ -91,6 +99,15 @@ const nextConfig = {
             name: 'react',
             chunks: 'all',
             priority: 15,
+            reuseExistingChunk: true,
+          },
+          // Next.js framework chunk
+          nextjs: {
+            test: /[\\/]node_modules[\\/]next[\\/]/,
+            name: 'nextjs',
+            chunks: 'all',
+            priority: 12,
+            reuseExistingChunk: true,
           },
         },
       };

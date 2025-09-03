@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import React from 'react';
 import NextImage from 'next/image';
 import PricingSchema from './PricingSchema';
+import WhatsAppIcon from './WhatsAppIcon';
 
 const categories = [
   { id: 'all', label: 'Alle diensten', shortLabel: 'Alle' },
@@ -150,7 +151,7 @@ function ServiceCard() {
       tagline: 'Veilige hulp via internet – eenvoudig programma downloaden',
       icon: <Computer className="service-card-icon" />,
       steps: [
-        'Maak een afspraak via de planner of telefonisch (0624837889)',
+        'Maak een afspraak via de planner of WhatsApp (0624837889)',
         'Download en start TeamViewer (link in bevestigingsmail)',
         'Wij maken verbinding en lossen uw probleem op',
         'Klaar! U betaalt alleen voor de werkelijk bestede tijd'
@@ -164,7 +165,7 @@ function ServiceCard() {
       tagline: 'Persoonlijke hulp bij u thuis – geen gedoe met slepen',
       icon: <Home className="service-card-icon" />,
       steps: [
-        'Maak een afspraak: kies dag en tijd in onze planner of telefonisch (0624837889)',
+        'Maak een afspraak: kies dag en tijd in onze planner of WhatsApp (0624837889)',
         'Bevestiging & telefonisch overleg: monteur belt 30 min voor aankomst',
         'Bezoek aan huis: probleem wordt ter plaatse opgelost',
         'Afronding & advies: duidelijke uitleg en vrijblijvende prijsopgave'
@@ -986,11 +987,11 @@ export default function Services({ forceVisible = false }: ServicesProps) {
             >
               <div className="text-center space-y-4">
                 <div className="w-16 h-16 bg-[#0066cc]/20 rounded-full flex items-center justify-center mx-auto">
-                  <span className="text-2xl" role="img" aria-label="Telefoon icoon">📞</span>
+                  <WhatsAppIcon className="w-8 h-8 text-[#0066cc]" size={32} />
                 </div>
                 <h3 className="text-xl font-semibold text-white">Direct Contact</h3>
                 <p className="text-[#D8E0FF]/80">
-                  Bel direct: 0624837889 voor computerhulp in Rotterdam
+                  WhatsApp direct: <a href="https://wa.me/31624837889" target="_blank" rel="noopener noreferrer" className="text-[#0066cc] hover:text-[#0052a3] underline">0624837889</a> voor computerhulp in Rotterdam
                 </p>
               </div>
             </motion.div>

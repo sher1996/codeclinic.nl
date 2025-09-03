@@ -123,10 +123,12 @@ export default function FAQ() {
             Heeft u nog andere vragen?
           </p>
           <a 
-            href="tel:+31624837889" 
+            href="https://wa.me/31624837889" 
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-[#0066cc] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#0052a3] transition-colors"
           >
-            Bel ons direct: 0624837889
+            WhatsApp ons direct: 0624837889
           </a>
         </motion.div>
       </div>

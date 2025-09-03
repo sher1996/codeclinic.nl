@@ -76,9 +76,11 @@ export default function Contact() {
                       Of bel ons direct op
                     </p>
                     <a 
-                      href="tel:+31624837889" 
+                      href="https://wa.me/31624837889" 
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-[#0066cc] hover:text-[#0052a3] underline text-xl font-semibold text-center"
-                      aria-label="Bel ons op 0624837889"
+                      aria-label="WhatsApp ons op 0624837889"
                     >
                       0624837889
                     </a>

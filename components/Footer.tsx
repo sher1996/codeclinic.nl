@@ -1,3 +1,5 @@
+import WhatsAppIcon from './WhatsAppIcon';
+
 export default function Footer() {
     return (
       <footer className="bg-transparent text-white py-16 border-t-2 border-white/20">
@@ -11,8 +13,8 @@ export default function Footer() {
               </p>
               <div className="space-y-3 text-lg">
                 <p className="text-white/90">
-                  <span role="img" aria-label="Telefoon icoon">📞</span> 
-                  <a href="tel:+31624837889" className="footer-link">+31 6 24837889</a>
+                  <WhatsAppIcon className="w-5 h-5 text-white/90" size={20} />
+                  <a href="https://wa.me/31624837889" target="_blank" rel="noopener noreferrer" className="footer-link">+31 6 24837889</a>
                 </p>
                 <p className="text-white/90">
                   <span role="img" aria-label="E-mail icoon">📧</span> 

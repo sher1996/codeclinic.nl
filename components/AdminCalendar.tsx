@@ -170,7 +170,13 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[99999] flex items-center justify-center p-4">
+    <div 
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[99999] flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="admin-calendar-title"
+      aria-describedby="admin-calendar-description"
+    >
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -178,9 +184,10 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
         className="bg-gray-900 rounded-xl shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-hidden relative z-[100000]"
       >
         {/* Header */}
+        <div id="admin-calendar-description" className="sr-only">Admin dashboard voor het beheren van afspraken en statistieken</div>
         <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">Admin Kalender Dashboard</h2>
+            <h2 id="admin-calendar-title" className="text-2xl font-bold">Admin Kalender Dashboard</h2>
             <button
               onClick={onClose}
               className="p-2 hover:bg-white/20 rounded-lg transition-colors focus:ring-2 focus:ring-white/50 focus:outline-none"
@@ -371,6 +378,10 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100001] flex items-center justify-center p-4"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="edit-booking-title"
+              aria-describedby="edit-booking-description"
             >
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
@@ -378,8 +389,9 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
                 exit={{ scale: 0.9, opacity: 0 }}
                 className="bg-gray-900 rounded-xl p-6 w-full max-w-md relative z-[100002]"
               >
-                <h3 className="text-xl font-bold text-white mb-4">Edit Booking</h3>
+                <h3 id="edit-booking-title" className="text-xl font-bold text-white mb-4">Edit Booking</h3>
                 
+                <div id="edit-booking-description" className="sr-only">Formulier voor het bewerken van een afspraak</div>
                 <form onSubmit={(e) => { e.preventDefault(); updateBooking(); }} className="space-y-4">
                   <div>
                     <label htmlFor="edit-name" className="block text-sm font-medium text-gray-300 mb-1">

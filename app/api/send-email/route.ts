@@ -70,7 +70,7 @@ export async function POST(req: Request) {
       <p>Op het afgesproken tijdstip maken wij verbinding en lossen we uw probleem op.</p>
       
       <h3>Hulp nodig?</h3>
-      <p>Vindt u het downloaden of starten van het programma lastig? Bel ons gerust op <strong>0624837889</strong> – we helpen u stap voor stap verder.</p>
+      <p>Vindt u het downloaden of starten van het programma lastig? WhatsApp ons gerust op <strong><a href="https://wa.me/31624837889" target="_blank" rel="noopener noreferrer">0624837889</a></strong> – we helpen u stap voor stap verder.</p>
       
       <h3>Praktische gegevens</h3>
       <p><strong>Adres administratie:</strong> ${address}</p>
@@ -94,7 +94,7 @@ Stap 3 – Wij maken verbinding
 Op het afgesproken tijdstip maken wij verbinding en lossen we uw probleem op.
 
 Hulp nodig?
-Vindt u het downloaden of starten van het programma lastig? Bel ons gerust op 0624837889 – we helpen u stap voor stap verder.
+Vindt u het downloaden of starten van het programma lastig? WhatsApp ons gerust op 0624837889 – we helpen u stap voor stap verder.
 
 Praktische gegevens
 Adres administratie: ${address}${bookingId ? `\nBoekingsnummer: ${bookingId}` : ''}

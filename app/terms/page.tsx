@@ -92,7 +92,7 @@ export default function TermsPage() {
                 <ul className="list-disc list-inside space-y-2 ml-4">
                   <li>Afspraken kunnen telefonisch of via de website worden gemaakt</li>
                   <li>We streven ernaar om binnen 24 uur te reageren</li>
-                  <li>Voor spoedgevallen zijn we beschikbaar op +31 6 24837889</li>
+                  <li>Voor spoedgevallen zijn we beschikbaar op <a href="https://wa.me/31624837889" target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-blue-100">+31 6 24837889</a></li>
                 </ul>
                 
                 <p className="mt-4"><strong>Betaling:</strong></p>
@@ -154,7 +154,7 @@ export default function TermsPage() {
                 </p>
                 <div className="bg-white/5 rounded-lg p-4 mt-4">
                   <p><strong>E-mail:</strong> <a href="mailto:info@codeclinic.nl" className="text-blue-200 hover:text-blue-100">info@codeclinic.nl</a></p>
-                  <p><strong>Telefoon:</strong> <a href="tel:+31624837889" className="text-blue-200 hover:text-blue-100">+31 6 24837889</a></p>
+                  <p><strong>Telefoon:</strong> <a href="https://wa.me/31624837889" target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-blue-100">+31 6 24837889</a></p>
                 </div>
                 <p className="mt-4">
                   We streven ernaar om alle klachten binnen 5 werkdagen te behandelen. Als we er samen niet uitkomen, kunnen we een onafhankelijke mediator inschakelen.
@@ -180,7 +180,7 @@ export default function TermsPage() {
                 <div className="bg-white/5 rounded-lg p-4 mt-4">
                   <p><strong>CodeClinic.nl</strong></p>
                   <p><strong>E-mail:</strong> <a href="mailto:info@codeclinic.nl" className="text-blue-200 hover:text-blue-100">info@codeclinic.nl</a></p>
-                  <p><strong>Telefoon:</strong> <a href="tel:+31624837889" className="text-blue-200 hover:text-blue-100">+31 6 24837889</a></p>
+                  <p><strong>Telefoon:</strong> <a href="https://wa.me/31624837889" target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-blue-100">+31 6 24837889</a></p>
                   <p><strong>KvK:</strong> 86438948</p>
                   <p><strong>BTW:</strong> NL004247935B44</p>
                 </div>
