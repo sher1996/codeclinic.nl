@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-// import { createClient, SupabaseClient } from '@supabase/supabase-js';
-// import { Resend } from 'resend';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { Resend } from 'resend';
 
 // Initialize Supabase client
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let supabase: any | null = null;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let resend: any | null = null;
+let supabase: SupabaseClient | null = null;
+let resend: Resend | null = null;
 
 // In-memory storage for fallback mode (bookings when database is not available)
 const fallbackBookings: Array<{
@@ -27,15 +25,30 @@ const fallbackBookings: Array<{
 console.log('[calendar] Starting service initialization...');
 
 try {
-  // Initialize Supabase - TEMPORARILY DISABLED FOR TESTING
-  console.log('[calendar] Supabase temporarily disabled for testing');
-  supabase = null;
+  // Initialize Supabase
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.log('[calendar] Initializing Supabase client...');
+    supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+    console.log('[calendar] Supabase client initialized successfully');
+  } else {
+    console.log('[calendar] Supabase environment variables not configured');
+    supabase = null;
+  }
   
-  // Initialize Resend - TEMPORARILY DISABLED FOR TESTING
-  console.log('[calendar] Resend temporarily disabled for testing');
-  resend = null;
+  // Initialize Resend
+  if (process.env.RESEND_API_KEY) {
+    console.log('[calendar] Initializing Resend client...');
+    resend = new Resend(process.env.RESEND_API_KEY);
+    console.log('[calendar] Resend client initialized successfully');
+  } else {
+    console.log('[calendar] Resend API key not configured');
+    resend = null;
+  }
   
-  console.log('[calendar] Service initialization completed - fallback mode only');
+  console.log('[calendar] Service initialization completed');
 } catch (error) {
   console.error('[calendar] Failed to initialize services:', error);
   console.error('[calendar] Error details:', error instanceof Error ? error.message : 'Unknown error');
