@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
-import { Booking } from '@/types/booking';
 
 // Initialize Supabase client
 let supabase: SupabaseClient | null = null;
@@ -82,7 +81,18 @@ function isValidDate(date: string): boolean {
 }
 
 // Function to send admin notification email
-async function sendAdminNotification(booking: any) {
+async function sendAdminNotification(booking: {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  date: string;
+  time: string;
+  notes?: string | null;
+  appointment_type: string;
+  created_at: string;
+  updated_at: string;
+}) {
   if (!process.env.ADMIN_EMAIL || !resend) {
     console.log('[calendar] Admin email not configured or Resend not initialized, skipping notification');
     return;
