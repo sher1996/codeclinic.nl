@@ -14,6 +14,7 @@ const nextConfig = {
     esmExternals: true,
     optimizeCss: true, // Enable CSS optimization
     optimizeServerReact: true, // Optimize server-side React rendering
+    cssChunking: 'strict', // Enable strict CSS chunking
   },
   
   // External packages for server components
@@ -74,7 +75,7 @@ const nextConfig = {
           framerMotion: {
             test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
             name: 'framer-motion',
-            chunks: 'all',
+            chunks: 'async', // Load asynchronously to prevent render blocking
             priority: 30,
             reuseExistingChunk: true,
           },
@@ -82,7 +83,7 @@ const nextConfig = {
           lucide: {
             test: /[\\/]node_modules[\\/]lucide-react[\\/]/,
             name: 'lucide-icons',
-            chunks: 'all',
+            chunks: 'async', // Load asynchronously to prevent render blocking
             priority: 25,
             reuseExistingChunk: true,
           },
@@ -109,6 +110,15 @@ const nextConfig = {
             chunks: 'all',
             priority: 12,
             reuseExistingChunk: true,
+          },
+          // CSS chunks for better loading
+          styles: {
+            test: /\.(css|scss|sass)$/,
+            name: 'styles',
+            chunks: 'all',
+            priority: 40,
+            reuseExistingChunk: true,
+            enforce: true,
           },
         },
       };
