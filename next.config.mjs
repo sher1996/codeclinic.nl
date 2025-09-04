@@ -17,6 +17,8 @@ const nextConfig = {
     cssChunking: 'strict', // Enable strict CSS chunking
     scrollRestoration: true, // Enable scroll restoration
     webVitalsAttribution: ['CLS', 'LCP', 'FCP', 'FID', 'TTFB'], // Track web vitals
+    // CSS optimization for render-blocking elimination
+    // Note: optimizeCssImports and cssMinify are not valid Next.js options
   },
   
   // External packages for server components
@@ -142,11 +144,18 @@ const nextConfig = {
         },
       };
       
-      // Optimize CSS extraction
+      // Optimize CSS extraction and loading
       if (config.plugins) {
         config.plugins.forEach((plugin) => {
           if (plugin.constructor.name === 'MiniCssExtractPlugin') {
             plugin.options.ignoreOrder = true;
+            // Optimize CSS loading for non-render-blocking
+            plugin.options.insert = 'head';
+            plugin.options.attributes = {
+              'data-non-critical': 'true',
+              'media': 'print',
+              'onload': "this.media='all'; this.onload=null;"
+            };
           }
         });
       }
