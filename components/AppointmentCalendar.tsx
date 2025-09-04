@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCSSLoader } from './CSSLoader';
 
 interface AppointmentCalendarProps {
   onDateSelect?: (date: Date) => void;
@@ -66,7 +65,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   const [isLowEnd, setIsLowEnd] = useState(false);
 
   // Load calendar CSS only when component is rendered
-  useCSSLoader('/calendar.css', true);
+  // CSS loading handled by layout.tsx
 
   const fetchBookedTimes = useCallback(async (date: Date) => {
     setIsLoadingBookings(true);
