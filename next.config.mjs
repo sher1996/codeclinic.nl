@@ -10,11 +10,12 @@ const nextConfig = {
   
   // Performance optimizations
   experimental: {
-    optimizePackageImports: ['lucide-react', 'framer-motion', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
+    optimizePackageImports: ['lucide-react', 'framer-motion', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@supabase/supabase-js'],
     esmExternals: true,
     optimizeCss: true, // Enable CSS optimization
     optimizeServerReact: true, // Optimize server-side React rendering
     scrollRestoration: true, // Enable scroll restoration
+    webVitalsAttribution: ['CLS', 'LCP', 'FCP', 'FID', 'TTFB'], // Track web vitals
   },
   
   // External packages for server components
@@ -61,11 +62,16 @@ const nextConfig = {
       config.optimization.usedExports = true;
       config.optimization.sideEffects = false;
       
+      // More aggressive tree shaking
+      config.optimization.providedExports = true;
+      config.optimization.concatenateModules = true;
+      
       // More aggressive code splitting for better performance
       config.optimization.splitChunks = {
         chunks: 'all',
-        minSize: 20000,
-        maxSize: 244000,
+        minSize: 15000,
+        maxSize: 200000,
+        minChunks: 1,
         cacheGroups: {
           // Separate vendor chunks for better caching
           vendor: {

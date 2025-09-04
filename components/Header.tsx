@@ -14,14 +14,29 @@ export default function Header() {
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
+    let ticking = false;
+    
     const handleScroll = () => {
-      setHasScrolled(window.scrollY > 0);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setHasScrolled(window.scrollY > 0);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    // Add scroll event listener
-    window.addEventListener('scroll', handleScroll);
-    // Check initial scroll position
-    handleScroll();
+    // Add passive scroll event listener for better performance
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Check initial scroll position with requestIdleCallback
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        setHasScrolled(window.scrollY > 0);
+      }, { timeout: 100 });
+    } else {
+      setTimeout(() => setHasScrolled(window.scrollY > 0), 0);
+    }
 
     // Cleanup
     return () => window.removeEventListener('scroll', handleScroll);

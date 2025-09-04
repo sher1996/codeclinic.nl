@@ -39,13 +39,22 @@ export default function SimpleSentenceSwitcher({ className = '' }: SimpleSentenc
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // fade out
-      setVisible(false);
-      // after fade duration, switch sentence and fade in
-      setTimeout(() => {
-        setIndex((prev) => (prev + 1) % sentences.length);
-        setVisible(true);
-      }, 400); // match CSS duration
+      // Use requestAnimationFrame for smoother transitions
+      requestAnimationFrame(() => {
+        setVisible(false);
+        
+        // Use requestIdleCallback for non-critical updates
+        const switchSentence = () => {
+          setIndex((prev) => (prev + 1) % sentences.length);
+          setVisible(true);
+        };
+        
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(switchSentence, { timeout: 400 });
+        } else {
+          setTimeout(switchSentence, 400);
+        }
+      });
     }, 4000);
 
     return () => clearInterval(interval);
@@ -54,7 +63,16 @@ export default function SimpleSentenceSwitcher({ className = '' }: SimpleSentenc
   return (
     <p
       className={`text-lg leading-[1.6] text-white/90 max-w-[45ch] mb-12 transition-opacity duration-500 ${className}`}
-      style={{ opacity: visible ? 1 : 0, minHeight: '3em' }}
+      style={{ 
+        opacity: visible ? 1 : 0, 
+        minHeight: '4.5em',
+        height: '4.5em',
+        display: 'flex',
+        alignItems: 'center',
+        willChange: 'opacity',
+        transform: 'translateZ(0)',
+        backfaceVisibility: 'hidden'
+      }}
     >
       {sentences[index]}
     </p>

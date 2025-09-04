@@ -3,11 +3,11 @@ CSS Optimization Report
 
 app/globals.css:
   Original: 55.83 KB
-  Optimized: 39.35 KB
-  Savings: 29.5%
+  Optimized: 36.22 KB
+  Savings: 35.1%
 
 app/calendar.css:
   Original: 2.92 KB
-  Optimized: 2.42 KB
-  Savings: 17.1%
+  Optimized: 2.29 KB
+  Savings: 21.4%
 

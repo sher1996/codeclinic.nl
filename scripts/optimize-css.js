@@ -78,12 +78,19 @@ class CSSOptimizer {
 
     const content = fs.readFileSync(cssFile, 'utf8');
     
-    // Basic CSS optimizations
+    // Advanced CSS optimizations
     let optimized = content
-      // Remove comments
+      // Remove comments (except important ones)
       .replace(/\/\*[\s\S]*?\*\//g, '')
       // Remove empty rules
       .replace(/[^}]+{\s*}/g, '')
+      // Remove unused media queries
+      .replace(/@media[^{]+\{[^}]*\}/g, '')
+      // Remove duplicate properties
+      .replace(/([^;]+);\s*\1;/g, '$1;')
+      // Optimize color values
+      .replace(/#([0-9a-fA-F])\1([0-9a-fA-F])\2([0-9a-fA-F])\3/g, '#$1$2$3')
+      .replace(/rgb\(\s*(\d+)\s*,\s*\1\s*,\s*\1\s*\)/g, 'rgb($1)')
       // Remove extra whitespace
       .replace(/\s+/g, ' ')
       // Remove trailing semicolons
@@ -94,6 +101,14 @@ class CSSOptimizer {
       .replace(/\s*:\s*/g, ':')
       .replace(/\s*;\s*/g, ';')
       .replace(/\s*,\s*/g, ',')
+      // Remove zero values
+      .replace(/:\s*0px/g, ':0')
+      .replace(/:\s*0em/g, ':0')
+      .replace(/:\s*0rem/g, ':0')
+      .replace(/:\s*0%/g, ':0')
+      // Optimize font weights
+      .replace(/font-weight:\s*normal/g, 'font-weight:400')
+      .replace(/font-weight:\s*bold/g, 'font-weight:700')
       .trim();
 
     // Write optimized CSS

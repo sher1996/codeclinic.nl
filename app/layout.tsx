@@ -142,8 +142,11 @@ export default function RootLayout({
         {/* Preload critical resources for above-the-fold content */}
         <link rel="preload" href="/logo-cc.png" as="image" type="image/png" />
         
-        {/* Preload critical fonts */}
+        {/* Preload critical fonts with higher priority */}
         <link rel="preload" href="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        
+        {/* Preload hero background gradient */}
+        <link rel="preload" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'%3E%3Cdefs%3E%3CradialGradient id='hero-bg' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%231F2C90' stop-opacity='0.3'/%3E%3Cstop offset='100%25' stop-color='%234F4F00' stop-opacity='0.2'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23hero-bg)'/%3E%3C/svg%3E" as="image" />
         
         {/* Critical CSS - Ultra-optimized for above-the-fold content - Minimal size for fastest LCP */}
         <style dangerouslySetInnerHTML={{
