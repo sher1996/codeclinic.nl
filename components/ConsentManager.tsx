@@ -82,7 +82,7 @@ export default function ConsentManager() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex-1">
             <h3 id="consent-title" className="text-lg font-semibold mb-2 text-white">Privacy-instellingen</h3>
-            <p id="consent-description" className="text-sm text-gray-200 mb-4">
+            <p id="consent-description" className="text-base text-gray-200 mb-4 leading-relaxed">
               Wij gebruiken cookies en vergelijkbare technologieën om uw ervaring te verbeteren, 
               verkeer te analyseren en gepersonaliseerde inhoud te tonen. 
               U kunt uw voorkeuren beheren via de onderstaande opties.

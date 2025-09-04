@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useCSSLoader } from './CSSLoader';
 
 interface AppointmentCalendarProps {
   onDateSelect?: (date: Date) => void;
@@ -63,6 +64,9 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
 
   // Check if device is low-end
   const [isLowEnd, setIsLowEnd] = useState(false);
+
+  // Load calendar CSS only when component is rendered
+  useCSSLoader('/calendar.css', true);
 
   const fetchBookedTimes = useCallback(async (date: Date) => {
     setIsLoadingBookings(true);

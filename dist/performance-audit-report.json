@@ -1,0 +1,37 @@
+{
+  "timestamp": "2025-09-03T22:22:42.626Z",
+  "cssOptimizations": {
+    "app/globals.css": {
+      "size": 57167,
+      "sizeKB": "55.83",
+      "lines": 2385,
+      "selectors": 586,
+      "rules": 438,
+      "mediaQueries": 26,
+      "keyframes": 29
+    },
+    "app/calendar.css": {
+      "size": 2985,
+      "sizeKB": "2.92",
+      "lines": 108,
+      "selectors": 62,
+      "rules": 19,
+      "mediaQueries": 1,
+      "keyframes": 0
+    }
+  },
+  "performanceMetrics": {
+    "criticalRequestChain": {
+      "criticalCSSInlined": true,
+      "deferredCSSLoading": true,
+      "removedGlobalImports": true,
+      "estimatedImprovement": "300-500ms"
+    },
+    "totalCSS": {
+      "size": 60152,
+      "sizeKB": "58.74",
+      "selectors": 648
+    }
+  },
+  "recommendations": []
+}
