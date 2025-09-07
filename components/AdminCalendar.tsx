@@ -19,9 +19,18 @@ interface Booking {
 interface AdminCalendarProps {
   isVisible: boolean;
   onClose: () => void;
+  currentUser?: {
+    id: string;
+    email: string;
+    name: string;
+    reason?: string;
+    status: 'pending' | 'approved' | 'denied';
+    created_at: string;
+    updated_at: string;
+  } | null;
 }
 
-export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps) {
+export default function AdminCalendar({ isVisible, onClose, currentUser }: AdminCalendarProps) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
@@ -187,7 +196,14 @@ export default function AdminCalendar({ isVisible, onClose }: AdminCalendarProps
         <div id="admin-calendar-description" className="sr-only">Admin dashboard voor het beheren van afspraken en statistieken</div>
         <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white">
           <div className="flex justify-between items-center">
-            <h2 id="admin-calendar-title" className="text-2xl font-bold">Admin Kalender Dashboard</h2>
+            <div>
+              <h2 id="admin-calendar-title" className="text-2xl font-bold">Admin Kalender Dashboard</h2>
+              {currentUser && (
+                <p className="text-blue-100 text-sm mt-1">
+                  👤 Logged in as: {currentUser.name} ({currentUser.email})
+                </p>
+              )}
+            </div>
             <button
               onClick={onClose}
               className="p-2 hover:bg-white/20 rounded-lg transition-colors focus:ring-2 focus:ring-white/50 focus:outline-none"

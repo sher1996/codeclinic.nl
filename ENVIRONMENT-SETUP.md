@@ -13,7 +13,7 @@ UPSTASH_REDIS_REST_TOKEN=your_upstash_redis_token_here
 
 # Email Configuration (Resend)
 RESEND_API_KEY=your_resend_api_key_here
-ADMIN_EMAIL=your_admin_email@example.com
+ADMIN_EMAIL=codeclinic.nl@gmail.com
 
 # OpenAI Configuration
 OPENAI_API_KEY=your_openai_api_key_here

@@ -5,7 +5,7 @@ import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import Header from '@/components/Header';
 import ErrorOverlay from '@/components/ErrorOverlay';
-import HiddenAdminAccess from '@/components/HiddenAdminAccess';
+import EmailAdminAccess from '@/components/EmailAdminAccess';
 import StructuredData from '@/components/StructuredData';
 import PerformanceMonitor from '@/components/PerformanceMonitor';
 
@@ -282,7 +282,7 @@ export default function RootLayout({
         </main>
         
         <ErrorOverlay />
-        <HiddenAdminAccess />
+        <EmailAdminAccess />
         <StructuredData />
         <PerformanceMonitor />
 

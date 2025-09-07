@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { Resend } from 'resend';
+import { sendAdminApprovalRequest, sendBookingConfirmation } from '@/lib/email-service';
 
 // Initialize Supabase client
 let supabase: SupabaseClient | null = null;
-let resend: Resend | null = null;
 
 // In-memory storage for fallback mode (bookings when database is not available)
 const fallbackBookings: Array<{
@@ -38,15 +37,8 @@ try {
     supabase = null;
   }
   
-  // Initialize Resend
-  if (process.env.RESEND_API_KEY) {
-    console.log('[calendar] Initializing Resend client...');
-    resend = new Resend(process.env.RESEND_API_KEY);
-    console.log('[calendar] Resend client initialized successfully');
-  } else {
-    console.log('[calendar] Resend API key not configured');
-    resend = null;
-  }
+  // Gmail SMTP is handled by the email service
+  console.log('[calendar] Gmail SMTP will be used for email notifications');
   
   console.log('[calendar] Service initialization completed');
 } catch (error) {
@@ -103,8 +95,8 @@ async function sendAdminNotification(booking: {
   created_at: string;
   updated_at: string;
 }) {
-  if (!process.env.ADMIN_EMAIL || !resend) {
-    console.log('[calendar] Admin email not configured or Resend not initialized, skipping notification');
+  if (!process.env.ADMIN_EMAIL || !process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.log('[calendar] Gmail credentials not configured, skipping admin notification');
     return;
   }
 
@@ -126,15 +118,23 @@ async function sendAdminNotification(booking: {
       <p><strong>Geboekt op:</strong> ${new Date(booking.created_at).toLocaleString('nl-NL')}</p>
     `;
 
-    await resend.emails.send({
-      from: process.env.FROM_EMAIL || "Computer Help <onboarding@resend.dev>",
-      to: process.env.ADMIN_EMAIL,
-      subject: `${typeEmoji} Nieuwe ${typeText}: ${booking.name} - ${booking.date} om ${booking.time}`,
-      html,
-      text: `${typeEmoji} Nieuwe afspraak geboekt - ${typeText}!\n\nType: ${typeText}\nNaam: ${booking.name}\nEmail: ${booking.email}\nTelefoon: ${booking.phone}\nDatum: ${booking.date}\nTijd: ${booking.time}\nNotities: ${booking.notes || 'Geen notities'}\nBoekingsnummer: ${booking.id}\nGeboekt op: ${new Date(booking.created_at).toLocaleString('nl-NL')}`,
-    });
+    // Use Gmail SMTP service
+    const { sendAdminApprovalRequest } = await import('@/lib/email-service');
+    
+    // Create a mock request object for the admin approval function
+    const mockRequest = {
+      id: booking.id,
+      email: booking.email,
+      name: booking.name,
+      reason: `Nieuwe ${typeText} geboekt voor ${booking.date} om ${booking.time}`,
+      createdAt: booking.created_at,
+      approveToken: 'admin-notification',
+      denyToken: 'admin-notification'
+    };
 
-    console.log('[calendar] Admin notification sent successfully');
+    // Send using the existing Gmail SMTP service
+    const result = await sendAdminApprovalRequest(mockRequest);
+    console.log('[calendar] Admin notification sent successfully via Gmail SMTP');
   } catch (error: unknown) {
     console.error('[calendar] Failed to send admin notification:', error);
   }
@@ -272,6 +272,15 @@ export async function POST(request: Request) {
         // Send admin notification
         await sendAdminNotification(insertedBooking);
         
+        // Send customer confirmation email
+        try {
+          await sendBookingConfirmation(insertedBooking);
+          console.log('[calendar] Customer confirmation email sent successfully');
+        } catch (error) {
+          console.error('[calendar] Failed to send customer confirmation email:', error);
+          // Don't fail the booking if confirmation email fails
+        }
+        
         return NextResponse.json({ 
           ok: true, 
           booking: insertedBooking
@@ -310,6 +319,15 @@ export async function POST(request: Request) {
       
       fallbackBookings.push(newBooking);
       console.log('[calendar] Booking stored in fallback mode:', newBooking);
+      
+      // Send customer confirmation email
+      try {
+        await sendBookingConfirmation(newBooking);
+        console.log('[calendar] Customer confirmation email sent successfully (fallback mode)');
+      } catch (error) {
+        console.error('[calendar] Failed to send customer confirmation email (fallback mode):', error);
+        // Don't fail the booking if confirmation email fails
+      }
       
       return NextResponse.json({ 
         ok: true, 
