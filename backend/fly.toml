@@ -1,0 +1,20 @@
+app = "computer-help"
+
+# Prevent auto-stop and keep 1 machine running
+[experimental]
+auto_stop_machines = false
+min_machines_running = 1
+
+# Our FastAPI listens on port 8765
+[[services]]
+  internal_port = 8765
+  protocol      = "tcp"
+
+  # Expose on HTTP (ports 80 & 443 with TLS)
+  [[services.ports]]
+    port     = "80"
+    handlers = ["http"]
+
+  [[services.ports]]
+    port     = "443"
+    handlers = ["tls", "http"]

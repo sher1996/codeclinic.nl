@@ -1,0 +1,9 @@
+tunnel: codeclinic-ws
+credentials-file: ~/.cloudflared/70976bf7-d7fb-44fd-835e-7369012f491f.json
+
+ingress:
+  - hostname: ws.codeclinic.nl
+    service: http://localhost:8765
+    originRequest:
+      noTLSVerify: true
+  - service: http_status:404 

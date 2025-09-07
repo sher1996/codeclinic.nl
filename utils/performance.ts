@@ -38,7 +38,7 @@ export const measurePerformance = () => {
     
     try {
       observer.observe({ entryTypes: ['layout-shift'] });
-    } catch (e) {
+    } catch {
       // Browser doesn't support layout-shift
     }
   }
@@ -55,7 +55,7 @@ export const measureBundleSize = () => {
   // Estimate bundle size from performance entries
   const resources = performance.getEntriesByType('resource');
   const totalSize = resources.reduce((acc, resource) => {
-    const transferSize = (resource as any).transferSize || 0;
+    const transferSize = (resource as PerformanceResourceTiming).transferSize || 0;
     return acc + transferSize;
   }, 0);
 

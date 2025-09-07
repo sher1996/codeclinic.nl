@@ -48,7 +48,7 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   // Reduce bundle size
-  webpack: (config, { dev, isServer }) => {
+  webpack: (config, { dev }) => {
     // Ensure the alias map exists and add our project-root alias
     config.resolve = config.resolve || {};
     config.resolve.alias = {
@@ -209,9 +209,10 @@ const nextConfig = {
   
   // Bundle analyzer for performance monitoring
   ...(process.env.ANALYZE === 'true' && {
-    webpack: (config) => {
+    webpack: async (config) => {
+      const { default: BundleAnalyzerPlugin } = await import('@next/bundle-analyzer');
       config.plugins.push(
-        new (require('@next/bundle-analyzer'))({
+        new BundleAnalyzerPlugin({
           enabled: true,
         })
       );

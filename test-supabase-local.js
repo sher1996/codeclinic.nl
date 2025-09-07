@@ -1,6 +1,8 @@
 // Test Supabase connection locally
-const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config();
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 console.log('🔍 Testing Supabase connection locally...\n');
 
