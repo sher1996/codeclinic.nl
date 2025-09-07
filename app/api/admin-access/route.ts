@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
-import { sendAdminApprovalRequest, sendUserNotification, sendAccessRequestConfirmation } from '@/lib/email-service';
+import { sendAdminApprovalRequest, sendAccessRequestConfirmation } from '@/lib/email-service';
 
 // Initialize Supabase client
 const supabase = process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY

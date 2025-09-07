@@ -101,9 +101,8 @@ async function sendAdminNotification(booking: {
   }
 
   try {
-    const appointmentType = booking.appointment_type || 'onsite';
-    const typeText = appointmentType === 'remote' ? 'Remote hulp' : 'Aan huis bezoek';
-    const typeEmoji = appointmentType === 'remote' ? '💻' : '🏠';
+         const appointmentType = booking.appointment_type || 'onsite';
+         const typeText = appointmentType === 'remote' ? 'Remote hulp' : 'Aan huis bezoek';
     
     // HTML template is handled by the email service
 
