@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { sendAdminApprovalRequest, sendBookingConfirmation } from '@/lib/email-service';
+import { sendBookingConfirmation } from '@/lib/email-service';
 
 // Initialize Supabase client
 let supabase: SupabaseClient | null = null;
@@ -105,18 +105,7 @@ async function sendAdminNotification(booking: {
     const typeText = appointmentType === 'remote' ? 'Remote hulp' : 'Aan huis bezoek';
     const typeEmoji = appointmentType === 'remote' ? '💻' : '🏠';
     
-    const html = `
-      <h2>${typeEmoji} Nieuwe afspraak geboekt - ${typeText}!</h2>
-      <p><strong>Type:</strong> ${typeText}</p>
-      <p><strong>Naam:</strong> ${booking.name}</p>
-      <p><strong>Email:</strong> ${booking.email}</p>
-      <p><strong>Telefoon:</strong> ${booking.phone}</p>
-      <p><strong>Datum:</strong> ${booking.date}</p>
-      <p><strong>Tijd:</strong> ${booking.time}</p>
-      <p><strong>Notities:</strong> ${booking.notes || 'Geen notities'}</p>
-      <p><strong>Boekingsnummer:</strong> ${booking.id}</p>
-      <p><strong>Geboekt op:</strong> ${new Date(booking.created_at).toLocaleString('nl-NL')}</p>
-    `;
+    // HTML template is handled by the email service
 
     // Use Gmail SMTP service
     const { sendAdminApprovalRequest } = await import('@/lib/email-service');
@@ -133,7 +122,7 @@ async function sendAdminNotification(booking: {
     };
 
     // Send using the existing Gmail SMTP service
-    const result = await sendAdminApprovalRequest(mockRequest);
+    await sendAdminApprovalRequest(mockRequest);
     console.log('[calendar] Admin notification sent successfully via Gmail SMTP');
   } catch (error: unknown) {
     console.error('[calendar] Failed to send admin notification:', error);

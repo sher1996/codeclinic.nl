@@ -8,7 +8,7 @@ const supabase = process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_K
   ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
   : null;
 
-const adminEmail = process.env.ADMIN_EMAIL || 'codeclinic.nl@gmail.com';
+// Admin email is configured in the email service
 
 // Validation schema for admin access request
 const adminAccessRequestSchema = z.object({
@@ -17,12 +17,7 @@ const adminAccessRequestSchema = z.object({
   reason: z.string().optional()
 });
 
-// Validation schema for admin approval/denial
-const adminActionSchema = z.object({
-  requestId: z.string().uuid('Invalid request ID'),
-  action: z.enum(['approve', 'deny']),
-  adminToken: z.string().min(1, 'Admin token required')
-});
+// Admin action schema is handled in the action route
 
 // Generate a secure token for admin actions
 function generateAdminToken(): string {
@@ -50,16 +45,7 @@ async function sendAdminApprovalRequestEmail(request: {
 }
 
 // Send approval/denial notification to user using Gmail SMTP
-async function sendUserNotificationEmail(email: string, name: string, approved: boolean) {
-  try {
-    const result = await sendUserNotification(email, name, approved);
-    console.log('[admin-access] User notification sent successfully:', result);
-    return { success: true, result };
-  } catch (error) {
-    console.error('[admin-access] Failed to send user notification:', error);
-    throw error;
-  }
-}
+// User notification is handled by the email service directly
 
 // POST - Request admin access
 export async function POST(request: Request) {
