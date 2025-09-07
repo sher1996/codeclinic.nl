@@ -242,23 +242,14 @@ export default function RootLayout({
         <link rel="preload" href="/calendar.css" as="style" />
         <noscript><link rel="stylesheet" href="/calendar.css" /></noscript>
         
-        {/* Preload email-decode script to reduce critical path latency */}
-        <link rel="preload" href="https://cdn.jsdelivr.net/npm/email-decode@1.0.0/dist/email-decode.min.js" as="script" crossOrigin="anonymous" />
-        
         {/* Defer non-critical JavaScript */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               // Defer loading of non-critical resources
               function loadDeferredResources() {
-                // Load email-decode.min.js only when needed
-                if (document.querySelector('[data-email]')) {
-                  const script = document.createElement('script');
-                  script.src = 'https://cdn.jsdelivr.net/npm/email-decode@1.0.0/dist/email-decode.min.js';
-                  script.async = true;
-                  script.crossOrigin = 'anonymous';
-                  document.head.appendChild(script);
-                }
+                // Add any deferred resource loading here if needed
+                console.log('Deferred resources loaded');
               }
               
               // Load deferred resources after page load
