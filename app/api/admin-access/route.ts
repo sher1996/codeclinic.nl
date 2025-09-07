@@ -115,6 +115,7 @@ export async function POST(request: Request) {
     // Send approval request to admin using Gmail SMTP
     await sendAdminApprovalRequestEmail({
       ...requestData,
+      createdAt: requestData.created_at,
       approveToken,
       denyToken
     });
