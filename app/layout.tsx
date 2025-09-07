@@ -142,8 +142,7 @@ export default function RootLayout({
         {/* Preload critical resources for above-the-fold content */}
         <link rel="preload" href="/logo-cc.png" as="image" type="image/png" />
         
-        {/* Preload critical fonts */}
-        <link rel="preload" href="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        {/* Fonts are handled by Next.js Google Fonts - no manual preload needed */}
         
         {/* Critical CSS - Ultra-optimized for above-the-fold content - Minimal size for fastest LCP */}
         <style dangerouslySetInnerHTML={{
