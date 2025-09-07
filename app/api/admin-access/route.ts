@@ -116,6 +116,7 @@ export async function POST(request: Request) {
     await sendAdminApprovalRequestEmail({
       ...requestData,
       createdAt: requestData.created_at,
+      reason: requestData.reason || undefined,
       approveToken,
       denyToken
     });
