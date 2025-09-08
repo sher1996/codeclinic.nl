@@ -33,6 +33,22 @@ export default function TestAdminAccess() {
 
   return (
     <>
+      {/* Always visible test element */}
+      <div 
+        style={{
+          position: 'fixed',
+          top: '10px',
+          right: '10px',
+          backgroundColor: 'red',
+          color: 'white',
+          padding: '10px',
+          zIndex: 99999,
+          fontSize: '12px'
+        }}
+      >
+        TEST COMPONENT LOADED
+      </div>
+      
       {showModal && (
         <div 
           style={{
