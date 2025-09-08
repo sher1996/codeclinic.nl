@@ -29,9 +29,12 @@ export default function EmailAdminAccess() {
 
   // Check for admin access via URL parameter
   useEffect(() => {
+    console.log('EmailAdminAccess component loaded');
     const urlParams = new URLSearchParams(window.location.search);
     const adminParam = urlParams.get('admin');
+    console.log('URL params:', { adminParam, search: window.location.search });
     if (adminParam === 'true') {
+      console.log('Setting showLoginModal to true');
       setShowLoginModal(true);
     }
   }, []);
@@ -41,10 +44,12 @@ export default function EmailAdminAccess() {
     const handleKeyPress = (event: KeyboardEvent) => {
       // Secret key sequence: Ctrl + Alt + A
       if (event.ctrlKey && event.altKey && event.key === 'a') {
+        console.log('Ctrl+Alt+A pressed');
         event.preventDefault();
         if (isAuthenticated) {
           setShowAdmin(true);
         } else {
+          console.log('Setting showLoginModal to true via keyboard shortcut');
           setShowLoginModal(true);
         }
       }
@@ -149,6 +154,8 @@ export default function EmailAdminAccess() {
     setCurrentUser(null);
     setEmail('');
   };
+
+  console.log('EmailAdminAccess render:', { showLoginModal, showAdmin, isAuthenticated });
 
   return (
     <>
