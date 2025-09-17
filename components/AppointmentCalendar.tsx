@@ -523,7 +523,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
     }
   }, [selectedDate]);
 
-  // Generate blocked time slots (1.5 hours before each booking)
+  // Generate blocked time slots (1.5 hours after each booking)
   const generateBlockedTimeSlots = (bookedTimes: string[]): string[] => {
     const blockedSlots: string[] = [];
     
@@ -532,18 +532,15 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       const bookedDateTime = new Date();
       bookedDateTime.setHours(hours, minutes, 0, 0);
       
-      // Calculate 1.5 hours before the booking (90 minutes)
-      const blockedDateTime = new Date(bookedDateTime.getTime() - (90 * 60 * 1000));
-      
-      // Generate 30-minute slots for the 1.5-hour block
+      // Generate 30-minute slots for the 1.5-hour block AFTER the booking
       for (let i = 0; i < 3; i++) {
-        const slotDateTime = new Date(blockedDateTime.getTime() + (i * 30 * 60 * 1000));
+        const slotDateTime = new Date(bookedDateTime.getTime() + (i * 30 * 60 * 1000));
         const slotHours = slotDateTime.getHours();
         const slotMinutes = slotDateTime.getMinutes();
         const slotTime = `${slotHours.toString().padStart(2, '0')}:${slotMinutes.toString().padStart(2, '0')}`;
         
-        // Only add if it's not in the past and not the actual booking time
-        if (slotTime !== bookedTime && !isPastTime(selectedDate!, slotTime)) {
+        // Only add if it's not in the past
+        if (!isPastTime(selectedDate!, slotTime)) {
           blockedSlots.push(slotTime);
         }
       }
