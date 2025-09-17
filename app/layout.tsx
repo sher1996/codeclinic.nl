@@ -70,7 +70,7 @@ export default function RootLayout({
   return (
     <html lang="nl" className="scroll-smooth">
       <head>
-        {/* Google tag (gtag.js) with consent mode */}
+        {/* Google tag (gtag.js) with consent mode - Analytics + Ads */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-8VM2Y5JZEM"
           strategy="afterInteractive"
@@ -100,6 +100,9 @@ export default function RootLayout({
                 'allow_google_signals': false,
                 'allow_ad_personalization_signals': false
               });
+              
+              // Configure Google Ads conversion tracking
+              gtag('config', 'AW-17577884942');
             `,
           }}
         />

@@ -382,6 +382,16 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       const emailResult = await emailRes.json();
       console.log('[AppointmentCalendar] Email sent:', emailResult);
       
+      // Track Google Ads conversion
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'conversion', {
+          'send_to': 'AW-17577884942',
+          'value': 1.0,
+          'currency': 'EUR',
+          'transaction_id': bookingResult.booking.id
+        });
+      }
+      
       setAnnouncement('Afspraak succesvol geboekt! U ontvangt een bevestiging per e-mail.');
       
       // Refresh booked times to show the new booking
