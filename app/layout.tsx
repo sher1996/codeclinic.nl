@@ -237,9 +237,7 @@ export default function RootLayout({
           `
         }} />
         
-        {/* Defer non-critical CSS loading - will be loaded dynamically when needed */}
-        <link rel="preload" href="/calendar.css" as="style" />
-        <noscript><link rel="stylesheet" href="/calendar.css" /></noscript>
+        {/* CSS will be loaded automatically by Next.js */}
         
         {/* Defer non-critical JavaScript */}
         <script
