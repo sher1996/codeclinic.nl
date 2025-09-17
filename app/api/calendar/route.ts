@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { sendBookingConfirmation } from '@/lib/email-service';
 import { generateUniqueBookingNumber } from '@/lib/booking-utils';
+import { createTransporter } from '@/lib/email-service';
 
 // Initialize Supabase client
 let supabase: SupabaseClient | null = null;
@@ -114,6 +115,7 @@ async function sendAdminNotification(booking: {
   appointment_type: string;
   created_at: string;
   updated_at: string;
+  booking_number?: string;
 }) {
   if (!process.env.ADMIN_EMAIL || !process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
     console.log('[calendar] Gmail credentials not configured, skipping admin notification');
@@ -121,28 +123,33 @@ async function sendAdminNotification(booking: {
   }
 
   try {
-         const appointmentType = booking.appointment_type || 'onsite';
-         const typeText = appointmentType === 'remote' ? 'Remote hulp' : 'Aan huis bezoek';
+    const appointmentType = booking.appointment_type || 'onsite';
+    const typeText = appointmentType === 'remote' ? 'Remote hulp' : 'Aan huis bezoek';
+    const typeEmoji = appointmentType === 'remote' ? '💻' : '🏠';
     
-    // HTML template is handled by the email service
+    const html = `
+      <h2>${typeEmoji} Nieuwe afspraak geboekt - ${typeText}!</h2>
+      <p><strong>Type:</strong> ${typeText}</p>
+      <p><strong>Naam:</strong> ${booking.name}</p>
+      <p><strong>Email:</strong> ${booking.email}</p>
+      <p><strong>Telefoon:</strong> ${booking.phone}</p>
+      <p><strong>Datum:</strong> ${booking.date}</p>
+      <p><strong>Tijd:</strong> ${booking.time}</p>
+      <p><strong>Notities:</strong> ${booking.notes || 'Geen notities'}</p>
+      <p><strong>Boekingsnummer:</strong> ${booking.booking_number || booking.id}</p>
+      <p><strong>Geboekt op:</strong> ${new Date(booking.created_at).toLocaleString('nl-NL')}</p>
+    `;
 
-    // Use Gmail SMTP service
-    const { sendAdminApprovalRequest } = await import('@/lib/email-service');
-    
-    // Create a mock request object for the admin approval function
-    const mockRequest = {
-      id: booking.id,
-      email: booking.email,
-      name: booking.name,
-      reason: `Nieuwe ${typeText} geboekt voor ${booking.date} om ${booking.time}`,
-      createdAt: booking.created_at,
-      approveToken: 'admin-notification',
-      denyToken: 'admin-notification'
-    };
+    const transporter = createTransporter();
+    await transporter.sendMail({
+      from: `"Code Clinic VIP" <${process.env.GMAIL_USER}>`,
+      to: process.env.ADMIN_EMAIL,
+      subject: `${typeEmoji} Nieuwe ${typeText}: ${booking.name} - ${booking.date} om ${booking.time}`,
+      html,
+      text: `${typeEmoji} Nieuwe afspraak geboekt - ${typeText}!\n\nType: ${typeText}\nNaam: ${booking.name}\nEmail: ${booking.email}\nTelefoon: ${booking.phone}\nDatum: ${booking.date}\nTijd: ${booking.time}\nNotities: ${booking.notes || 'Geen notities'}\nBoekingsnummer: ${booking.booking_number || booking.id}\nGeboekt op: ${new Date(booking.created_at).toLocaleString('nl-NL')}`,
+    });
 
-    // Send using the existing Gmail SMTP service
-    await sendAdminApprovalRequest(mockRequest);
-    console.log('[calendar] Admin notification sent successfully via Gmail SMTP');
+    console.log('[calendar] Admin notification sent successfully');
   } catch (error: unknown) {
     console.error('[calendar] Failed to send admin notification:', error);
   }
@@ -290,11 +297,19 @@ export async function POST(request: Request) {
         console.log('[calendar] Booking stored in database:', insertedBooking);
         
         // Send admin notification
-        await sendAdminNotification(insertedBooking);
+        const adminBookingWithNumber = {
+          ...insertedBooking,
+          booking_number: bookingNumber
+        };
+        await sendAdminNotification(adminBookingWithNumber);
         
         // Send customer confirmation email
         try {
-          await sendBookingConfirmation(insertedBooking);
+          const bookingWithNumber = {
+            ...insertedBooking,
+            booking_number: bookingNumber
+          };
+          await sendBookingConfirmation(bookingWithNumber);
           console.log('[calendar] Customer confirmation email sent successfully');
         } catch (error) {
           console.error('[calendar] Failed to send customer confirmation email:', error);
