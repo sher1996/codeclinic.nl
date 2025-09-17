@@ -223,14 +223,50 @@ export async function GET(request: Request) {
     }
 
     const bookedTimes = bookings?.map(booking => booking.time) || [];
-    const finalAvailableSlots = availableSlots.filter(slot => !bookedTimes.includes(slot));
+    
+    // Generate blocked time slots (1.5 hours before each booking)
+    const generateBlockedTimeSlots = (bookedTimes: string[]): string[] => {
+      const blockedSlots: string[] = [];
+      
+      bookedTimes.forEach(bookedTime => {
+        const [hours, minutes] = bookedTime.split(':').map(Number);
+        const bookedDateTime = new Date();
+        bookedDateTime.setHours(hours, minutes, 0, 0);
+        
+        // Calculate 1.5 hours before the booking (90 minutes)
+        const blockedDateTime = new Date(bookedDateTime.getTime() - (90 * 60 * 1000));
+        
+        // Generate 30-minute slots for the 1.5-hour block
+        for (let i = 0; i < 3; i++) {
+          const slotDateTime = new Date(blockedDateTime.getTime() + (i * 30 * 60 * 1000));
+          const slotHours = slotDateTime.getHours();
+          const slotMinutes = slotDateTime.getMinutes();
+          const slotTime = `${slotHours.toString().padStart(2, '0')}:${slotMinutes.toString().padStart(2, '0')}`;
+          
+          // Only add if it's not the actual booking time
+          if (slotTime !== bookedTime) {
+            blockedSlots.push(slotTime);
+          }
+        }
+      });
+      
+      return blockedSlots;
+    };
+    
+    const blockedTimes = generateBlockedTimeSlots(bookedTimes);
+    const finalAvailableSlots = availableSlots.filter(slot => 
+      !bookedTimes.includes(slot) && !blockedTimes.includes(slot)
+    );
 
     return NextResponse.json({ 
       ok: true, 
       availableSlots: finalAvailableSlots,
       date,
       totalWorkers: workers.length,
-      bookedSlots: bookedTimes.length
+      bookedSlots: bookedTimes.length,
+      blockedSlots: blockedTimes.length,
+      bookedTimes: bookedTimes,
+      blockedTimes: blockedTimes
     });
   } catch (error) {
     console.error('[available-slots] GET request failed:', error);
