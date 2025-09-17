@@ -98,7 +98,8 @@ export default function RootLayout({
                 'consent_mode': 'advanced',
                 'anonymize_ip': true,
                 'allow_google_signals': false,
-                'allow_ad_personalization_signals': false
+                'allow_ad_personalization_signals': false,
+                'send_page_view': true
               });
               
               // Configure Google Ads conversion tracking

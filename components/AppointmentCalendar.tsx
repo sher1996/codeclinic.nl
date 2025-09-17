@@ -392,31 +392,20 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
         });
       }
       
-      setAnnouncement('Afspraak succesvol geboekt! U ontvangt een bevestiging per e-mail.');
+      setAnnouncement('Afspraak succesvol geboekt! U wordt doorgestuurd naar de bevestigingspagina...');
       
-      // Refresh booked times to show the new booking
-      if (selectedDate) {
-        // Add a small delay to ensure Redis has been updated
-        setTimeout(async () => {
-          await fetchBookedTimes(selectedDate);
-        }, 500);
-      }
+      // Redirect to thank you page with booking details
+      const thankYouParams = new URLSearchParams({
+        booking_id: bookingResult.booking.id,
+        date: dateString,
+        time: selectedTime || '',
+        name: formData.name
+      });
       
-      // Reset form after success
+      // Small delay to show success message, then redirect
       setTimeout(() => {
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          street: '',
-          houseNumber: '',
-          postalCode: '',
-          city: '',
-          notes: ''
-        });
-        setSelectedDate(null);
-        setSelectedTime(null);
-      }, 2000);
+        window.location.href = `/thank-you?${thankYouParams.toString()}`;
+      }, 1500);
     } catch (err: unknown) {
       console.error('[AppointmentCalendar] Error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Onbekende fout';
