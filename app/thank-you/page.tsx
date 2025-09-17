@@ -2,7 +2,6 @@
 
 import { useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -94,42 +93,6 @@ function ThankYouContent() {
             </div>
           )}
 
-          {/* Contact Information */}
-          <div className="mb-8 text-center">
-            <p className="text-blue-100 mb-6 text-lg">
-              Heeft u vragen over uw afspraak? Neem gerust contact met ons op:
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
-                href="tel:+31612345678" 
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center"
-              >
-                📞 Bel ons: 06-12345678
-              </a>
-              <a 
-                href="mailto:info@codeclinic.nl" 
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center"
-              >
-                ✉️ E-mail ons
-              </a>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
-              href="/" 
-              className="bg-white text-blue-900 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors text-center"
-            >
-              Terug naar Homepage
-            </Link>
-            <Link 
-              href="/#plan-an-afspraak" 
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center"
-            >
-              Nieuwe Afspraak Boeken
-            </Link>
-          </div>
         </div>
       </main>
 
