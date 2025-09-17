@@ -272,7 +272,6 @@ export async function POST(request: Request) {
           time: validated.time,
           notes: validated.notes || null,
           appointment_type: validated.appointmentType || 'onsite',
-          booking_number: bookingNumber,
         };
         
         console.log('[calendar] Booking data to insert:', newBooking);
