@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-export default function ThankYouPage() {
+function ThankYouContent() {
   const searchParams = useSearchParams();
   const bookingId = searchParams.get('booking_id');
   const appointmentDate = searchParams.get('date');
@@ -15,8 +15,9 @@ export default function ThankYouPage() {
 
   useEffect(() => {
     // Track GA4 conversion event
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'book_appointment', {
+    if (typeof window !== 'undefined' && 'gtag' in window) {
+      const gtag = (window as { gtag: (...args: unknown[]) => void }).gtag;
+      gtag('event', 'book_appointment', {
         'event_category': 'conversion',
         'event_label': 'appointment_booking',
         'value': 1,
@@ -158,5 +159,17 @@ export default function ThankYouPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function ThankYouPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    }>
+      <ThankYouContent />
+    </Suspense>
   );
 }
