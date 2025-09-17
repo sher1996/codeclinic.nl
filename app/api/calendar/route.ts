@@ -58,7 +58,7 @@ const bookingSchema = z.object({
   appointmentType: z.enum(['onsite', 'remote']).default('onsite'),
 });
 
-// Generate all 30-minute slots from 09:00 to 16:00
+// Generate all 30-minute slots from 09:00 to 16:00 (fallback)
 function generateTimeSlots(): string[] {
   const slots: string[] = [];
   for (let h = 9; h <= 16; h++) {
@@ -66,6 +66,25 @@ function generateTimeSlots(): string[] {
     slots.push(`${String(h).padStart(2, '0')}:30`);
   }
   return slots;
+}
+
+// Get available time slots based on worker schedules
+async function getAvailableTimeSlots(date?: string): Promise<string[]> {
+  if (!date) {
+    return generateTimeSlots(); // Fallback to default slots
+  }
+
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/available-slots?date=${date}`);
+    if (response.ok) {
+      const data = await response.json();
+      return data.availableSlots || generateTimeSlots();
+    }
+  } catch (error) {
+    console.error('[calendar] Error fetching available slots:', error);
+  }
+
+  return generateTimeSlots(); // Fallback to default slots
 }
 
 // Helper to validate date is not in the past (uses local timezone)
@@ -130,7 +149,7 @@ async function sendAdminNotification(booking: {
 
 
 
-export async function GET() {
+export async function GET(request: Request) {
   console.log('[calendar] === GET REQUEST START ===');
   console.log('[calendar] Environment check - SUPABASE_URL:', !!process.env.SUPABASE_URL);
   console.log('[calendar] Environment check - SUPABASE_SERVICE_ROLE_KEY:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
@@ -138,6 +157,10 @@ export async function GET() {
   
   try {
     console.log('[calendar] GET request received');
+    
+    // Check if a specific date is requested for available slots
+    const { searchParams } = new URL(request.url);
+    const requestedDate = searchParams.get('date');
     
     if (supabase) {
       console.log('[calendar] Using Supabase database');
@@ -154,11 +177,15 @@ export async function GET() {
       
       console.log('[calendar] Retrieved', bookings?.length || 0, 'bookings from database');
       
+      // Get available time slots based on worker schedules
+      const timeSlots = await getAvailableTimeSlots(requestedDate || undefined);
+      
       return NextResponse.json({ 
         ok: true, 
-        timeSlots: generateTimeSlots(),
+        timeSlots,
         bookings: bookings || [],
-        fallback: false
+        fallback: false,
+        requestedDate
       });
     } else {
       console.log('[calendar] Supabase not available, using fallback mode');

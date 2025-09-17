@@ -125,6 +125,9 @@ export default function Header() {
           <Link href="/#contact" className="nav-link" aria-label="Ga naar contact sectie" accessKey="c">
             Contact
           </Link>
+          <Link href="/worker" className="nav-link" aria-label="Werknemer login" accessKey="w">
+            Werknemer
+          </Link>
           
           {/* Prominent Phone Number for Seniors */}
                       <a 
@@ -211,6 +214,15 @@ export default function Header() {
                 aria-label="Ga naar contact sectie"
               >
                 Contact
+              </Link>
+              <Link 
+                href="/worker" 
+                className="px-8 py-6 text-white hover:text-primary-300 transition-colors border-b-2 border-white/10 text-xl font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1A4B]"
+                onClick={closeMobileMenu}
+                style={{ minHeight: '48px' }}
+                aria-label="Werknemer login"
+              >
+                Werknemer
               </Link>
               
               {/* Mobile Phone Number */}

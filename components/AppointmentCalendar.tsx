@@ -75,12 +75,20 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       const dateString = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
       console.log('[AppointmentCalendar] Fetching booked times for date:', dateString);
       
-      const response = await fetch('/api/calendar');
-      if (response.ok) {
-        const data = await response.json();
-        console.log('[AppointmentCalendar] All bookings from API:', data.bookings);
+      // Fetch both available slots and existing bookings
+      const [calendarResponse, slotsResponse] = await Promise.all([
+        fetch('/api/calendar'),
+        fetch(`/api/available-slots?date=${dateString}`)
+      ]);
+      
+      if (calendarResponse.ok && slotsResponse.ok) {
+        const calendarData = await calendarResponse.json();
+        const slotsData = await slotsResponse.json();
         
-        const bookedForDate = data.bookings
+        console.log('[AppointmentCalendar] All bookings from API:', calendarData.bookings);
+        console.log('[AppointmentCalendar] Available slots from API:', slotsData.availableSlots);
+        
+        const bookedForDate = calendarData.bookings
           .filter((booking: { date: string; time: string }) => booking.date === dateString)
           .map((booking: { date: string; time: string }) => booking.time);
         
@@ -88,7 +96,16 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
         setBookedTimes(bookedForDate);
         setAnnouncement(`Beschikbare tijden geladen voor ${formatDateShort(date)}`);
       } else {
-        console.error('[AppointmentCalendar] Failed to fetch bookings:', response.status, response.statusText);
+        console.error('[AppointmentCalendar] Failed to fetch data:', calendarResponse.status, slotsResponse.status);
+        // Fallback to original behavior
+        const response = await fetch('/api/calendar');
+        if (response.ok) {
+          const data = await response.json();
+          const bookedForDate = data.bookings
+            .filter((booking: { date: string; time: string }) => booking.date === dateString)
+            .map((booking: { date: string; time: string }) => booking.time);
+          setBookedTimes(bookedForDate);
+        }
       }
     } catch (error) {
       console.error('Failed to fetch booked times:', error);
@@ -218,16 +235,8 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
   const handleTimeKeyDown = (e: React.KeyboardEvent, timeIndex: number, time: string) => {
     if (!selectedDate) return;
     
-    const availableTimes = Array.from({ length: 8 }, (_, i) => i + 9).flatMap(hour => {
-      const times = [];
-      if (!isPastTime(selectedDate, `${hour.toString().padStart(2, '0')}:00`)) {
-        times.push(`${hour.toString().padStart(2, '0')}:00`);
-      }
-      if (!isPastTime(selectedDate, `${hour.toString().padStart(2, '0')}:30`)) {
-        times.push(`${hour.toString().padStart(2, '0')}:30`);
-      }
-      return times;
-    }).filter(time => !bookedTimes.includes(time));
+    // Use the available times from the API
+    const availableTimes = availableTimeSlots.filter(time => !bookedTimes.includes(time));
 
     switch (e.key) {
       case 'ArrowRight':
@@ -466,17 +475,57 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
     return days;
   })();
 
-  // Generate available time slots
-  const availableTimes = selectedDate ? Array.from({ length: 8 }, (_, i) => i + 9).flatMap(hour => {
-    const times = [];
-    if (!isPastTime(selectedDate, `${hour.toString().padStart(2, '0')}:00`)) {
-      times.push(`${hour.toString().padStart(2, '0')}:00`);
+  // State for available time slots from API
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+
+  // Fetch available time slots when date is selected
+  useEffect(() => {
+    if (selectedDate) {
+      const pad = (n: number) => n.toString().padStart(2, '0');
+      const dateString = `${selectedDate.getFullYear()}-${pad(selectedDate.getMonth() + 1)}-${pad(selectedDate.getDate())}`;
+      
+      fetch(`/api/available-slots?date=${dateString}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.ok) {
+            setAvailableTimeSlots(data.availableSlots || []);
+          } else {
+            // Fallback to default time slots
+            const defaultSlots = Array.from({ length: 8 }, (_, i) => i + 9).flatMap(hour => {
+              const times = [];
+              if (!isPastTime(selectedDate, `${hour.toString().padStart(2, '0')}:00`)) {
+                times.push(`${hour.toString().padStart(2, '0')}:00`);
+              }
+              if (!isPastTime(selectedDate, `${hour.toString().padStart(2, '0')}:30`)) {
+                times.push(`${hour.toString().padStart(2, '0')}:30`);
+              }
+              return times;
+            });
+            setAvailableTimeSlots(defaultSlots);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching available slots:', error);
+          // Fallback to default time slots
+          const defaultSlots = Array.from({ length: 8 }, (_, i) => i + 9).flatMap(hour => {
+            const times = [];
+            if (!isPastTime(selectedDate, `${hour.toString().padStart(2, '0')}:00`)) {
+              times.push(`${hour.toString().padStart(2, '0')}:00`);
+            }
+            if (!isPastTime(selectedDate, `${hour.toString().padStart(2, '0')}:30`)) {
+              times.push(`${hour.toString().padStart(2, '0')}:30`);
+            }
+            return times;
+          });
+          setAvailableTimeSlots(defaultSlots);
+        });
+    } else {
+      setAvailableTimeSlots([]);
     }
-    if (!isPastTime(selectedDate, `${hour.toString().padStart(2, '0')}:30`)) {
-      times.push(`${hour.toString().padStart(2, '0')}:30`);
-    }
-    return times;
-  }).filter(time => !bookedTimes.includes(time)) : [];
+  }, [selectedDate]);
+
+  // Generate available time slots (filter out booked times)
+  const availableTimes = selectedDate ? availableTimeSlots.filter(time => !bookedTimes.includes(time)) : [];
 
   // Form validation
   const validateForm = (): boolean => {
