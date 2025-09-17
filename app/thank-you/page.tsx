@@ -67,18 +67,15 @@ function ThankYouContent() {
             met alle details van uw afspraak.
           </p>
 
-          {/* Appointment Details */}
+          {/* Appointment Details - Simplified */}
           {(appointmentDate || appointmentTime) && (
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-8 border border-white/20">
-              <h2 className="text-2xl font-semibold text-white mb-4">
-                Afspraak Details
-              </h2>
-              <div className="space-y-2 text-blue-100">
+              <div className="space-y-3 text-blue-100 text-center">
                 {customerName && (
-                  <p><span className="font-medium">Naam:</span> {customerName}</p>
+                  <p className="text-lg"><span className="font-medium">Naam:</span> {customerName}</p>
                 )}
                 {appointmentDate && (
-                  <p><span className="font-medium">Datum:</span> {new Date(appointmentDate).toLocaleDateString('nl-NL', { 
+                  <p className="text-lg"><span className="font-medium">Datum:</span> {new Date(appointmentDate).toLocaleDateString('nl-NL', { 
                     weekday: 'long', 
                     year: 'numeric', 
                     month: 'long', 
@@ -86,10 +83,10 @@ function ThankYouContent() {
                   })}</p>
                 )}
                 {appointmentTime && (
-                  <p><span className="font-medium">Tijd:</span> {appointmentTime}</p>
+                  <p className="text-lg"><span className="font-medium">Tijd:</span> {appointmentTime}</p>
                 )}
                 {bookingId && (
-                  <p className="text-sm text-blue-200">
+                  <p className="text-lg text-blue-200">
                     <span className="font-medium">Boekingsnummer:</span> {bookingId}
                   </p>
                 )}
@@ -97,42 +94,21 @@ function ThankYouContent() {
             </div>
           )}
 
-          {/* Next Steps */}
-          <div className="bg-blue-500/20 backdrop-blur-sm rounded-lg p-6 mb-8 border border-blue-400/30">
-            <h3 className="text-xl font-semibold text-white mb-4">
-              Wat gebeurt er nu?
-            </h3>
-            <ul className="text-blue-100 space-y-2 text-left">
-              <li className="flex items-start">
-                <span className="text-green-400 mr-2">✓</span>
-                U ontvangt een bevestigingsmail met alle details
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-400 mr-2">✓</span>
-                Wij bereiden ons voor op uw afspraak
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-400 mr-2">✓</span>
-                Wij nemen contact op als er vragen zijn
-              </li>
-            </ul>
-          </div>
-
           {/* Contact Information */}
-          <div className="mb-8">
-            <p className="text-blue-100 mb-4">
+          <div className="mb-8 text-center">
+            <p className="text-blue-100 mb-6 text-lg">
               Heeft u vragen over uw afspraak? Neem gerust contact met ons op:
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
                 href="tel:+31612345678" 
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center"
               >
                 📞 Bel ons: 06-12345678
               </a>
               <a 
                 href="mailto:info@codeclinic.nl" 
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center"
               >
                 ✉️ E-mail ons
               </a>
@@ -143,13 +119,13 @@ function ThankYouContent() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
               href="/" 
-              className="bg-white text-blue-900 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+              className="bg-white text-blue-900 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors text-center"
             >
               Terug naar Homepage
             </Link>
             <Link 
               href="/#plan-an-afspraak" 
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center"
             >
               Nieuwe Afspraak Boeken
             </Link>

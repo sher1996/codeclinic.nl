@@ -359,7 +359,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
         date: dateString,
         time: selectedTime || '',
         address: `${formData.street} ${formData.houseNumber}, ${formData.postalCode} ${formData.city}`,
-        bookingId: bookingResult.booking.id,
+        bookingId: bookingResult.booking.booking_number || bookingResult.booking.id,
         appointmentType: appointmentType
       };
 
@@ -388,7 +388,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
           'send_to': 'AW-17577884942',
           'value': 1.0,
           'currency': 'EUR',
-          'transaction_id': bookingResult.booking.id
+          'transaction_id': bookingResult.booking.booking_number || bookingResult.booking.id
         });
       }
       
@@ -396,7 +396,7 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       
       // Redirect to thank you page with booking details
       const thankYouParams = new URLSearchParams({
-        booking_id: bookingResult.booking.id,
+        booking_id: bookingResult.booking.booking_number || bookingResult.booking.id,
         date: dateString,
         time: selectedTime || '',
         name: formData.name

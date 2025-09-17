@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { sendBookingConfirmation } from '@/lib/email-service';
+import { generateUniqueBookingNumber } from '@/lib/booking-utils';
 
 // Initialize Supabase client
 let supabase: SupabaseClient | null = null;
@@ -257,6 +258,10 @@ export async function POST(request: Request) {
           return NextResponse.json({ ok: false, error: 'Slot already booked' }, { status: 409 });
         }
         
+        // Generate unique random booking number
+        const bookingNumber = await generateUniqueBookingNumber(supabase);
+        console.log('[calendar] Generated booking number:', bookingNumber);
+        
         // Create new booking in database
         console.log('[calendar] Creating new booking in database...');
         const newBooking = {
@@ -267,6 +272,7 @@ export async function POST(request: Request) {
           time: validated.time,
           notes: validated.notes || null,
           appointment_type: validated.appointmentType || 'onsite',
+          booking_number: bookingNumber,
         };
         
         console.log('[calendar] Booking data to insert:', newBooking);
@@ -298,7 +304,10 @@ export async function POST(request: Request) {
         
         return NextResponse.json({ 
           ok: true, 
-          booking: insertedBooking
+          booking: {
+            ...insertedBooking,
+            booking_number: bookingNumber
+          }
         }, { status: 201 });
       } catch (dbError) {
         console.error('[calendar] Database operation failed:', dbError);
