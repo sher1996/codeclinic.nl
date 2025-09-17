@@ -56,6 +56,12 @@ export default function AdminCalendar({ isVisible, onClose, currentUser }: Admin
       const response = await fetch('/api/calendar');
       if (response.ok) {
         const data = await response.json();
+        console.log('[AdminCalendar] Fetched bookings data:', data);
+        console.log('[AdminCalendar] Bookings array:', data.bookings);
+        if (data.bookings && data.bookings.length > 0) {
+          console.log('[AdminCalendar] First booking structure:', data.bookings[0]);
+          console.log('[AdminCalendar] First booking ID:', data.bookings[0].id);
+        }
         setBookings(data.bookings || []);
       }
     } catch (error) {
@@ -91,20 +97,33 @@ export default function AdminCalendar({ isVisible, onClose, currentUser }: Admin
 
   // Delete individual booking
   const deleteBooking = async (bookingId: string) => {
+    console.log('[AdminCalendar] Attempting to delete booking with ID:', bookingId);
+    console.log('[AdminCalendar] Current bookings before delete:', bookings.length);
+    
     try {
-      const response = await fetch(`/api/calendar?id=${bookingId}`, { method: 'DELETE' });
+      const url = `/api/calendar?id=${bookingId}`;
+      console.log('[AdminCalendar] Making DELETE request to:', url);
+      
+      const response = await fetch(url, { method: 'DELETE' });
+      console.log('[AdminCalendar] Delete response status:', response.status);
+      console.log('[AdminCalendar] Delete response ok:', response.ok);
+      
       if (response.ok) {
+        const result = await response.json();
+        console.log('[AdminCalendar] Delete response data:', result);
+        
         setBookings(bookings.filter(b => b.id !== bookingId));
         setShowDeleteConfirm(null);
         alert('Booking deleted successfully');
+        console.log('[AdminCalendar] Booking removed from state');
       } else {
         const errorData = await response.json();
-        console.error('Failed to delete booking:', errorData);
+        console.error('[AdminCalendar] Failed to delete booking:', errorData);
         alert('Failed to delete booking: ' + (errorData.error || 'Unknown error'));
       }
     } catch (error) {
-      console.error('Failed to delete booking:', error);
-      alert('Failed to delete booking');
+      console.error('[AdminCalendar] Failed to delete booking:', error);
+      alert('Failed to delete booking: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
   };
 
