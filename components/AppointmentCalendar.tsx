@@ -352,35 +352,8 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       const bookingResult = await bookingRes.json();
       console.log('[AppointmentCalendar] Booking created:', bookingResult);
 
-      // 2. Fire off e-mail
-      const emailData = {
-        name: formData.name,
-        email: formData.email,
-        date: dateString,
-        time: selectedTime || '',
-        address: `${formData.street} ${formData.houseNumber}, ${formData.postalCode} ${formData.city}`,
-        bookingId: bookingResult.booking.booking_number || bookingResult.booking.id,
-        appointmentType: appointmentType
-      };
-
-      console.log('[AppointmentCalendar] Sending email:', emailData);
-
-      const emailRes = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(emailData),
-      });
-
-      if (!emailRes.ok) {
-        const errorData = await emailRes.json();
-        console.error('[AppointmentCalendar] Email failed:', errorData);
-        const errorMessage = errorData.error || 'Mail service failed';
-        const details = errorData.details ? ` (${errorData.details})` : '';
-        throw new Error(`${errorMessage}${details}`);
-      }
-
-      const emailResult = await emailRes.json();
-      console.log('[AppointmentCalendar] Email sent:', emailResult);
+      // Email confirmation is automatically sent by the backend API
+      console.log('[AppointmentCalendar] Email confirmation will be sent automatically by the backend');
       
       // Track Google Ads conversion
       if (typeof window !== 'undefined' && window.gtag) {
