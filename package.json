@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "optimize-css": "node scripts/optimize-css.js",
-    "build:optimized": "npm run optimize-css && next build",
+    "build:optimized": "npm run optimize-css && next build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.0",
