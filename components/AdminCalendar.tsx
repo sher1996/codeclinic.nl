@@ -92,11 +92,15 @@ export default function AdminCalendar({ isVisible, onClose, currentUser }: Admin
   // Delete individual booking
   const deleteBooking = async (bookingId: string) => {
     try {
-      const response = await fetch(`/api/calendar/${bookingId}`, { method: 'DELETE' });
+      const response = await fetch(`/api/calendar?id=${bookingId}`, { method: 'DELETE' });
       if (response.ok) {
         setBookings(bookings.filter(b => b.id !== bookingId));
         setShowDeleteConfirm(null);
         alert('Booking deleted successfully');
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to delete booking:', errorData);
+        alert('Failed to delete booking: ' + (errorData.error || 'Unknown error'));
       }
     } catch (error) {
       console.error('Failed to delete booking:', error);

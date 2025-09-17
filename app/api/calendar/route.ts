@@ -367,3 +367,71 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'Server error', details: errorMessage }, { status: 500 });
   }
 }
+
+// DELETE - Delete a specific booking
+export async function DELETE(request: Request) {
+  console.log('[calendar] === DELETE REQUEST START ===');
+  
+  try {
+    const { searchParams } = new URL(request.url);
+    const bookingId = searchParams.get('id');
+    
+    if (!bookingId) {
+      return NextResponse.json({ ok: false, error: 'Booking ID is required' }, { status: 400 });
+    }
+    
+    console.log('[calendar] Deleting booking with ID:', bookingId);
+    
+    if (supabase) {
+      console.log('[calendar] Using Supabase database');
+      
+      try {
+        // Delete booking from database
+        const { error: deleteError } = await supabase
+          .from('bookings')
+          .delete()
+          .eq('id', bookingId);
+        
+        if (deleteError) {
+          console.error('[calendar] Error deleting booking:', deleteError);
+          throw deleteError;
+        }
+        
+        console.log('[calendar] Booking deleted successfully from database');
+        
+        return NextResponse.json({ 
+          ok: true, 
+          message: 'Booking deleted successfully' 
+        });
+        
+      } catch (dbError) {
+        console.error('[calendar] Database operation failed:', dbError);
+        throw dbError;
+      }
+      
+    } else {
+      console.log('[calendar] Supabase not available, using fallback mode');
+      
+      // Remove from fallback storage
+      const bookingIndex = fallbackBookings.findIndex(booking => booking.id === bookingId);
+      if (bookingIndex !== -1) {
+        fallbackBookings.splice(bookingIndex, 1);
+        console.log('[calendar] Booking removed from fallback storage');
+        
+        return NextResponse.json({ 
+          ok: true, 
+          message: 'Booking deleted successfully (fallback mode)' 
+        });
+      } else {
+        return NextResponse.json({ 
+          ok: false, 
+          error: 'Booking not found' 
+        }, { status: 404 });
+      }
+    }
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    console.error('[calendar] DELETE request failed:', err);
+    return NextResponse.json({ ok: false, error: 'Server error', details: errorMessage }, { status: 500 });
+  }
+}
