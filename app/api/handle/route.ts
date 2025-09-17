@@ -6,7 +6,7 @@ export async function POST(req: Request) {
     const transcript = form.get("SpeechResult") as string;
 
     // Debug: Check if BOT_URL is set
-    const botUrl = process.env.BOT_URL || "https://computer-help.fly.dev";
+    const botUrl = process.env.BOT_URL || "https://code-clinic-vip.fly.dev";
     if (!botUrl) {
       console.error("BOT_URL environment variable is not set");
       return new NextResponse(

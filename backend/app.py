@@ -12,7 +12,7 @@ load_dotenv()
 # Verify API key is loaded
 print("API key loaded?", bool(os.getenv("OPENAI_API_KEY")))
 
-app = FastAPI(title="Computer Help WebSocket Bot")
+app = FastAPI(title="Code Clinic VIP WebSocket Bot")
 
 # Add CORS middleware
 app.add_middleware(
@@ -67,7 +67,7 @@ class ChatRequest(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "Computer Help WebSocket Bot is running"}
+    return {"message": "Code Clinic VIP WebSocket Bot is running"}
 
 @app.get("/health")
 async def health_check():

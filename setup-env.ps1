@@ -1,5 +1,5 @@
-# Setup Environment Variables for Computer Help Bot
-Write-Host "🔧 Setting up environment variables for Computer Help Bot" -ForegroundColor Green
+# Setup Environment Variables for Code Clinic VIP Bot
+Write-Host "🔧 Setting up environment variables for Code Clinic VIP Bot" -ForegroundColor Green
 Write-Host ""
 
 # Check if .env file exists

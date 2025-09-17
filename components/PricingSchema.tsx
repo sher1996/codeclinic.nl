@@ -4,11 +4,11 @@ export default function PricingSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Service",
-    "name": "Computer Help Services",
+    "name": "Code Clinic VIP Services",
     "provider": {
       "@type": "Organization",
-      "name": "Computer Help",
-      "legalName": "Computer Help B.V.",
+      "name": "Code Clinic VIP",
+      "legalName": "Code Clinic VIP B.V.",
       "vatID": "NL001234567B01",
       "address": {
         "@type": "PostalAddress",
@@ -82,7 +82,7 @@ export default function PricingSchema() {
     "serviceType": "Computer Repair and Support",
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
-      "name": "Computer Help Services",
+      "name": "Code Clinic VIP Services",
       "itemListElement": [
         {
           "@type": "OfferCatalog",

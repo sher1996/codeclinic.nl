@@ -16,8 +16,9 @@ This document explains the new email-based admin access system that replaces the
 Make sure your `.env.local` file contains:
 
 ```bash
-# Email Configuration (Resend)
-RESEND_API_KEY=your_resend_api_key_here
+# Email Configuration (Gmail)
+GMAIL_USER=your_gmail_address@gmail.com
+GMAIL_APP_PASSWORD=your_gmail_app_password
 ADMIN_EMAIL=codeclinic.nl@gmail.com
 
 # Database Configuration (Supabase)
@@ -133,7 +134,7 @@ Handle admin approval/denial (called via email links)
 ### Common Issues
 
 **"Email service not configured"**
-- Check `RESEND_API_KEY` in `.env.local`
+- Check `GMAIL_USER` and `GMAIL_APP_PASSWORD` in `.env.local`
 
 **"Database not configured"**
 - Check `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`

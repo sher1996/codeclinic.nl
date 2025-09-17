@@ -1,11 +1,21 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
 // Initialize Supabase client
 let supabase: SupabaseClient | null = null;
-let resend: Resend | null = null;
+
+// Create Gmail SMTP transporter
+const createTransporter = () => {
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD
+    }
+  });
+};
 
 // In-memory storage for fallback mode (bookings when database is not available)
 const fallbackBookings: Array<{
@@ -38,14 +48,11 @@ try {
     supabase = null;
   }
   
-  // Initialize Resend
-  if (process.env.RESEND_API_KEY) {
-    console.log('[calendar] Initializing Resend client...');
-    resend = new Resend(process.env.RESEND_API_KEY);
-    console.log('[calendar] Resend client initialized successfully');
+  // Check Gmail configuration
+  if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+    console.log('[calendar] Gmail credentials configured');
   } else {
-    console.log('[calendar] Resend API key not configured');
-    resend = null;
+    console.log('[calendar] Gmail credentials not configured');
   }
   
   console.log('[calendar] Service initialization completed');
@@ -103,8 +110,8 @@ async function sendAdminNotification(booking: {
   created_at: string;
   updated_at: string;
 }) {
-  if (!process.env.ADMIN_EMAIL || !resend) {
-    console.log('[calendar] Admin email not configured or Resend not initialized, skipping notification');
+  if (!process.env.ADMIN_EMAIL || !process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.log('[calendar] Admin email or Gmail credentials not configured, skipping notification');
     return;
   }
 
@@ -126,8 +133,9 @@ async function sendAdminNotification(booking: {
       <p><strong>Geboekt op:</strong> ${new Date(booking.created_at).toLocaleString('nl-NL')}</p>
     `;
 
-    await resend.emails.send({
-      from: process.env.FROM_EMAIL || "Computer Help <onboarding@resend.dev>",
+    const transporter = createTransporter();
+    await transporter.sendMail({
+      from: `"Code Clinic VIP" <${process.env.GMAIL_USER}>`,
       to: process.env.ADMIN_EMAIL,
       subject: `${typeEmoji} Nieuwe ${typeText}: ${booking.name} - ${booking.date} om ${booking.time}`,
       html,

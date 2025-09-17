@@ -1,0 +1,60 @@
+name: Supabase Keep-Alive
+
+# Run this workflow every 4 hours to keep Supabase active
+on:
+  schedule:
+    # Run every 4 hours (0 */4 * * *)
+    - cron: '0 */4 * * *'
+  # Also allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run keep-alive script
+      env:
+        NODE_ENV: production
+        # Add your production URLs here
+        KEEPALIVE_URL: ${{ secrets.KEEPALIVE_URL || 'https://your-app.vercel.app/api/keepalive' }}
+      run: |
+        echo "Pinging keep-alive endpoint: $KEEPALIVE_URL"
+        curl -f "$KEEPALIVE_URL" || exit 1
+        echo "Keep-alive successful!"
+        
+    - name: Test Supabase connection
+      env:
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      run: |
+        if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+          echo "Testing Supabase connection..."
+          node -e "
+            const { createClient } = require('@supabase/supabase-js');
+            const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+            supabase.from('bookings').select('count').limit(1).then(({data, error}) => {
+              if (error) {
+                console.error('Supabase test failed:', error);
+                process.exit(1);
+              } else {
+                console.log('Supabase test successful!');
+                process.exit(0);
+              }
+            });
+          "
+        else
+          echo "Supabase credentials not set, skipping test"
+        fi

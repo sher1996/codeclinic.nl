@@ -11,8 +11,9 @@ To fix the calendar API errors (500 and 409), you need to set up the following e
 UPSTASH_REDIS_REST_URL=your_upstash_redis_url_here
 UPSTASH_REDIS_REST_TOKEN=your_upstash_redis_token_here
 
-# Email Configuration (Resend)
-RESEND_API_KEY=your_resend_api_key_here
+# Email Configuration (Gmail)
+GMAIL_USER=your_gmail_address@gmail.com
+GMAIL_APP_PASSWORD=your_gmail_app_password
 ADMIN_EMAIL=codeclinic.nl@gmail.com
 
 # OpenAI Configuration
@@ -43,10 +44,11 @@ SYSTEM_PROMPT="Je bent Sam, een vriendelijke en behulpzame computerhulp assisten
 - Create a new Redis database
 - Copy the `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`
 
-### 2. **Resend** (Email Service)
-- Go to [resend.com](https://resend.com)
-- Create a free account
-- Get your API key from the dashboard
+### 2. **Gmail** (Email Service)
+- Go to your Gmail account settings
+- Enable 2-factor authentication
+- Generate an App Password for this application
+- Use your Gmail address and the App Password
 - Set your admin email address
 
 ### 3. **OpenAI** (AI Bot)
@@ -72,7 +74,8 @@ SYSTEM_PROMPT="Je bent Sam, een vriendelijke en behulpzame computerhulp assisten
 # Set secrets for your Fly.io app
 flyctl secrets set UPSTASH_REDIS_REST_URL=your_url
 flyctl secrets set UPSTASH_REDIS_REST_TOKEN=your_token
-flyctl secrets set RESEND_API_KEY=your_key
+flyctl secrets set GMAIL_USER=your_gmail_address
+flyctl secrets set GMAIL_APP_PASSWORD=your_app_password
 flyctl secrets set ADMIN_EMAIL=your_email
 flyctl secrets set OPENAI_API_KEY=your_key
 flyctl secrets set ELEVEN_API_KEY=your_key

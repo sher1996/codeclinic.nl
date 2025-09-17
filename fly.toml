@@ -1,4 +1,4 @@
-app = "computer-help"
+app = "code-clinic-vip"
 
 # Prevent auto-stop and keep 1 machine running
 [experimental]

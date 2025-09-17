@@ -107,7 +107,7 @@ export default function Header() {
             priority
           />
           <span className="text-white font-mono text-xl sm:text-3xl drop-shadow-sm leading-none font-bold">
-            CodeClinic.nl
+            Code Clinic
           </span>
         </Link>
 

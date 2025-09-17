@@ -7,7 +7,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {/* Company Info */}
             <div className="space-y-6">
-              <h3 className="text-xl font-bold text-white mb-6">CodeClinic.nl</h3>
+              <h3 className="text-xl font-bold text-white mb-6">Code Clinic VIP</h3>
               <p className="text-lg text-white/80 leading-relaxed senior-description">
                 Professionele computerhulp in Rotterdam en omstreken. Hulp op afstand en bij u thuis.
               </p>

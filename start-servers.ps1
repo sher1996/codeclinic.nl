@@ -1,4 +1,4 @@
-Write-Host "Starting Computer Help servers..." -ForegroundColor Green
+Write-Host "Starting Code Clinic VIP servers..." -ForegroundColor Green
 Write-Host ""
 
 # Install Python dependencies

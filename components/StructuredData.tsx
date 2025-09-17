@@ -8,7 +8,7 @@ const StructuredData: React.FC<StructuredDataProps> = ({ pageType = 'home' }) =>
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "name": "CodeClinic.nl",
+    "name": "Code Clinic VIP",
     "alternateName": "CodeClinic",
     "description": "CodeClinic: snelle en betrouwbare computerhulp voor thuis en via internet. Geen voorrijkosten in Rotterdam, niet opgelost = geen kosten. Expert computerhulp voor senioren en particulieren.",
     "url": "https://codeclinic.nl",
@@ -41,7 +41,7 @@ const StructuredData: React.FC<StructuredDataProps> = ({ pageType = 'home' }) =>
       "WiFi Optimization",
       "Computer Maintenance",
       "Senior Computer Support",
-      "Remote Computer Help",
+      "Remote Code Clinic VIP Help",
       "Home Computer Service",
       "IT Support",
       "Computer Troubleshooting",
@@ -291,7 +291,7 @@ const StructuredData: React.FC<StructuredDataProps> = ({ pageType = 'home' }) =>
       "WiFi Optimization",
       "Computer Maintenance",
       "Senior Computer Support",
-      "Remote Computer Help",
+      "Remote Code Clinic VIP Help",
       "IT Support",
       "Windows Support",
       "Mac Support",
@@ -305,11 +305,11 @@ const StructuredData: React.FC<StructuredDataProps> = ({ pageType = 'home' }) =>
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "CodeClinic.nl",
+    "name": "Code Clinic VIP",
     "alternateName": "CodeClinic",
     "url": "https://codeclinic.nl",
     "logo": "https://codeclinic.nl/logo-cc.png",
-    "description": "CodeClinic: snelle en betrouwbare computerhulp voor thuis en via internet. Geen voorrijkosten in Rotterdam, niet opgelost = geen kosten.",
+    "description": "Code Clinic VIP: premium computerhulp voor thuis en via internet. Snelle en professionele ondersteuning in Rotterdam en omstreken.",
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "NL",
@@ -342,7 +342,7 @@ const StructuredData: React.FC<StructuredDataProps> = ({ pageType = 'home' }) =>
       "WiFi Optimization",
       "Computer Maintenance",
       "Senior Computer Support",
-      "Remote Computer Help",
+      "Remote Code Clinic VIP Help",
       "IT Support"
     ],
     "serviceType": [
@@ -351,7 +351,7 @@ const StructuredData: React.FC<StructuredDataProps> = ({ pageType = 'home' }) =>
       "WiFi Optimization",
       "Computer Maintenance",
       "Senior Computer Support",
-      "Remote Computer Help",
+      "Remote Code Clinic VIP Help",
       "Home Computer Service"
     ],
     "areaServed": {
@@ -368,12 +368,12 @@ const StructuredData: React.FC<StructuredDataProps> = ({ pageType = 'home' }) =>
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "CodeClinic.nl",
+    "name": "Code Clinic VIP",
     "url": "https://codeclinic.nl",
-    "description": "CodeClinic: snelle en betrouwbare computerhulp voor thuis en via internet. Geen voorrijkosten in Rotterdam, niet opgelost = geen kosten.",
+    "description": "Code Clinic VIP: premium computerhulp voor thuis en via internet. Snelle en professionele ondersteuning in Rotterdam en omstreken.",
     "publisher": {
       "@type": "Organization",
-      "name": "CodeClinic.nl",
+      "name": "Code Clinic VIP",
       "logo": "https://codeclinic.nl/logo-cc.png"
     },
     "potentialAction": {
