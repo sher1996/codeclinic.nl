@@ -344,13 +344,29 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       });
 
       if (!bookingRes.ok) {
-        const errorData = await bookingRes.json();
+        let errorData;
+        try {
+          errorData = await bookingRes.json();
+        } catch (jsonError) {
+          console.error('[AppointmentCalendar] Failed to parse error response as JSON:', jsonError);
+          const errorText = await bookingRes.text();
+          console.error('[AppointmentCalendar] Error response text:', errorText);
+          throw new Error(`Booking failed (${bookingRes.status}): ${errorText}`);
+        }
         console.error('[AppointmentCalendar] Booking failed:', errorData);
         throw new Error(errorData.error || `Booking failed (${bookingRes.status})`);
       }
 
-      const bookingResult = await bookingRes.json();
-      console.log('[AppointmentCalendar] Booking created:', bookingResult);
+      let bookingResult;
+      try {
+        bookingResult = await bookingRes.json();
+        console.log('[AppointmentCalendar] Booking created:', bookingResult);
+      } catch (jsonError) {
+        console.error('[AppointmentCalendar] Failed to parse booking response as JSON:', jsonError);
+        const responseText = await bookingRes.text();
+        console.error('[AppointmentCalendar] Response text:', responseText);
+        throw new Error('Invalid response format from server');
+      }
 
       // Email confirmation is automatically sent by the backend API
       console.log('[AppointmentCalendar] Email confirmation will be sent automatically by the backend');

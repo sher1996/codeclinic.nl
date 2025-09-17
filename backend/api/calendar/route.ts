@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import nodemailer from 'nodemailer';
+import { sendBookingConfirmation } from '@/lib/email-service';
+import { generateUniqueBookingNumber } from '@/lib/booking-utils';
 
 // Initialize Supabase client
 let supabase: SupabaseClient | null = null;
@@ -109,6 +111,7 @@ async function sendAdminNotification(booking: {
   appointment_type: string;
   created_at: string;
   updated_at: string;
+  booking_number?: string;
 }) {
   if (!process.env.ADMIN_EMAIL || !process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
     console.log('[calendar] Admin email or Gmail credentials not configured, skipping notification');
@@ -129,7 +132,7 @@ async function sendAdminNotification(booking: {
       <p><strong>Datum:</strong> ${booking.date}</p>
       <p><strong>Tijd:</strong> ${booking.time}</p>
       <p><strong>Notities:</strong> ${booking.notes || 'Geen notities'}</p>
-      <p><strong>Boekingsnummer:</strong> ${booking.id}</p>
+      <p><strong>Boekingsnummer:</strong> ${booking.booking_number || booking.id}</p>
       <p><strong>Geboekt op:</strong> ${new Date(booking.created_at).toLocaleString('nl-NL')}</p>
     `;
 
@@ -139,7 +142,7 @@ async function sendAdminNotification(booking: {
       to: process.env.ADMIN_EMAIL,
       subject: `${typeEmoji} Nieuwe ${typeText}: ${booking.name} - ${booking.date} om ${booking.time}`,
       html,
-      text: `${typeEmoji} Nieuwe afspraak geboekt - ${typeText}!\n\nType: ${typeText}\nNaam: ${booking.name}\nEmail: ${booking.email}\nTelefoon: ${booking.phone}\nDatum: ${booking.date}\nTijd: ${booking.time}\nNotities: ${booking.notes || 'Geen notities'}\nBoekingsnummer: ${booking.id}\nGeboekt op: ${new Date(booking.created_at).toLocaleString('nl-NL')}`,
+      text: `${typeEmoji} Nieuwe afspraak geboekt - ${typeText}!\n\nType: ${typeText}\nNaam: ${booking.name}\nEmail: ${booking.email}\nTelefoon: ${booking.phone}\nDatum: ${booking.date}\nTijd: ${booking.time}\nNotities: ${booking.notes || 'Geen notities'}\nBoekingsnummer: ${booking.booking_number || booking.id}\nGeboekt op: ${new Date(booking.created_at).toLocaleString('nl-NL')}`,
     });
 
     console.log('[calendar] Admin notification sent successfully');
@@ -250,6 +253,10 @@ export async function POST(request: Request) {
           return NextResponse.json({ ok: false, error: 'Slot already booked' }, { status: 409 });
         }
         
+        // Generate unique random booking number
+        const bookingNumber = await generateUniqueBookingNumber(supabase);
+        console.log('[calendar] Generated booking number:', bookingNumber);
+        
         // Create new booking in database
         console.log('[calendar] Creating new booking in database...');
         const newBooking = {
@@ -278,11 +285,31 @@ export async function POST(request: Request) {
         console.log('[calendar] Booking stored in database:', insertedBooking);
         
         // Send admin notification
-        await sendAdminNotification(insertedBooking);
+        const adminBookingWithNumber = {
+          ...insertedBooking,
+          booking_number: bookingNumber
+        };
+        await sendAdminNotification(adminBookingWithNumber);
+        
+        // Send customer confirmation email
+        try {
+          const bookingWithNumber = {
+            ...insertedBooking,
+            booking_number: bookingNumber
+          };
+          await sendBookingConfirmation(bookingWithNumber);
+          console.log('[calendar] Customer confirmation email sent successfully');
+        } catch (error) {
+          console.error('[calendar] Failed to send customer confirmation email:', error);
+          // Don't fail the booking if confirmation email fails
+        }
         
         return NextResponse.json({ 
           ok: true, 
-          booking: insertedBooking
+          booking: {
+            ...insertedBooking,
+            booking_number: bookingNumber
+          }
         }, { status: 201 });
       } catch (dbError) {
         console.error('[calendar] Database operation failed:', dbError);
