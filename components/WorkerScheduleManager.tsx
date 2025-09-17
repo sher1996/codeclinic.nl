@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Worker {
@@ -75,11 +75,7 @@ export default function WorkerScheduleManager() {
     is_full_day: true
   });
 
-  useEffect(() => {
-    fetchWorkers();
-  }, []);
-
-  const fetchWorkers = async () => {
+  const fetchWorkers = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await fetch('/api/worker-schedule');
@@ -99,7 +95,11 @@ export default function WorkerScheduleManager() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedWorker]);
+
+  useEffect(() => {
+    fetchWorkers();
+  }, [fetchWorkers]);
 
   const createWorker = async (e: React.FormEvent) => {
     e.preventDefault();
