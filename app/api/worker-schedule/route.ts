@@ -42,6 +42,15 @@ const timeOffSchema = z.object({
   is_full_day: z.boolean().default(true)
 });
 
+const specificAvailabilitySchema = z.object({
+  worker_id: z.string().uuid('Invalid worker ID'),
+  availability_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)'),
+  start_time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Invalid time format (HH:MM)'),
+  end_time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Invalid time format (HH:MM)'),
+  is_available: z.boolean().default(true),
+  reason: z.string().max(500, 'Reason is too long').optional()
+});
+
 // GET - Fetch all workers and their schedules
 export async function GET() {
   console.log('[worker-schedule] GET request received');
@@ -60,7 +69,8 @@ export async function GET() {
       .select(`
         *,
         worker_availability(*),
-        worker_time_off(*)
+        worker_time_off(*),
+        worker_specific_availability(*)
       `)
       .eq('is_active', true)
       .order('name');
@@ -213,6 +223,46 @@ export async function POST(request: Request) {
 
         if (error) {
           console.error('[worker-schedule] Error deleting time off:', error);
+          throw error;
+        }
+
+        return NextResponse.json({ 
+          ok: true 
+        });
+      }
+
+      case 'set_specific_availability': {
+        const validated = specificAvailabilitySchema.parse(payload);
+        
+        const { data: specificAvailability, error } = await supabase
+          .from('worker_specific_availability')
+          .upsert([validated], {
+            onConflict: 'worker_id,availability_date,start_time,end_time'
+          })
+          .select()
+          .single();
+
+        if (error) {
+          console.error('[worker-schedule] Error setting specific availability:', error);
+          throw error;
+        }
+
+        return NextResponse.json({ 
+          ok: true, 
+          specificAvailability 
+        });
+      }
+
+      case 'delete_specific_availability': {
+        const { id } = payload;
+        
+        const { error } = await supabase
+          .from('worker_specific_availability')
+          .delete()
+          .eq('id', id);
+
+        if (error) {
+          console.error('[worker-schedule] Error deleting specific availability:', error);
           throw error;
         }
 

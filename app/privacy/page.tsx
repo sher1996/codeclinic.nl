@@ -107,7 +107,7 @@ export default function PrivacyPage() {
               Daarnaast heeft u het recht om uw eventuele toestemming voor de gegevensverwerking in te trekken of bezwaar te maken tegen de verwerking van uw persoonsgegevens door CodeClinic.
             </p>
             <p className="mb-4">
-              U kunt een verzoek tot inzage, correctie, verwijdering van uw persoonsgegevens of verzoek tot intrekking van uw toestemming of bezwaar op de verwerking van uw persoonsgegevens sturen naar info@codeclinic.nl.
+              U kunt een verzoek tot inzage, correctie, verwijdering van uw persoonsgegevens of verzoek tot intrekking van uw toestemming of bezwaar op de verwerking van uw persoonsgegevens sturen naar codeclinic.nl@gmail.com.
             </p>
           </section>
 
@@ -115,7 +115,7 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-semibold mb-4">9. Beveiliging</h2>
             <p className="mb-4">
               CodeClinic neemt de bescherming van uw gegevens serieus en neemt passende maatregelen om misbruik, verlies, onbevoegde toegang, ongewenste openbaarmaking en ongeoorloofde wijziging tegen te gaan. 
-              Als u de indruk heeft dat uw gegevens niet goed beveiligd zijn of er aanwijzingen zijn van misbruik, neem dan contact op via info@codeclinic.nl.
+              Als u de indruk heeft dat uw gegevens niet goed beveiligd zijn of er aanwijzingen zijn van misbruik, neem dan contact op via codeclinic.nl@gmail.com.
             </p>
           </section>
 
@@ -126,7 +126,7 @@ export default function PrivacyPage() {
             </p>
             <div className="bg-gray-800 p-4 rounded-lg">
               <p><strong>CodeClinic</strong></p>
-              <p>E-mail: info@codeclinic.nl</p>
+              <p>E-mail: codeclinic.nl@gmail.com</p>
               <p>Website: www.codeclinic.nl</p>
             </div>
           </section>

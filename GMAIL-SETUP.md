@@ -5,7 +5,7 @@ This guide will help you set up Gmail SMTP for the admin access email system.
 ## 🔐 **Step 1: Enable 2-Factor Authentication**
 
 1. Go to [Google Account Security](https://myaccount.google.com/security)
-2. Sign in with your Gmail account (`sherkodi14@gmail.com`)
+2. Sign in with your Gmail account (`codeclinic.nl@gmail.com`)
 3. Under "Signing in to Google", click **2-Step Verification**
 4. Follow the setup process to enable 2FA
 
@@ -25,7 +25,7 @@ This guide will help you set up Gmail SMTP for the admin access email system.
 2. Replace `your_gmail_app_password_here` with the 16-character app password:
 
 ```bash
-GMAIL_USER=sherkodi14@gmail.com
+GMAIL_USER=codeclinic.nl@gmail.com
 GMAIL_APP_PASSWORD=abcd efgh ijkl mnop
 ADMIN_EMAIL=codeclinic.nl@gmail.com
 ```
@@ -74,6 +74,6 @@ ADMIN_EMAIL=codeclinic.nl@gmail.com
 When you deploy to production, you can:
 1. Use the same Gmail account
 2. Or create a dedicated Gmail account for your business
-3. Or use a custom domain email (like `admin@codeclinic.nl`)
+3. Or use a custom domain email (like `codeclinic.nl@gmail.com`)
 
 The system will work the same way with any Gmail account!

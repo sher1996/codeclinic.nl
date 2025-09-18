@@ -378,12 +378,14 @@ export default function WorkerSelfService() {
                       className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10"
                     >
                       <div className="text-white">
-                        <div className="font-medium">{DAYS_OF_WEEK[av.day_of_week]}</div>
+                        <div className="font-medium">
+                          Elke {DAYS_OF_WEEK[av.day_of_week].toLowerCase()}
+                        </div>
                         <div className="text-white/60 text-sm">
                           {av.start_time} - {av.end_time}
                         </div>
                         <div className="text-white/40 text-xs">
-                          {av.is_available ? 'Beschikbaar' : 'Niet beschikbaar'}
+                          {av.is_available ? 'Wekelijks beschikbaar' : 'Wekelijks niet beschikbaar'}
                         </div>
                       </div>
                       <button

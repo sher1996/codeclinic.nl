@@ -647,9 +647,13 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                   <p className="text-base text-white/80 senior-description">Persoonlijke hulp voor álles waar u problemen mee heeft!</p>
                 </div>
               </div>
-              <button className="bg-[#0066cc] text-white font-medium px-6 py-3 rounded-full flex items-center gap-2 mt-4 sm:mt-0">
-                Vraag maatwerk aan <ChevronRight className="w-4 h-4 inline" />
-              </button>
+              <a 
+                href="#contact" 
+                className="bg-[#0066cc] text-white font-medium px-6 py-3 rounded-full flex items-center justify-center gap-2 mt-4 sm:mt-0 hover:bg-[#0052a3] transition-colors inline-block whitespace-nowrap"
+                aria-label="Ga naar contact sectie om maatwerk aan te vragen"
+              >
+                <span>Vraag maatwerk aan</span> <ChevronRight className="w-4 h-4 flex-shrink-0" />
+              </a>
             </div>
           </div>
         </div>
@@ -768,7 +772,7 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                     </div>
                     
                     <div className="mt-8">
-                      <a href="#boek" className="w-full bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3] text-lg" data-analytics="pricing_button_remote">
+                      <a href="#contact" className="w-full bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3] text-lg" data-analytics="pricing_button_remote">
                         Start direct <ChevronRight className="w-5 h-5" />
                       </a>
                     </div>
@@ -829,7 +833,7 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                     </div>
                     
                     <div className="mt-8">
-                      <a href="#boek" className="w-full bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3] text-lg" data-analytics="pricing_button_bundle">
+                      <a href="#contact" className="w-full bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3] text-lg" data-analytics="pricing_button_bundle">
                         Boek bundle <ChevronRight className="w-5 h-5" />
                       </a>
                     </div>
@@ -888,7 +892,7 @@ export default function Services({ forceVisible = false }: ServicesProps) {
                     </div>
                     
                     <div className="mt-8">
-                      <a href="#boek" className="w-full bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3] text-lg" data-analytics="pricing_button_onsite">
+                      <a href="#contact" className="w-full bg-[#0066cc] text-[#FFFFFF] font-bold px-8 py-4 rounded-lg text-center hover:brightness-110 transition-colors flex items-center justify-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0066cc] hover:bg-[#0052a3] text-lg" data-analytics="pricing_button_onsite">
                         Plan bezoek <ChevronRight className="w-5 h-5" />
                       </a>
                     </div>

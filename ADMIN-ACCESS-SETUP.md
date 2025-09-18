@@ -17,7 +17,7 @@ Make sure your `.env.local` file contains:
 
 ```bash
 # Email Configuration (Gmail)
-GMAIL_USER=your_gmail_address@gmail.com
+GMAIL_USER=codeclinic.nl@gmail.com
 GMAIL_APP_PASSWORD=your_gmail_app_password
 ADMIN_EMAIL=codeclinic.nl@gmail.com
 

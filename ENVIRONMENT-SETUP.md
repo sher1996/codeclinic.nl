@@ -12,7 +12,7 @@ UPSTASH_REDIS_REST_URL=your_upstash_redis_url_here
 UPSTASH_REDIS_REST_TOKEN=your_upstash_redis_token_here
 
 # Email Configuration (Gmail)
-GMAIL_USER=your_gmail_address@gmail.com
+GMAIL_USER=codeclinic.nl@gmail.com
 GMAIL_APP_PASSWORD=your_gmail_app_password
 ADMIN_EMAIL=codeclinic.nl@gmail.com
 

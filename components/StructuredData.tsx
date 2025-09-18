@@ -15,7 +15,7 @@ const StructuredData: React.FC<StructuredDataProps> = ({ pageType = 'home' }) =>
     "logo": "https://codeclinic.nl/logo-cc.png",
     "image": "https://codeclinic.nl/logo-cc.png",
     "telephone": "+31-6-24837889",
-    "email": "info@codeclinic.nl",
+    "email": "codeclinic.nl@gmail.com",
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "NL",

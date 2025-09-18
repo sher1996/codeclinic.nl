@@ -13,6 +13,7 @@ interface Worker {
   updated_at: string;
   worker_availability: Availability[];
   worker_time_off: TimeOff[];
+  worker_specific_availability: SpecificAvailability[];
 }
 
 interface Availability {
@@ -39,6 +40,18 @@ interface TimeOff {
   updated_at: string;
 }
 
+interface SpecificAvailability {
+  id: string;
+  worker_id: string;
+  availability_date: string;
+  start_time: string;
+  end_time: string;
+  is_available: boolean;
+  reason?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 const DAYS_OF_WEEK = [
   'Zondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag'
 ];
@@ -49,7 +62,7 @@ export default function WorkerScheduleManager() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState('');
-  const [activeTab, setActiveTab] = useState<'availability' | 'timeoff'>('availability');
+  const [activeTab, setActiveTab] = useState<'availability' | 'timeoff' | 'specific'>('availability');
 
   // Form states
   const [newWorker, setNewWorker] = useState({
@@ -73,6 +86,14 @@ export default function WorkerScheduleManager() {
     end_time: '',
     reason: '',
     is_full_day: true
+  });
+
+  const [newSpecificAvailability, setNewSpecificAvailability] = useState({
+    availability_date: '',
+    start_time: '09:00',
+    end_time: '17:00',
+    is_available: true,
+    reason: ''
   });
 
   const fetchWorkers = useCallback(async () => {
@@ -203,6 +224,8 @@ export default function WorkerScheduleManager() {
   const deleteAvailability = async (id: string) => {
     if (!confirm('Weet je zeker dat je deze beschikbaarheid wilt verwijderen?')) return;
 
+    setIsSaving(true);
+    
     try {
       const response = await fetch('/api/worker-schedule', {
         method: 'POST',
@@ -223,13 +246,17 @@ export default function WorkerScheduleManager() {
       }
     } catch (error) {
       console.error('Error deleting availability:', error);
-      setMessage('Fout bij verwijderen beschikbaarheid');
+      setMessage('Fout bij verwijderen beschikbaarheid: ' + error.message);
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const deleteTimeOff = async (id: string) => {
     if (!confirm('Weet je zeker dat je deze vrije tijd wilt verwijderen?')) return;
 
+    setIsSaving(true);
+    
     try {
       const response = await fetch('/api/worker-schedule', {
         method: 'POST',
@@ -250,7 +277,80 @@ export default function WorkerScheduleManager() {
       }
     } catch (error) {
       console.error('Error deleting time off:', error);
-      setMessage('Fout bij verwijderen vrije tijd');
+      setMessage('Fout bij verwijderen vrije tijd: ' + error.message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const addSpecificAvailability = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedWorker) return;
+
+    setIsSaving(true);
+    
+    try {
+      const response = await fetch('/api/worker-schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'set_specific_availability',
+          worker_id: selectedWorker.id,
+          ...newSpecificAvailability
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.ok) {
+        setMessage('Specifieke beschikbaarheid toegevoegd');
+        setNewSpecificAvailability({ 
+          availability_date: '', 
+          start_time: '09:00', 
+          end_time: '17:00', 
+          is_available: true, 
+          reason: '' 
+        });
+        fetchWorkers();
+      } else {
+        setMessage('Fout bij toevoegen specifieke beschikbaarheid: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error adding specific availability:', error);
+      setMessage('Fout bij toevoegen specifieke beschikbaarheid');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const deleteSpecificAvailability = async (id: string) => {
+    if (!confirm('Weet je zeker dat je deze specifieke beschikbaarheid wilt verwijderen?')) return;
+
+    setIsSaving(true);
+    
+    try {
+      const response = await fetch('/api/worker-schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'delete_specific_availability',
+          id
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.ok) {
+        setMessage('Specifieke beschikbaarheid verwijderd');
+        fetchWorkers();
+      } else {
+        setMessage('Fout bij verwijderen specifieke beschikbaarheid: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error deleting specific availability:', error);
+      setMessage('Fout bij verwijderen specifieke beschikbaarheid: ' + error.message);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -365,7 +465,17 @@ export default function WorkerScheduleManager() {
                       : 'text-white/60 hover:text-white'
                   }`}
                 >
-                  Beschikbaarheid
+                  Wekelijkse Beschikbaarheid
+                </button>
+                <button
+                  onClick={() => setActiveTab('specific')}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    activeTab === 'specific'
+                      ? 'bg-blue-500 text-white'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  Specifieke Datums
                 </button>
                 <button
                   onClick={() => setActiveTab('timeoff')}
@@ -435,23 +545,132 @@ export default function WorkerScheduleManager() {
                           className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10"
                         >
                           <div className="text-white">
-                            <div className="font-medium">{DAYS_OF_WEEK[av.day_of_week]}</div>
+                            <div className="font-medium">
+                              Elke {DAYS_OF_WEEK[av.day_of_week].toLowerCase()}
+                            </div>
                             <div className="text-white/60 text-sm">
                               {av.start_time} - {av.end_time}
                             </div>
                             <div className="text-white/40 text-xs">
-                              {av.is_available ? 'Beschikbaar' : 'Niet beschikbaar'}
+                              {av.is_available ? 'Wekelijks beschikbaar' : 'Wekelijks niet beschikbaar'}
                             </div>
                           </div>
                           <button
                             onClick={() => deleteAvailability(av.id)}
-                            className="text-red-400 hover:text-red-300 text-sm"
+                            disabled={isSaving}
+                            className="text-red-400 hover:text-red-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            Verwijderen
+                            {isSaving ? 'Verwijderen...' : 'Verwijderen'}
                           </button>
                         </div>
                       ))}
                     </div>
+                    </div>
+                  </motion.div>
+                ) : activeTab === 'specific' ? (
+                  <motion.div
+                    key="specific"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="space-y-6"
+                  >
+                    {/* Add Specific Availability Form */}
+                    <form onSubmit={addSpecificAvailability} className="space-y-4">
+                      <h3 className="text-lg font-medium text-white">Nieuwe Specifieke Beschikbaarheid</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input
+                          type="date"
+                          value={newSpecificAvailability.availability_date}
+                          onChange={(e) => setNewSpecificAvailability({ ...newSpecificAvailability, availability_date: e.target.value })}
+                          className="p-3 bg-white/10 border border-white/20 rounded-lg text-white"
+                          required
+                        />
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="time"
+                            value={newSpecificAvailability.start_time}
+                            onChange={(e) => setNewSpecificAvailability({ ...newSpecificAvailability, start_time: e.target.value })}
+                            className="p-3 bg-white/10 border border-white/20 rounded-lg text-white"
+                          />
+                          <span className="text-white/60">tot</span>
+                          <input
+                            type="time"
+                            value={newSpecificAvailability.end_time}
+                            onChange={(e) => setNewSpecificAvailability({ ...newSpecificAvailability, end_time: e.target.value })}
+                            className="p-3 bg-white/10 border border-white/20 rounded-lg text-white"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <label className="flex items-center text-white">
+                          <input
+                            type="checkbox"
+                            checked={newSpecificAvailability.is_available}
+                            onChange={(e) => setNewSpecificAvailability({ ...newSpecificAvailability, is_available: e.target.checked })}
+                            className="mr-2"
+                          />
+                          Beschikbaar
+                        </label>
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Reden (optioneel)"
+                        value={newSpecificAvailability.reason}
+                        onChange={(e) => setNewSpecificAvailability({ ...newSpecificAvailability, reason: e.target.value })}
+                        className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60"
+                      />
+                      <button
+                        type="submit"
+                        disabled={isSaving}
+                        className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
+                      >
+                        {isSaving ? 'Toevoegen...' : 'Specifieke Beschikbaarheid Toevoegen'}
+                      </button>
+                    </form>
+
+                    {/* Current Specific Availability */}
+                    <div>
+                      <h3 className="text-lg font-medium text-white mb-4">Huidige Specifieke Beschikbaarheid</h3>
+                      <div className="space-y-2">
+                        {selectedWorker.worker_specific_availability.map((sa) => {
+                          const availabilityDate = new Date(sa.availability_date);
+                          
+                          return (
+                            <div
+                              key={sa.id}
+                              className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10"
+                            >
+                              <div className="text-white">
+                                <div className="font-medium">
+                                  {availabilityDate.toLocaleDateString('nl-NL', { 
+                                    weekday: 'long', 
+                                    day: 'numeric', 
+                                    month: 'long', 
+                                    year: 'numeric' 
+                                  })}
+                                </div>
+                                <div className="text-white/60 text-sm">
+                                  {sa.start_time} - {sa.end_time}
+                                </div>
+                                <div className="text-white/40 text-xs">
+                                  {sa.is_available ? 'Beschikbaar' : 'Niet beschikbaar'}
+                                </div>
+                                {sa.reason && (
+                                  <div className="text-white/60 text-sm">{sa.reason}</div>
+                                )}
+                              </div>
+                              <button
+                                onClick={() => deleteSpecificAvailability(sa.id)}
+                                disabled={isSaving}
+                                className="text-red-400 hover:text-red-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {isSaving ? 'Verwijderen...' : 'Verwijderen'}
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </motion.div>
                 ) : (
@@ -571,9 +790,10 @@ export default function WorkerScheduleManager() {
                             </div>
                             <button
                               onClick={() => deleteTimeOff(to.id)}
-                              className="text-red-400 hover:text-red-300 text-sm"
+                              disabled={isSaving}
+                              className="text-red-400 hover:text-red-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                              Verwijderen
+                              {isSaving ? 'Verwijderen...' : 'Verwijderen'}
                             </button>
                           </div>
                         );

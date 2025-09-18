@@ -153,7 +153,7 @@ export default function TermsPage() {
                   Heeft u een klacht over onze dienstverlening? Neem dan direct contact met ons op:
                 </p>
                 <div className="bg-white/5 rounded-lg p-4 mt-4">
-                  <p><strong>E-mail:</strong> <a href="mailto:info@codeclinic.nl" className="text-blue-200 hover:text-blue-100">info@codeclinic.nl</a></p>
+                  <p><strong>E-mail:</strong> <a href="mailto:codeclinic.nl@gmail.com" className="text-blue-200 hover:text-blue-100">codeclinic.nl@gmail.com</a></p>
                   <p><strong>Telefoon:</strong> <a href="https://wa.me/31624837889" target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-blue-100">+31 6 24837889</a></p>
                 </div>
                 <p className="mt-4">
@@ -179,10 +179,8 @@ export default function TermsPage() {
                 <p>Heeft u vragen over deze voorwaarden? Neem dan contact met ons op:</p>
                 <div className="bg-white/5 rounded-lg p-4 mt-4">
                   <p><strong>CodeClinic.nl</strong></p>
-                  <p><strong>E-mail:</strong> <a href="mailto:info@codeclinic.nl" className="text-blue-200 hover:text-blue-100">info@codeclinic.nl</a></p>
+                  <p><strong>E-mail:</strong> <a href="mailto:codeclinic.nl@gmail.com" className="text-blue-200 hover:text-blue-100">codeclinic.nl@gmail.com</a></p>
                   <p><strong>Telefoon:</strong> <a href="https://wa.me/31624837889" target="_blank" rel="noopener noreferrer" className="text-blue-200 hover:text-blue-100">+31 6 24837889</a></p>
-                  <p><strong>KvK:</strong> 86438948</p>
-                  <p><strong>BTW:</strong> NL004247935B44</p>
                 </div>
               </div>
             </section>
