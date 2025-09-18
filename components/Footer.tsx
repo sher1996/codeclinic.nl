@@ -1,4 +1,5 @@
 import WhatsAppIcon from './WhatsAppIcon';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -16,9 +17,11 @@ export default function Footer() {
             <div className="space-y-6">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
-                  <img 
+                  <Image 
                     src="/logo-cc.png" 
                     alt="Code Clinic Logo" 
+                    width={48}
+                    height={48}
                     className="w-full h-full object-contain"
                   />
                 </div>

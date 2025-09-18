@@ -246,7 +246,7 @@ export default function WorkerScheduleManager() {
       }
     } catch (error) {
       console.error('Error deleting availability:', error);
-      setMessage('Fout bij verwijderen beschikbaarheid: ' + error.message);
+      setMessage('Fout bij verwijderen beschikbaarheid: ' + (error instanceof Error ? error.message : 'Onbekende fout'));
     } finally {
       setIsSaving(false);
     }
@@ -277,7 +277,7 @@ export default function WorkerScheduleManager() {
       }
     } catch (error) {
       console.error('Error deleting time off:', error);
-      setMessage('Fout bij verwijderen vrije tijd: ' + error.message);
+      setMessage('Fout bij verwijderen vrije tijd: ' + (error instanceof Error ? error.message : 'Onbekende fout'));
     } finally {
       setIsSaving(false);
     }
@@ -348,7 +348,7 @@ export default function WorkerScheduleManager() {
       }
     } catch (error) {
       console.error('Error deleting specific availability:', error);
-      setMessage('Fout bij verwijderen specifieke beschikbaarheid: ' + error.message);
+      setMessage('Fout bij verwijderen specifieke beschikbaarheid: ' + (error instanceof Error ? error.message : 'Onbekende fout'));
     } finally {
       setIsSaving(false);
     }
