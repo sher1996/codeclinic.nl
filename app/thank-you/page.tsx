@@ -4,7 +4,7 @@ import { useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { getCurrentUTMParameters } from '@/lib/utm-tracking';
+import { getCurrentUTMParameters, UTMParameters } from '@/lib/utm-tracking';
 
 function ThankYouContent() {
   const searchParams = useSearchParams();
@@ -23,21 +23,21 @@ function ThankYouContent() {
       const utmParams = getCurrentUTMParameters();
       
       // Parse UTM data from URL if provided
-      let parsedUTMData = {};
+      let parsedUTMData: UTMParameters = {};
       if (utmData) {
         try {
           const urlParams = new URLSearchParams(utmData);
           parsedUTMData = {
-            utm_source: urlParams.get('utm_source'),
-            utm_medium: urlParams.get('utm_medium'),
-            utm_campaign: urlParams.get('utm_campaign'),
-            utm_term: urlParams.get('utm_term'),
-            utm_content: urlParams.get('utm_content')
+            utm_source: urlParams.get('utm_source') || undefined,
+            utm_medium: urlParams.get('utm_medium') || undefined,
+            utm_campaign: urlParams.get('utm_campaign') || undefined,
+            utm_term: urlParams.get('utm_term') || undefined,
+            utm_content: urlParams.get('utm_content') || undefined
           };
           // Remove empty values
           Object.keys(parsedUTMData).forEach(key => {
-            if (!parsedUTMData[key as keyof typeof parsedUTMData]) {
-              delete parsedUTMData[key as keyof typeof parsedUTMData];
+            if (!parsedUTMData[key as keyof UTMParameters]) {
+              delete parsedUTMData[key as keyof UTMParameters];
             }
           });
         } catch (error) {
@@ -46,7 +46,7 @@ function ThankYouContent() {
       }
       
       // Combine UTM parameters (prefer URL data over stored)
-      const finalUTMParams = Object.keys(parsedUTMData).length > 0 ? parsedUTMData : utmParams;
+      const finalUTMParams: UTMParameters = Object.keys(parsedUTMData).length > 0 ? parsedUTMData : utmParams;
       
       console.log('[Thank You] Tracking conversion with UTM parameters:', finalUTMParams);
       
