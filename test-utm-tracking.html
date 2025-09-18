@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTM Tracking Test - CodeClinic</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-link {
+            display: inline-block;
+            background: #1F2C90;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 5px;
+            font-weight: bold;
+        }
+        .test-link:hover {
+            background: #2B3CA0;
+        }
+        .info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .code {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 UTM Parameter Tracking Test</h1>
+        
+        <div class="info">
+            <h3>✅ UTM Tracking is Now Active!</h3>
+            <p>Your CodeClinic website now automatically captures and tracks UTM parameters from Google Ads campaigns. This means you can see exactly which campaigns drive the most appointment bookings.</p>
+        </div>
+
+        <h2>Test UTM Parameter Tracking</h2>
+        <p>Click these test links to see UTM tracking in action:</p>
+        
+        <div>
+            <a href="https://codeclinic.nl/?utm_source=google&utm_medium=cpc&utm_campaign=search_traffic" class="test-link">
+                🎯 Search Traffic Campaign
+            </a>
+            <a href="https://codeclinic.nl/?utm_source=google&utm_medium=cpc&utm_campaign=computer_help_rotterdam" class="test-link">
+                🖥️ Computer Help Rotterdam
+            </a>
+            <a href="https://codeclinic.nl/?utm_source=google&utm_medium=cpc&utm_campaign=senior_computer_support" class="test-link">
+                👴 Senior Computer Support
+            </a>
+        </div>
+
+        <h3>What Happens When You Click:</h3>
+        <ol>
+            <li><strong>UTM Capture:</strong> UTM parameters are automatically captured from the URL</li>
+            <li><strong>Session Storage:</strong> Parameters are stored for the entire user session</li>
+            <li><strong>Booking Flow:</strong> UTM data is passed through the appointment booking process</li>
+            <li><strong>Conversion Tracking:</strong> UTM parameters are included in GA4 conversion events</li>
+            <li><strong>GA4 Reporting:</strong> You can see campaign performance in Google Analytics</li>
+        </ol>
+
+        <h3>Example Tagged URLs for Google Ads:</h3>
+        <div class="code">
+            https://codeclinic.nl/?utm_source=google&utm_medium=cpc&utm_campaign=search_traffic<br>
+            https://codeclinic.nl/?utm_source=google&utm_medium=cpc&utm_campaign=computer_help_rotterdam<br>
+            https://codeclinic.nl/?utm_source=google&utm_medium=cpc&utm_campaign=senior_computer_support
+        </div>
+
+        <h3>UTM Parameter Breakdown:</h3>
+        <ul>
+            <li><strong>utm_source:</strong> google (traffic source)</li>
+            <li><strong>utm_medium:</strong> cpc (cost-per-click advertising)</li>
+            <li><strong>utm_campaign:</strong> search_traffic (campaign name)</li>
+            <li><strong>utm_term:</strong> computer+hulp+rotterdam (optional keywords)</li>
+            <li><strong>utm_content:</strong> ad_variant_1 (optional ad variation)</li>
+        </ul>
+
+        <div class="info">
+            <h3>🎉 Pro Tip Implemented!</h3>
+            <p>You now have the exact functionality mentioned in the Pro tip. Use tagged URLs in your Google Ads campaigns to track ad traffic clearly in GA4 and see which campaigns drive the most appointment bookings.</p>
+        </div>
+    </div>
+
+    <script>
+        // Simple test to show current URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.toString()) {
+            console.log('Current URL parameters:', urlParams.toString());
+            document.querySelector('.info').innerHTML += '<p><strong>Current URL has parameters:</strong> ' + urlParams.toString() + '</p>';
+        }
+    </script>
+</body>
+</html>

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCSSLoader } from './CSSLoader';
+import { getCurrentUTMParameters, createUTMQueryString } from '@/lib/utm-tracking';
 
 interface AppointmentCalendarProps {
   onDateSelect?: (date: Date) => void;
@@ -383,13 +384,21 @@ export default function AppointmentCalendar({ onDateSelect, appointmentType = 'o
       
       setAnnouncement('Afspraak succesvol geboekt! U wordt doorgestuurd naar de bevestigingspagina...');
       
-      // Redirect to thank you page with booking details
+      // Redirect to thank you page with booking details and UTM parameters
       const thankYouParams = new URLSearchParams({
         booking_id: bookingResult.booking.booking_number || bookingResult.booking.id,
         date: dateString,
         time: selectedTime || '',
         name: formData.name
       });
+      
+      // Add UTM parameters if they exist
+      const utmParams = getCurrentUTMParameters();
+      if (Object.keys(utmParams).length > 0) {
+        const utmQueryString = createUTMQueryString(utmParams);
+        console.log('[AppointmentCalendar] Including UTM parameters in redirect:', utmParams);
+        thankYouParams.append('utm_data', utmQueryString);
+      }
       
       // Small delay to show success message, then redirect
       setTimeout(() => {

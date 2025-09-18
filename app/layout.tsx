@@ -10,6 +10,7 @@ import StructuredData from '@/components/StructuredData';
 import PerformanceMonitor from '@/components/PerformanceMonitor';
 
 import ConsentManager from '@/components/ConsentManager';
+import UTMTracker from '@/components/UTMTracker';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -277,6 +278,7 @@ export default function RootLayout({
         <EmailAdminAccess />
         <StructuredData />
         <PerformanceMonitor />
+        <UTMTracker />
 
         <ConsentManager />
       </body>

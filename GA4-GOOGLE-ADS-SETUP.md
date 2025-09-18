@@ -21,6 +21,13 @@ This guide will help you set up Google Analytics 4 (GA4) conversion tracking and
 - Event includes custom parameters: appointment_date, appointment_time, customer_name
 - Event is marked as a conversion with value and currency
 
+### 4. UTM Parameter Tracking (NEW!)
+- **Automatic UTM capture**: UTM parameters are automatically captured from incoming URLs
+- **Campaign attribution**: Track which Google Ads campaigns drive conversions
+- **Persistent tracking**: UTM parameters are stored and passed through the entire booking flow
+- **Enhanced conversion data**: UTM parameters are included in GA4 conversion events
+- **Pro tip ready**: Use tagged URLs like `https://codeclinic.nl/?utm_source=google&utm_medium=cpc&utm_campaign=search_traffic`
+
 ## 🔧 Manual Setup Required
 
 ### Step 1: Configure GA4 Conversion Event
@@ -88,6 +95,38 @@ This guide will help you set up Google Analytics 4 (GA4) conversion tracking and
    - In campaign settings, select the imported `book_appointment` conversion
    - Set conversion value: Use the value from GA4 (currently set to 1 EUR)
 
+## 🎯 UTM Parameter Tracking Guide
+
+### How to Use UTM Parameters for Campaign Tracking
+
+**Pro Tip**: Use tagged URLs in your Google Ads campaigns to track performance clearly in GA4.
+
+#### Example Tagged URLs:
+```
+https://codeclinic.nl/?utm_source=google&utm_medium=cpc&utm_campaign=search_traffic
+https://codeclinic.nl/?utm_source=google&utm_medium=cpc&utm_campaign=computer_help_rotterdam
+https://codeclinic.nl/?utm_source=google&utm_medium=cpc&utm_campaign=senior_computer_support
+```
+
+#### UTM Parameter Breakdown:
+- **utm_source**: `google` (where the traffic comes from)
+- **utm_medium**: `cpc` (cost-per-click advertising)
+- **utm_campaign**: `search_traffic` (specific campaign name)
+- **utm_term**: `computer+hulp+rotterdam` (optional: specific keywords)
+- **utm_content**: `ad_variant_1` (optional: ad variation identifier)
+
+#### What Happens Automatically:
+1. **UTM Capture**: When users click your tagged Google Ads URL, UTM parameters are automatically captured
+2. **Session Storage**: UTM parameters are stored for the entire user session
+3. **Booking Flow**: UTM parameters are passed through the booking process
+4. **Conversion Tracking**: UTM parameters are included in the `book_appointment` conversion event
+5. **GA4 Reporting**: You can see which campaigns, sources, and mediums drive the most bookings
+
+#### Setting Up in Google Ads:
+1. **Final URLs**: Use your tagged URLs as the final URL in your Google Ads campaigns
+2. **Campaign Names**: Use descriptive campaign names that match your `utm_campaign` parameter
+3. **Ad Groups**: Consider using `utm_content` to track different ad variations
+
 ## 📊 Monitoring & Optimization
 
 ### GA4 Reports to Monitor
@@ -143,10 +182,12 @@ This guide will help you set up Google Analytics 4 (GA4) conversion tracking and
 ## 📈 Expected Results
 
 With this setup, you should see:
-- **GA4**: `book_appointment` events firing on the thank-you page
-- **Google Ads**: Conversions being imported from GA4
+- **GA4**: `book_appointment` events firing on the thank-you page with UTM parameters
+- **Google Ads**: Conversions being imported from GA4 with campaign attribution
 - **Campaign Performance**: Data on which keywords and ads drive the most bookings
-- **ROI Tracking**: Cost per appointment booking
+- **ROI Tracking**: Cost per appointment booking by campaign
+- **UTM Attribution**: Clear visibility into which campaigns drive conversions
+- **Enhanced Reporting**: UTM parameters in conversion events for detailed analysis
 
 ## 🆘 Troubleshooting
 
