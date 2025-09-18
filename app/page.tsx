@@ -12,7 +12,7 @@ const Services = dynamic(() => import('@/components/Services'), {
 
 const Contact = dynamic(() => import('@/components/Contact'), {
   ssr: false,
-  loading: () => <div style={{ minHeight: '300px' }} /> // Prevent layout shift
+  loading: () => <div id="contact" style={{ minHeight: '300px' }} /> // Prevent layout shift and ensure ID exists
 });
 
 const Footer = dynamic(() => import('@/components/Footer'), {
